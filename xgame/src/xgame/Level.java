@@ -62,9 +62,9 @@ public class Level {
         bilder = getSprites(360);
         int count = 0; 
         
-        for(int i=0; i<tilesize;i++){
-            
-           for(int j=0; j < tilesize; j++ ){
+        for(int i=0; i<bilder.length;i++){
+            //dasdasd
+           for(int j=0; j < bilder.length; j++ ){
                 
                 if(gameboard_1[count]>0){
 //                    System.out.println("count: "+count+" id: "+gameboard_1[count]);
