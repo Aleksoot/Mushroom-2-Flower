@@ -63,7 +63,7 @@ public class Level {
         int count = 0; 
         
         for(int i=0; i<bilder.length;i++){
-            //
+            //dasdasd
            for(int j=0; j < bilder.length; j++ ){
                 
                 if(gameboard_1[count]>0){
