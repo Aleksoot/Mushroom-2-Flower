@@ -13,7 +13,7 @@ import javafx.scene.shape.Rectangle;
 
 /**
  *
- * @author faete
+ * @author 
  */
 public class GameObject {
     public Rectangle tile = new Rectangle();
