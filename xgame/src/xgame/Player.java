@@ -32,5 +32,6 @@ public class Player extends GameObject{
      
     }
     public void moveJump(){
+//   player jumps with "UP" input from keyboard
     }
 }
