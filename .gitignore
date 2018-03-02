@@ -1,10 +1,13 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /xgame/nbproject/private/
 /xgame/build/
 /xgame/dist/
 =======
 # Compiled class file
 *.class
+=======
+>>>>>>> 28a986f910809d9d55f894561d26d14688a2f9fb
 
 # Log file
 *.log
