@@ -27,12 +27,11 @@ public class Player extends GameObject{
 //        super();
 //    }
     public void moveLeft(){
-//    player moves left with "LEFT" directional input from keyboard
+        this.tile.setAccessibleHelp("fsdf");
     }
     public void moveRight(){
-//    player moves right with "RIGHT" directional input from keyboard 
+     
     }
     public void moveJump(){
-//   player jumps with "UP" directional input from keyboard
     }
 }
