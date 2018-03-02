@@ -1,6 +1,4 @@
-# Compiled class file
-*.class
-
+/xgame/nbproject/private/
 # Log file
 *.log
 
