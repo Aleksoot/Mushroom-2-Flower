@@ -8,12 +8,13 @@ package xgame;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
 /**
  *
- * @author 
+ * @author faete
  */
 public class GameObject {
     public Rectangle tile = new Rectangle();
@@ -28,12 +29,15 @@ public class GameObject {
         tile.setWidth(tilesize);
         tile.setX(0);
         tile.setY(0);
+        System.out.println("new gameobject");
     }
     public Rectangle getGameObject(){
         return this.tile;
     }
     public void fillGameObject(Image x){
+        
         this.tile.setFill(new ImagePattern(x));
+     
     }
 
     public int getTilesize() {

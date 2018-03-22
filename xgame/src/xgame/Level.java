@@ -14,6 +14,7 @@ import java.util.List;
 import static javafx.application.Platform.exit;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
@@ -38,7 +39,7 @@ public class Level {
    
     public GameObject[][] board = new GameObject[tilesize-1][tilesize-1];
     TilePane grid = new TilePane();
-    BufferedImage testbilde = null;
+    
     Image image = null;
     
     
@@ -61,10 +62,10 @@ public class Level {
         Image[] bilder = new Image[360];
         bilder = getSprites(360);
         int count = 0; 
-        
-        for(int i=0; i<bilder.length;i++){
-            //dasdasd
-           for(int j=0; j < bilder.length; j++ ){
+        BufferedImage testbilde = null;
+        for(int i=0; i<tilesize;i++){
+            
+           for(int j=0; j < tilesize; j++ ){
                 
                 if(gameboard_1[count]>0){
 //                    System.out.println("count: "+count+" id: "+gameboard_1[count]);
@@ -75,12 +76,16 @@ public class Level {
                 image = SwingFXUtils.toFXImage(testbilde, null);
                
                 
-                GameObject tile = new GameObject();
-                
+                GameObject tile;
+               tile = new GameObject();
+          
+                tile.getGameObject().setFill(null);
                 tile.setId( gbValue );
+                tile.getGameObject().setFill(Color.AQUAMARINE);
                 if(gbValue != 65){
                 tile.fillGameObject(image);
-                }else{tile.getGameObject().setFill(Color.AQUAMARINE);}
+                
+                }else{}
 //                System.out.println("x: "+(j*tilesize)+" y: "+(i*tilesize));
                 //tilelist.add(tile);
                 
@@ -102,6 +107,7 @@ public class Level {
         return "lol";
     }
     public static BufferedImage makeBufferedImage(BufferedImage i){
+       
       BufferedImage result;
       PixelGrabber pg = new PixelGrabber(i, 0, 0, 1, 1, false);
       boolean alpha;
@@ -114,22 +120,25 @@ public class Level {
       {
          pg.grabPixels();
          alpha = pg.getColorModel().hasAlpha();
+         
       }
       catch(InterruptedException e)
       {
          alpha = false;
+          
       }
 
       result = new BufferedImage
       (
          i.getWidth(null),
          i.getHeight(null),
-         alpha ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB
+         alpha ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB
       );
       result.getGraphics().drawImage(i,0,0,null);
       return(result);
    }
     public Image[] getSprites(int antall) {
+         
         BufferedImage source = null;
         BufferedImage source2 = null;
         try {
