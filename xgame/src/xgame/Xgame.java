@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -37,23 +38,28 @@ public class Xgame extends Application {
         player.getGameObject().setFill(Color.BLUE);
         player.getGameObject().setX(50);
         player.getGameObject().setY(50);
-        Button btn = new Button();
-        btn.setText("Say 'Hello World'");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
-            
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Hello World!");
-            }
-        });
+        
         
         
         root.getChildren().add(player.getGameObject());
         System.out.println(root.getHeight());
         Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
         scene.setFill(Color.AQUAMARINE);
-        primaryStage.setTitle("Hello World!");
+        primaryStage.setTitle("Testbrett");
         primaryStage.setScene(scene);
+        primaryStage.getScene().setOnKeyPressed(e -> {
+            
+            if (e.getCode() == KeyCode.LEFT) {
+               player.moveLeft();
+            }
+            if (e.getCode() == KeyCode.RIGHT) {
+                 player.moveRight();
+                
+            }
+            if (e.getCode() == KeyCode.SPACE) {
+               player.moveJump();
+            } 
+        });
         primaryStage.show();
     }
 
