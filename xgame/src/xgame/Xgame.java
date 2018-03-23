@@ -19,7 +19,7 @@ import javafx.stage.Stage;
 
 /**
  *
- * @author faete
+ * @author
  */
 public class Xgame extends Application {
     
