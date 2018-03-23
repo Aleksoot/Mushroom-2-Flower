@@ -131,12 +131,10 @@ public class Level {
    }
     public Image[] getSprites(int antall) {
         BufferedImage source = null;
-        BufferedImage source2 = null;
         File resourcesDirectory = new File("src/xgame");
         
         try {
-            source2 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+"\\magecity.png"));
-            source= makeBufferedImage(source2);
+            source= makeBufferedImage(ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+"\\magecity.png")));
                 
         } catch (IOException ex) {
             
