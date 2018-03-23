@@ -48,7 +48,8 @@ public class GameObject {
     PLAYER,
     ENEMY,
     LEVEL,
-    ITEM
+    ITEM,
+    STATIC	
     }
      public int getId() {
         return id;
