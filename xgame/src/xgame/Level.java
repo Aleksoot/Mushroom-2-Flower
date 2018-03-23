@@ -14,7 +14,6 @@ import java.util.List;
 import static javafx.application.Platform.exit;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
-import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
@@ -39,7 +38,7 @@ public class Level {
    
     public GameObject[][] board = new GameObject[tilesize-1][tilesize-1];
     TilePane grid = new TilePane();
-    
+    BufferedImage testbilde = null;
     Image image = null;
     
     
@@ -62,30 +61,26 @@ public class Level {
         Image[] bilder = new Image[360];
         bilder = getSprites(360);
         int count = 0; 
-        BufferedImage testbilde = null;
-        for(int i=0; i<tilesize;i++){
+
+        for(int i=0; i < tilesize; i++){
             
            for(int j=0; j < tilesize; j++ ){
                 
                 if(gameboard_1[count]>0){
-//                    System.out.println("count: "+count+" id: "+gameboard_1[count]);
+              System.out.println("count: "+count+" id: "+gameboard_1[count]);
                     gbValue = gameboard_1[count]-1;
                 }else{ gbValue=65;}
-               
+                
                 testbilde = SwingFXUtils.fromFXImage(bilder[gbValue], null);
                 image = SwingFXUtils.toFXImage(testbilde, null);
                
                 
-                GameObject tile;
-               tile = new GameObject();
-          
-                tile.getGameObject().setFill(null);
+                GameObject tile = new GameObject();
+                
                 tile.setId( gbValue );
-                tile.getGameObject().setFill(Color.AQUAMARINE);
                 if(gbValue != 65){
                 tile.fillGameObject(image);
-                
-                }else{}
+                }else{tile.getGameObject().setFill(Color.AQUAMARINE);}
 //                System.out.println("x: "+(j*tilesize)+" y: "+(i*tilesize));
                 //tilelist.add(tile);
                 
@@ -107,7 +102,6 @@ public class Level {
         return "lol";
     }
     public static BufferedImage makeBufferedImage(BufferedImage i){
-       
       BufferedImage result;
       PixelGrabber pg = new PixelGrabber(i, 0, 0, 1, 1, false);
       boolean alpha;
@@ -120,29 +114,28 @@ public class Level {
       {
          pg.grabPixels();
          alpha = pg.getColorModel().hasAlpha();
-         
       }
       catch(InterruptedException e)
       {
          alpha = false;
-          
       }
 
       result = new BufferedImage
       (
          i.getWidth(null),
          i.getHeight(null),
-         alpha ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB
+         alpha ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB
       );
       result.getGraphics().drawImage(i,0,0,null);
       return(result);
    }
     public Image[] getSprites(int antall) {
-         
         BufferedImage source = null;
         BufferedImage source2 = null;
+        File resourcesDirectory = new File("src/xgame");
+        
         try {
-            source2 = ImageIO.read(new File("C:\\Users\\faete\\Documents\\NetBeansProjects\\zeGame\\src\\zegame\\magecity.png"));
+            source2 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+"\\magecity.png"));
             source= makeBufferedImage(source2);
                 
         } catch (IOException ex) {
