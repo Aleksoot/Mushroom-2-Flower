@@ -53,8 +53,7 @@ public class Xgame extends Application {
                player.moveLeft();
             }
             if (e.getCode() == KeyCode.RIGHT) {
-                 player.moveRight();
-                
+               player.moveRight();
             }
             if (e.getCode() == KeyCode.SPACE) {
                player.moveJump();

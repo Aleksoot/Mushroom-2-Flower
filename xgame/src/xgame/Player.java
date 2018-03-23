@@ -18,7 +18,8 @@ public class Player extends GameObject{
     
     Type player = Type.PLAYER;
     private boolean alive = true;
-    
+    private int xPos;
+    private int yPos;
     
     public Player() {
        super();
@@ -30,7 +31,6 @@ public class Player extends GameObject{
         this.tile.setAccessibleHelp("fsdf");
     }
     public void moveRight(){
-     
     }
     public void moveJump(){
     }
