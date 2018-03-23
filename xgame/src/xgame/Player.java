@@ -18,8 +18,6 @@ public class Player extends GameObject{
     
     Type player = Type.PLAYER;
     private boolean alive = true;
-    private int xPos;
-    private int yPos;
     
     public Player() {
        super();

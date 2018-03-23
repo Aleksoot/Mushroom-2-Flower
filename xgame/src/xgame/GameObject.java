@@ -20,8 +20,8 @@ public class GameObject {
     public Rectangle tile = new Rectangle();
     private int id;
     public int tilesize=30;
-    private int xPos;
-    private int yPos;
+    public int xPos;
+    public int yPos;
     public Image bg;
     public Node node;
     public GameObject(){
