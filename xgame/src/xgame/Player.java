@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import static xgame.GameObject.Type.PLAYER;
 
-/**
+/** test
  *
  * @author faete
  */
