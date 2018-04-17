@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 import java.util.Date;
 import javax.swing.Timer;
 
-/** test
+/** player
  *
  * @author josef
  */
@@ -38,13 +38,16 @@ public class Player extends GameObject{
     /**
      * Inheriting the necessary parameters from GameObject (specifically setX/setY)
      * Defining the x and y Positions at the start of movement.
+     * Text confirming the player object's existence
+     * Gave the player an Id of 1
      */
     
     public Player() {
        super();
        xPos = 200;
        yPos = 200;
-
+       System.out.println("Player has spawned");
+       id = 1; 
     }
     
     /**

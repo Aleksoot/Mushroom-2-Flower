@@ -18,7 +18,7 @@ import javafx.scene.shape.Rectangle;
  */
 public class GameObject {
     public Rectangle tile = new Rectangle();
-    private int id;
+    public int id;
     public int tilesize=30;
     public Image bg;
     public Node node;
