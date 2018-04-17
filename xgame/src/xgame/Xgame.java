@@ -36,8 +36,8 @@ public class Xgame extends Application {
         System.out.println(level.getRoot());
         Player player = new Player();
         player.getGameObject().setFill(Color.BLUE);
-        player.getGameObject().setX(50);
-        player.getGameObject().setY(50);
+        player.getGameObject().setX(200);
+        player.getGameObject().setY(200);
         
         
         
@@ -48,6 +48,11 @@ public class Xgame extends Application {
         primaryStage.setTitle("Testbrett");
         primaryStage.setScene(scene);
         primaryStage.getScene().setOnKeyPressed(e -> {
+            
+            /**
+             * Controls for player movement
+             * Referring to Player.java
+             */
             
             if (e.getCode() == KeyCode.LEFT) {
                player.moveLeft();

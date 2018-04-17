@@ -14,14 +14,12 @@ import javafx.scene.shape.Rectangle;
 
 /**
  *
- * @author faete
+ * @author josef
  */
 public class GameObject {
     public Rectangle tile = new Rectangle();
     private int id;
     public int tilesize=30;
-    public int xPos;
-    public int yPos;
     public Image bg;
     public Node node;
     public GameObject(){
