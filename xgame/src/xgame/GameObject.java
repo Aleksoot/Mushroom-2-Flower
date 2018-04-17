@@ -14,14 +14,12 @@ import javafx.scene.shape.Rectangle;
 
 /**
  *
- * @author faete
+ * @author josef
  */
 public class GameObject {
     public Rectangle tile = new Rectangle();
     private int id;
     public int tilesize=30;
-    private int xPos;
-    private int yPos;
     public Image bg;
     public Node node;
     public GameObject(){
@@ -64,7 +62,7 @@ public class GameObject {
     
     public void GameObjectToScene(Pane root, double x, double y){
         this.tile.setTranslateX(x - this.tilesize );
-        this.tile.setTranslateX(x - this.tilesize );
+        this.tile.setTranslateY(y - this.tilesize );
         root.getChildren().add( this.tile );
     }
 }
