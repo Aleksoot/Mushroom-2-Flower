@@ -87,7 +87,6 @@ public class Level {
                 root.getChildren().add(tile.getGameObject());
                 count++;  
                 
-                
            }     
         }
         System.out.println("created level");
@@ -127,7 +126,6 @@ public class Level {
    }
     public Image[] getSprites(int antall) {
         BufferedImage source = null;
-        BufferedImage source2 = null;
         File resourcesDirectory = new File("src/xgame");
         String src_slash;
         String os = System.getProperty("os.name").toLowerCase();
@@ -139,8 +137,7 @@ public class Level {
             src_slash = "/";
         }
         try {
-            source2 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"magecity.png"));
-            source= makeBufferedImage(source2);
+            source= makeBufferedImage(ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"magecity.png")));
                 
         } catch (IOException ex) {
             
