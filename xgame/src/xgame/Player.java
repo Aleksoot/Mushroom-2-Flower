@@ -29,7 +29,7 @@ public class Player extends GameObject{
     
     public int xPos;  
     public int yPos;
-    public int count;
+    public int i;
     Type player = Type.PLAYER;
     private boolean alive = true;
     private boolean collisionx;
@@ -87,23 +87,43 @@ public class Player extends GameObject{
         tile.setX(xPos+=30);
     }
     public void moveJump() {
-        tile.setY(yPos-=60);
-            
+         
         /**
          * Since jumping is only a temporary movement in the y direction,
          * I used a timer to allow a brief amount of time in the air.
          * Control is also possible while airborne.
-         * "500" means 500 milliseconds in the air before you return back to the ground.
+         * "250" means 500 milliseconds in the air before you return back to the ground.
+         * I put 1 timer inside the other to simulate a more fluid fall 
+         * Using this method means that the player will return to the same y position from 
+         * the initial jump no matter how high up they are (as long as no block is in the way)
          */
         
+        tile.setY(yPos-=80);
+            
+      
         new java.util.Timer().schedule( 
         new java.util.TimerTask() {
             @Override
             public void run() {
-                tile.setY(yPos+=60);
+                for (i = 0; i < 1; i++) {
+                tile.setY(yPos+=40);
+                new java.util.Timer().schedule( 
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        for (i = 0; i < 1; i++) {
+                        tile.setY(yPos+=40);
+                            }
+                        }
+                    }, 
+                    250 
+                    );
+                }
             }
         }, 
-        500 
+        250 
         );
+        
+
     }
 }
