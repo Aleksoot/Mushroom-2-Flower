@@ -37,7 +37,7 @@ public class Player extends GameObject{
     
     /**
      * Inheriting the necessary parameters from GameObject (specifically setX/setY)
-     * Defining the x and y Positions at the start of movement
+     * Defining the x and y Positions at the start of movement.
      */
     
     public Player() {

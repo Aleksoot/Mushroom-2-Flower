@@ -28,6 +28,7 @@ public class Tile extends GameObject{
     }
     public void TileToScene(Pane root, double x, double y){
         this.tile.setTranslateX(x - this.tilesize );
+        
         this.tile.setTranslateX(x - this.tilesize );
          
         root.getChildren().add( this.tile );
