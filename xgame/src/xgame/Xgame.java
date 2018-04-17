@@ -62,7 +62,7 @@ public class Xgame extends Application {
         BufferedImage bg = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+"\\BG.png"));
         Image card = SwingFXUtils.toFXImage(bg, null );
         scene.setFill(new ImagePattern(card));
-        primaryStage.setTitle("Testbrett");
+        primaryStage.setTitle("Spillbrett");
         primaryStage.setScene(scene);
         
         //Keylistener for the controls

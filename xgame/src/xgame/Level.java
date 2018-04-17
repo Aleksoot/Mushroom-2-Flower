@@ -136,7 +136,6 @@ public class Level {
                 
         } catch (IOException ex) {
             
-            //Logger.getLogger(ZeGame.class.getName()).log(Level.SEVERE, null, ex);
         }
        
         Image[] sprites = new Image[antall];
