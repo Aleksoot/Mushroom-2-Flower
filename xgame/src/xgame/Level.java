@@ -129,9 +129,17 @@ public class Level {
         BufferedImage source = null;
         BufferedImage source2 = null;
         File resourcesDirectory = new File("src/xgame");
+        String src_slash;
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.indexOf("win") >= 0) {
+            //if windows
+            src_slash = "\\";
         
+        }else{
+            src_slash = "/";
+        }
         try {
-            source2 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+"\\magecity.png"));
+            source2 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"magecity.png"));
             source= makeBufferedImage(source2);
                 
         } catch (IOException ex) {

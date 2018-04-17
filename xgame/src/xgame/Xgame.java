@@ -59,7 +59,16 @@ public class Xgame extends Application {
         
         //Setting a background color, title, primarystage, keylistener
         File resourcesDirectory = new File("src/xgame");
-        BufferedImage bg = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+"\\BG.png"));
+        String src_slash;
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.indexOf("win") >= 0) {
+            //if windows
+            src_slash = "\\";
+        
+        }else{
+            src_slash = "/";
+        }
+        BufferedImage bg = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"BG.png"));
         Image card = SwingFXUtils.toFXImage(bg, null );
         scene.setFill(new ImagePattern(card));
         primaryStage.setTitle("Spillbrett");
