@@ -97,9 +97,18 @@ public class Player extends GameObject{
          * Using this method means that the player will return to the same y position from 
          * the initial jump no matter how high up they are (as long as no block is in the way)
          */
+        tile.setY(yPos-=40);
         
-        tile.setY(yPos-=80);
-            
+        new java.util.Timer().schedule( 
+        new java.util.TimerTask() {
+            @Override
+            public void run() {
+                tile.setY(yPos-=40);
+                
+            }
+        }, 
+        250
+        );    
       
         new java.util.Timer().schedule( 
         new java.util.TimerTask() {
@@ -116,12 +125,12 @@ public class Player extends GameObject{
                             }
                         }
                     }, 
-                    250 
+                    500 
                     );
                 }
             }
         }, 
-        250 
+        750
         );
         
 
