@@ -8,19 +8,18 @@ package xgame;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
 /**
  *
- * @author faete
+ * @author josef
  */
 public class GameObject {
     public Rectangle tile = new Rectangle();
     private int id;
     public int tilesize=30;
-    private int xPos;
-    private int yPos;
     public Image bg;
     public Node node;
     public GameObject(){
@@ -28,12 +27,15 @@ public class GameObject {
         tile.setWidth(tilesize);
         tile.setX(0);
         tile.setY(0);
+        System.out.println("new gameobject");
     }
     public Rectangle getGameObject(){
         return this.tile;
     }
     public void fillGameObject(Image x){
+        
         this.tile.setFill(new ImagePattern(x));
+     
     }
 
     public int getTilesize() {
@@ -48,7 +50,7 @@ public class GameObject {
     PLAYER,
     ENEMY,
     LEVEL,
-    ITEM
+    ITEM	
     }
      public int getId() {
         return id;
@@ -60,7 +62,7 @@ public class GameObject {
     
     public void GameObjectToScene(Pane root, double x, double y){
         this.tile.setTranslateX(x - this.tilesize );
-        this.tile.setTranslateX(x - this.tilesize );
+        this.tile.setTranslateY(y - this.tilesize );
         root.getChildren().add( this.tile );
     }
 }

@@ -8,6 +8,7 @@ package xgame;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
@@ -19,6 +20,7 @@ public class Tile extends GameObject{
         
     public Tile(){
         super();
+        
     }
     
     public Rectangle getTile(){
@@ -27,6 +29,7 @@ public class Tile extends GameObject{
     public void TileToScene(Pane root, double x, double y){
         this.tile.setTranslateX(x - this.tilesize );
         this.tile.setTranslateX(x - this.tilesize );
+         
         root.getChildren().add( this.tile );
     }
 }

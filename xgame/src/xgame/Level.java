@@ -61,16 +61,16 @@ public class Level {
         Image[] bilder = new Image[360];
         bilder = getSprites(360);
         int count = 0; 
-        
-        for(int i=0; i<tilesize;i++){
+
+        for(int i=0; i < tilesize; i++){
             
            for(int j=0; j < tilesize; j++ ){
                 
                 if(gameboard_1[count]>0){
-//                    System.out.println("count: "+count+" id: "+gameboard_1[count]);
+              System.out.println("count: "+count+" id: "+gameboard_1[count]);
                     gbValue = gameboard_1[count]-1;
                 }else{ gbValue=65;}
-               
+                
                 testbilde = SwingFXUtils.fromFXImage(bilder[gbValue], null);
                 image = SwingFXUtils.toFXImage(testbilde, null);
                
@@ -131,10 +131,10 @@ public class Level {
    }
     public Image[] getSprites(int antall) {
         BufferedImage source = null;
-        BufferedImage source2 = null;
+        File resourcesDirectory = new File("src/xgame");
+        
         try {
-            source2 = ImageIO.read(new File("C:\\Users\\faete\\Documents\\NetBeansProjects\\zeGame\\src\\zegame\\magecity.png"));
-            source= makeBufferedImage(source2);
+            source= makeBufferedImage(ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+"\\magecity.png")));
                 
         } catch (IOException ex) {
             
