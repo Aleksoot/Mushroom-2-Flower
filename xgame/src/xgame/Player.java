@@ -32,6 +32,8 @@ public class Player extends GameObject{
     public int count;
     Type player = Type.PLAYER;
     private boolean alive = true;
+    private boolean collisionx;
+    private boolean collisiony;
     
     /**
      * Inheriting the necessary parameters from GameObject (specifically setX/setY)
