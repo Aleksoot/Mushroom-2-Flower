@@ -9,6 +9,11 @@ import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import static xgame.GameObject.Type.PLAYER;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.Date;
+import javax.swing.Timer;
 
 /** test
  *
@@ -23,7 +28,8 @@ public class Player extends GameObject{
      */
     
     public int xPos;  
-    public int yPos;  
+    public int yPos;
+    public int count;
     Type player = Type.PLAYER;
     private boolean alive = true;
     
@@ -36,6 +42,7 @@ public class Player extends GameObject{
        super();
        xPos = 200;
        yPos = 200;
+
     }
     
     /**
@@ -60,7 +67,7 @@ public class Player extends GameObject{
     public int setY (int yPos) {
         return yPos;
     }
-    
+
 //    public Rectangle getPlayer(){
 //        super();
 //    }
@@ -77,7 +84,24 @@ public class Player extends GameObject{
     public void moveRight(){
         tile.setX(xPos+=30);
     }
-    public void moveJump(){
-        tile.setY(yPos-=45);
+    public void moveJump() {
+        tile.setY(yPos-=60);
+            
+        /**
+         * Since jumping is only a temporary movement in the y direction,
+         * I used a timer to allow a brief amount of time in the air.
+         * Control is also possible while airborne.
+         * "500" means 500 milliseconds in the air before you return back to the ground.
+         */
+        
+        new java.util.Timer().schedule( 
+        new java.util.TimerTask() {
+            @Override
+            public void run() {
+                tile.setY(yPos+=60);
+            }
+        }, 
+        500 
+        );
     }
 }
