@@ -11,6 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
+import static javax.swing.Spring.height;
 
 /**
  *
@@ -25,9 +26,8 @@ public class GameObject {
     public GameObject(){
         tile.setHeight(tilesize);
         tile.setWidth(tilesize);
-        tile.setX(0);
-        tile.setY(0);
-        System.out.println("new gameobject");
+ 
+        //System.out.println("new gameobject");
     }
     public Rectangle getGameObject(){
         return this.tile;
@@ -36,6 +36,9 @@ public class GameObject {
         
         this.tile.setFill(new ImagePattern(x));
      
+    }
+    public boolean isColliding(GameObject other) {
+        return getGameObject().getBoundsInParent().intersects(other.getGameObject().getBoundsInParent());
     }
 
     public int getTilesize() {
@@ -46,12 +49,12 @@ public class GameObject {
         this.tilesize = tilesize;
     }
     
-    public enum Type {
-    PLAYER,
-    ENEMY,
-    LEVEL,
-    ITEM	
-    }
+//    public enum Type {
+//    PLAYER,
+//    ENEMY,
+//    LEVEL,
+//    ITEM	
+//    }
      public int getId() {
         return id;
     }

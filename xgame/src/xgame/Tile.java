@@ -22,10 +22,22 @@ public class Tile extends GameObject{
         super();
         
     }
-    
+  
+    public Type type = Type.empty; //DEFAULT 
+
+    public enum Type {
+        empty,solid,spawn,enemy,loot;
+    }
+    public Type getType(){
+        return this.type;
+    }
+    public void setType(Type type){
+        this.type = type;
+    }
     public Rectangle getTile(){
         return this.tile;
     }
+    
     public void TileToScene(Pane root, double x, double y){
         this.tile.setTranslateX(x - this.tilesize );
         

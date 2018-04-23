@@ -10,6 +10,7 @@ import java.awt.image.PixelGrabber;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import static javafx.application.Platform.exit;
 import javafx.embed.swing.SwingFXUtils;
@@ -21,7 +22,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javax.imageio.ImageIO;
-import xgame.GameObject.Type;
+import xgame.Tile.Type;
+
 
 /**
  *
@@ -30,8 +32,8 @@ import xgame.GameObject.Type;
 public class Level {
     
     public Pane root = new Pane();
-    private List<GameObject> tiles = new ArrayList<>();
-    Type level = Type.LEVEL;
+    private List<Tile> leveltiles = new ArrayList<>();
+    
     private int[] level1;
     private int tilesize = 30;
     Rectangle[][] test = new Rectangle[tilesize][tilesize];
@@ -42,13 +44,7 @@ public class Level {
     Image image = null;
     
     
-    public Type getLevel() {
-        return level;
-    }
 
-    public void setLevel(Type level) {
-        this.level = level;
-    }
 
     public Pane getRoot() {
         return root;
@@ -74,16 +70,26 @@ public class Level {
                 testbilde = SwingFXUtils.fromFXImage(bilder[gbValue], null);
                 image = SwingFXUtils.toFXImage(testbilde, null);
                
-                GameObject tile = new GameObject();
-                
+                Tile tile = new Tile();
+                //System.out.println("gbvalue: "+gbValue);
                 tile.setId( gbValue );
+                int co = 0;
+                if(gbValue > 0 && gbValue != 65){ 
+                    tile.setType(Type.solid);
+                    System.out.println("solid!!!");
+                    co++;
+                    System.out.println(co);
+                }
+
                 if(gbValue != 65){
                 tile.fillGameObject(image);
-                }else{tile.getGameObject().setFill(Color.TRANSPARENT);}
+                }
+                else{tile.getGameObject().setFill(Color.TRANSPARENT);}
                 
                 tile.getGameObject().setX(j*tilesize);
                 tile.getGameObject().setY(i*tilesize);
                 
+                leveltiles.add(tile);
                 root.getChildren().add(tile.getGameObject());
                 count++;  
                 
@@ -93,6 +99,12 @@ public class Level {
         return root;
     }
     
+    public List getLevelTiles(){
+        return this.leveltiles;
+    }
+    public void removeLevelTile(Tile tile){
+        leveltiles.remove(tile);
+    }
     public String level_1(){
         return "lvl1";
     }
@@ -190,5 +202,6 @@ public class Level {
 57,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,59,
 57,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,59,
 53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53};
-    
+ 
+
 }
