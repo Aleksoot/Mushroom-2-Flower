@@ -42,8 +42,7 @@ public class Player extends GameObject{
      * player is "alive" (which implies properties for alive objects)
      */
     File resourcesDirectory = new File("src/xgame");
-   String os = System.getProperty("os.name").toLowerCase();
-    
+
     public int i;
     boolean jumping;
     private boolean alive = true;
@@ -53,6 +52,8 @@ public class Player extends GameObject{
     boolean collisiony = false;
     boolean movingRight = false;
     boolean movingLeft = false;
+    boolean facingRight = false;
+    boolean facingLeft = false;
     boolean falling = true;
     
     
@@ -70,7 +71,18 @@ public class Player extends GameObject{
        id = 1; 
     }
     
-
+    public boolean facingRight(){
+        return this.facingRight;
+    }
+    public void setFacingRight(boolean x){
+        this.facingRight = x;
+    }
+    public boolean facingLeft(){
+        return this.facingLeft;
+    }
+    public void setFacingLeft(boolean x){
+        this.facingLeft = x;
+    }
     public boolean movingRight(){
         return this.movingRight;
     }
@@ -126,7 +138,7 @@ public class Player extends GameObject{
     }
     public void fall(){
         if(!collisiony && falling){
-        this.getGameObject().setY(this.getGameObject().getY()+3);
+            this.getGameObject().setY(this.getGameObject().getY()+3);
         }else if(jumping){
             this.getGameObject().setY(this.getGameObject().getY()-10);
         }
@@ -143,6 +155,8 @@ public class Player extends GameObject{
         if(collisionXl){
             this.getGameObject().setX(this.getGameObject().getX());
         }else{
+            this.facingLeft = true;
+            this.facingRight = false;
             this.getGameObject().setX(this.getGameObject().getX()-3);
         }
     }
@@ -151,6 +165,8 @@ public class Player extends GameObject{
       if(collisionXr){
           this.getGameObject().setX(this.getGameObject().getX());
         }else{
+          this.facingLeft = false;
+            this.facingRight = true;
             this.getGameObject().setX(this.getGameObject().getX()+3);
         }
     }
@@ -201,9 +217,16 @@ public class Player extends GameObject{
                 
                 //Collision under player 
                 if( yPos == tileYmin && xPos >= tileXmin+1 && xPosMin <= tileX-1 ){  
-                    //tile.getGameObject().setFill(Color.YELLOWGREEN);
+                    //tile.getGameObject().setFill(Color.RED);
                     this.falling = false;
+                    
                 } 
+                if( yPosMin == tileY && xPos >= tileXmin+1 && xPosMin <= tileX-1 ){  
+                    tile.getGameObject().setFill(Color.YELLOWGREEN);
+                    
+                    this.falling = true;
+                    
+                }
             }
         }
 }

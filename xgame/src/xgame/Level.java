@@ -76,9 +76,6 @@ public class Level {
                 int co = 0;
                 if(gbValue > 0 && gbValue != 65){ 
                     tile.setType(Type.solid);
-                    System.out.println("solid!!!");
-                    co++;
-                    System.out.println(co);
                 }
 
                 if(gbValue != 65){

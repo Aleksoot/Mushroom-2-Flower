@@ -33,6 +33,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import java.awt.Rectangle;
+import javafx.geometry.Point3D;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
@@ -62,7 +63,7 @@ public class Xgame extends Application{
    String src_slash;
     @Override
     public void start(Stage primaryStage) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
-        
+         
         //Level is created
         level = new Level();
         leveltiles = level.getLevelTiles();
@@ -110,13 +111,43 @@ public class Xgame extends Application{
             if (e.getCode() == KeyCode.RIGHT) {
                 player.setMovingRight(true); 
             }
-            if (e.getCode() == KeyCode.SPACE) {
-                player.jump();
+            if (e.getCode() == KeyCode.SPACE && player.facingRight()) {
+                
+                if(!player.isFalling() ){
+                    player.setMovingRight(true);
+                    player.jump();
+                try {
+                    jumpSound();
+                } catch (UnsupportedAudioFileException ex) {
+                    Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                } catch (LineUnavailableException ex) {
+                    Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                }
+                }
             } 
+            if (e.getCode() == KeyCode.SPACE && player.facingLeft()) {
+                
+                if(!player.isFalling() ){
+                    player.setMovingLeft(true);
+                    player.jump();
+                try {
+                    jumpSound();
+                } catch (UnsupportedAudioFileException ex) {
+                    Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                } catch (LineUnavailableException ex) {
+                    Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                }
+                }
+            }
             
         });
         primaryStage.getScene().setOnKeyReleased(e -> {
-       
+       player.setMovingRight(false);
+        player.setMovingLeft(false);
             if (e.getCode() == KeyCode.LEFT) {
                     player.setMovingLeft(false);
             }
@@ -156,13 +187,26 @@ public class Xgame extends Application{
         animator.start();  
     }
     public void testGraphic() throws IOException{
-        if(player.movingRight){
+        if(player.facingRight() && !player.isFalling()){
             BufferedImage mRight = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"run.gif"));
             ImageIcon imageIcon = new ImageIcon(mRight);
             Image testr = SwingFXUtils.toFXImage(mRight, null );
             
             player.getGameObject().setFill(new ImagePattern(testr));
         }
+        if(player.facingLeft() && !player.isFalling()){
+            BufferedImage mLeft = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"run_left.gif"));
+            ImageIcon imageIcon = new ImageIcon(mLeft);
+            Image testr = SwingFXUtils.toFXImage(mLeft, null );
+            player.getGameObject().setFill(new ImagePattern(testr));
+           
+        }if(player.isFalling()){
+            BufferedImage mLeft = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"idle.gif"));
+            ImageIcon imageIcon = new ImageIcon(mLeft);
+            Image testr = SwingFXUtils.toFXImage(mLeft, null );
+            player.getGameObject().setFill(new ImagePattern(testr));
+        }
+        
     }
     /**
      * @param args the command line arguments
@@ -183,11 +227,10 @@ public class Xgame extends Application{
         }else{
             src_slash = "/";
         }
-        File in = new File(resourcesDirectory.getAbsolutePath()+src_slash+"test.wav");
+        File in = new File(resourcesDirectory.getAbsolutePath()+src_slash+"music"+src_slash+"test.wav");
         AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(in);
         Clip background = AudioSystem.getClip();
         background.open(audioInputStream);
-        background.loop(Clip.LOOP_CONTINUOUSLY);
         FloatControl volume= (FloatControl) background.getControl(FloatControl.Type.MASTER_GAIN);
         volume.setValue(-20.4f); // Reduce volume by 10 decibels.
  
@@ -195,8 +238,9 @@ public class Xgame extends Application{
             @Override
             public void run() {
                 try{
-                                
-                        background.start();
+                               
+                            background.loop(Clip.LOOP_CONTINUOUSLY);
+                        
                     
                 }catch(Exception e){
                     System.out.println(e);
@@ -204,6 +248,39 @@ public class Xgame extends Application{
             }
         };
         musikk.start();
+        
+	}
+        public void jumpSound() throws UnsupportedAudioFileException, IOException, LineUnavailableException{
+        
+        String src_slash;
+        if (os.indexOf("win") >= 0) {
+            //if windows
+            src_slash = "\\";
+        
+        }else{
+            src_slash = "/";
+        }
+        File in = new File(resourcesDirectory.getAbsolutePath()+src_slash+"music"+src_slash+"jump.wav");
+        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(in);
+        Clip background = AudioSystem.getClip();
+        background.open(audioInputStream);
+        FloatControl volume= (FloatControl) background.getControl(FloatControl.Type.MASTER_GAIN);
+        volume.setValue(-20.4f); // Reduce volume by 10 decibels.
+ 
+        Thread audio = new Thread(){
+            @Override
+            public void run() {
+                try{
+                               
+                            background.start();
+                        
+                    
+                }catch(Exception e){
+                    System.out.println(e);
+                }  
+            }
+        };
+        audio.start();
         
 	}
 
