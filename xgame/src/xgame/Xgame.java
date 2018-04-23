@@ -111,6 +111,10 @@ public class Xgame extends Application{
             if (e.getCode() == KeyCode.RIGHT) {
                 player.setMovingRight(true); 
             }
+            if (e.getCode() == KeyCode.UP) {
+                player.setFacingLeft(false);
+                player.setFacingRight(false);
+            }
             if (e.getCode() == KeyCode.SPACE && player.facingRight()) {
                 
                 if(!player.isFalling() ){
@@ -131,6 +135,21 @@ public class Xgame extends Application{
                 
                 if(!player.isFalling() ){
                     player.setMovingLeft(true);
+                    player.jump();
+                try {
+                    jumpSound();
+                } catch (UnsupportedAudioFileException ex) {
+                    Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                } catch (LineUnavailableException ex) {
+                    Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                }
+                }
+            }
+            if (e.getCode() == KeyCode.SPACE && !player.facingLeft() && !player.facingRight()) {
+                
+                if(!player.isFalling() ){
                     player.jump();
                 try {
                     jumpSound();
@@ -201,6 +220,12 @@ public class Xgame extends Application{
             player.getGameObject().setFill(new ImagePattern(testr));
            
         }if(player.isFalling()){
+            BufferedImage mLeft = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"mid_air.gif"));
+            ImageIcon imageIcon = new ImageIcon(mLeft);
+            Image testr = SwingFXUtils.toFXImage(mLeft, null );
+            player.getGameObject().setFill(new ImagePattern(testr));
+        }
+        if(!player.facingLeft() && !player.facingRight()){
             BufferedImage mLeft = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"idle.gif"));
             ImageIcon imageIcon = new ImageIcon(mLeft);
             Image testr = SwingFXUtils.toFXImage(mLeft, null );

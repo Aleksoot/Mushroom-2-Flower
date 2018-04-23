@@ -219,13 +219,13 @@ public class Player extends GameObject{
                 if( yPos == tileYmin && xPos >= tileXmin+1 && xPosMin <= tileX-1 ){  
                     //tile.getGameObject().setFill(Color.RED);
                     this.falling = false;
-                    
+                    this.collisiony = false;
                 } 
                 if( yPosMin == tileY && xPos >= tileXmin+1 && xPosMin <= tileX-1 ){  
                     tile.getGameObject().setFill(Color.YELLOWGREEN);
                     
                     this.falling = true;
-                    
+                   
                 }
             }
         }
