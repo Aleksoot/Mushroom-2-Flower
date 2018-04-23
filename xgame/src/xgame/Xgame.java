@@ -68,7 +68,7 @@ public class Xgame extends Application{
         level = new Level();
         leveltiles = level.getLevelTiles();
         level.createLevel();
-        startMusic();
+        startMusic(); 
         
         Pane root = new Pane();
         root = level.getRoot();
