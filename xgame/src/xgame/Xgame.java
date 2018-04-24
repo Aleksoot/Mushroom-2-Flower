@@ -33,7 +33,9 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import java.awt.Rectangle;
+import java.util.Collections;
 import javafx.geometry.Point3D;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
@@ -56,52 +58,19 @@ public class Xgame extends Application{
    File resourcesDirectory = new File("src/xgame");
    String os = System.getProperty("os.name").toLowerCase();
    AudioClip mediaPlayer;
-   public boolean playOn = true;
+   boolean level_1=false;
+   boolean level_2=false;
    Level level;
    List<Tile> leveltiles;
    Player player;
    String src_slash;
     @Override
     public void start(Stage primaryStage) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
-         
-        //Level is created
-        level = new Level();
-        leveltiles = level.getLevelTiles();
-        level.createLevel();
-        startMusic(); 
-        
-        Pane root = new Pane();
-        root = level.getRoot();
-        System.out.println(level.getRoot());
-        
-        //Player is created
-        player = new Player();
-        player.getGameObject().setFill(Color.BLUE);
-        player.getGameObject().setX(240);
-        player.getGameObject().setY(210);
-        
-        //Adding player to root
-        root.getChildren().add(player.getGameObject());
-       
-        
-        Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
-        
-        //Setting a background color, title, primarystage, keylistener
-        
-        
-        if (os.indexOf("win") >= 0) {
-            //if windows
-            this.src_slash = "\\";
-        
-        }else{
-            this.src_slash = "/";
-        }
-        BufferedImage bg = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"BG.png"));
-        Image card = SwingFXUtils.toFXImage(bg, null );
-        scene.setFill(new ImagePattern(card));
-        primaryStage.setTitle("Spillbrett");
-        primaryStage.setScene(scene);
-        
+         level = new Level();
+         Pane root = new Pane();
+        if(!level_1){
+        drawLevel(primaryStage, level, 1, root);
+        }else{ drawLevel(primaryStage, level, 2, root);}
         //Keylistener for the controls
         primaryStage.getScene().setOnKeyPressed(e -> {
         
@@ -116,7 +85,7 @@ public class Xgame extends Application{
                 player.setFacingRight(false);
             }
             if (e.getCode() == KeyCode.SPACE && player.facingRight()) {
-                
+                this.level_1=true;
                 if(!player.isFalling() ){
                     player.setMovingRight(true);
                     player.jump();
@@ -182,6 +151,7 @@ public class Xgame extends Application{
             private long time;
             @Override
             public void handle(long now) {
+                
                 try {
                     testGraphic();
                 } catch (IOException ex) {
@@ -197,10 +167,14 @@ public class Xgame extends Application{
                 if(player.movingLeft()){
                     player.moveLeft();
                 }
+                
                 if(player.isJumping()){
                     player.jump();
+                    
                 }
-            }      
+                
+            } 
+            
         };
 
         animator.start();  
@@ -212,11 +186,13 @@ public class Xgame extends Application{
             Image testr = SwingFXUtils.toFXImage(mRight, null );
             
             player.getGameObject().setFill(new ImagePattern(testr));
+     
         }
         if(player.facingLeft() && !player.isFalling()){
             BufferedImage mLeft = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"run_left.gif"));
             ImageIcon imageIcon = new ImageIcon(mLeft);
             Image testr = SwingFXUtils.toFXImage(mLeft, null );
+            
             player.getGameObject().setFill(new ImagePattern(testr));
            
         }if(player.isFalling()){
@@ -306,8 +282,47 @@ public class Xgame extends Application{
             }
         };
         audio.start();
-        
 	}
+
+    private void drawLevel(Stage primaryStage, Level level, int s, Pane root) throws IOException {
+        //Level is created
+        
+        leveltiles = level.getLevelTiles();
+        if(s == 1){
+            level.createLevel(level.level_1());
+            System.out.println("creating level1");
+        }else if(s == 2){
+            level.createLevel(level.level_2());
+            System.out.println("creating level2");
+        }
+        //startMusic(); 
+        
+        
+        root = level.getRoot();
+        System.out.println(level.getRoot());
+        
+        //Player is created
+        player = new Player();
+        player.getGameObject().setX(240);
+        player.getGameObject().setY(210);
+    
+        //Adding player to root
+        root.getChildren().add(player.getGameObject());
+        Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
+     
+        if (os.indexOf("win") >= 0) {
+            //if windows
+            this.src_slash = "\\";
+        
+        }else{
+            this.src_slash = "/";
+        }
+        BufferedImage bg = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"BG.png"));
+        Image card = SwingFXUtils.toFXImage(bg, null );
+        scene.setFill(new ImagePattern(card));
+        primaryStage.setTitle("Spillbrett");
+        primaryStage.setScene(scene);
+    }
 
     
 }

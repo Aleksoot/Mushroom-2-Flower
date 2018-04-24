@@ -48,7 +48,6 @@ public class Player extends GameObject{
     private boolean alive = true;
     boolean collisionXr = false;
     boolean collisionXl = false;
-    boolean collisionX = false;
     boolean collisiony = false;
     boolean movingRight = false;
     boolean movingLeft = false;
@@ -109,13 +108,7 @@ public class Player extends GameObject{
     public void setJumping(boolean jumping) {
         this.jumping = jumping;
     }
-    //Collisions x-axis
-    public void setCollidingX(boolean collision){
-        this.collisionX = collision;
-    }
-    public boolean getCollidingX(){
-        return this.collisionX;
-    }
+
     public void setCollidingXr(boolean collision){
         this.collisionXr = collision;
     }
