@@ -10,6 +10,7 @@ import java.awt.image.PixelGrabber;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import static javafx.application.Platform.exit;
 import javafx.embed.swing.SwingFXUtils;
@@ -21,7 +22,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javax.imageio.ImageIO;
-import xgame.GameObject.Type;
+import xgame.Tile.Type;
+
 
 /**
  *
@@ -30,8 +32,8 @@ import xgame.GameObject.Type;
 public class Level {
     
     public Pane root = new Pane();
-    private List<GameObject> tiles = new ArrayList<>();
-    Type level = Type.LEVEL;
+    private List<Tile> leveltiles = new ArrayList<>();
+    
     private int[] level1;
     private int tilesize = 30;
     Rectangle[][] test = new Rectangle[tilesize][tilesize];
@@ -42,13 +44,7 @@ public class Level {
     Image image = null;
     
     
-    public Type getLevel() {
-        return level;
-    }
 
-    public void setLevel(Type level) {
-        this.level = level;
-    }
 
     public Pane getRoot() {
         return root;
@@ -67,30 +63,32 @@ public class Level {
            for(int j=0; j < tilesize; j++ ){
                 
                 if(gameboard_1[count]>0){
-              System.out.println("count: "+count+" id: "+gameboard_1[count]);
+              
                     gbValue = gameboard_1[count]-1;
                 }else{ gbValue=65;}
                 
                 testbilde = SwingFXUtils.fromFXImage(bilder[gbValue], null);
                 image = SwingFXUtils.toFXImage(testbilde, null);
                
-                
-                GameObject tile = new GameObject();
-                
+                Tile tile = new Tile();
+                //System.out.println("gbvalue: "+gbValue);
                 tile.setId( gbValue );
+                int co = 0;
+                if(gbValue > 0 && gbValue != 65){ 
+                    tile.setType(Type.solid);
+                }
+
                 if(gbValue != 65){
                 tile.fillGameObject(image);
-                }else{tile.getGameObject().setFill(Color.AQUAMARINE);}
-//                System.out.println("x: "+(j*tilesize)+" y: "+(i*tilesize));
-                //tilelist.add(tile);
+                }
+                else{tile.getGameObject().setFill(Color.TRANSPARENT);}
                 
                 tile.getGameObject().setX(j*tilesize);
                 tile.getGameObject().setY(i*tilesize);
                 
+                leveltiles.add(tile);
                 root.getChildren().add(tile.getGameObject());
-                //board[i][j] = tile;
                 count++;  
-                
                 
            }     
         }
@@ -98,8 +96,14 @@ public class Level {
         return root;
     }
     
+    public List getLevelTiles(){
+        return this.leveltiles;
+    }
+    public void removeLevelTile(Tile tile){
+        leveltiles.remove(tile);
+    }
     public String level_1(){
-        return "lol";
+        return "lvl1";
     }
     public static BufferedImage makeBufferedImage(BufferedImage i){
       BufferedImage result;
@@ -132,13 +136,20 @@ public class Level {
     public Image[] getSprites(int antall) {
         BufferedImage source = null;
         File resourcesDirectory = new File("src/xgame");
+        String src_slash;
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.indexOf("win") >= 0) {
+            //if windows
+            src_slash = "\\";
         
+        }else{
+            src_slash = "/";
+        }
         try {
-            source= makeBufferedImage(ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+"\\magecity.png")));
+            source= makeBufferedImage(ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"magecity.png")));
                 
         } catch (IOException ex) {
             
-            //Logger.getLogger(ZeGame.class.getName()).log(Level.SEVERE, null, ex);
         }
        
         Image[] sprites = new Image[antall];
@@ -158,35 +169,36 @@ public class Level {
     }
 
   int[] gameboard_1 = new int[]{
-        231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,11,0,0,0,0,0,0,0,0,11,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,99,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,107,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,231,
-        231,284,284,284,284,284,284,284,284,284,284,284,284,284,284,284,284,284,284,284,284,284,284,284,284,284,284,284,284,231,
-        231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231,231};
-    
+        49,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,51,
+57,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,154,
+57,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,334,0,334,0,334,0,162,
+57,0,0,0,0,0,0,0,0,0,0,0,0,299,299,0,0,0,0,0,334,0,0,299,0,299,0,299,0,59,
+57,0,0,0,0,0,0,0,0,0,299,299,0,0,0,0,299,299,0,0,299,0,0,0,0,0,0,0,0,59,
+57,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,59,
+57,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,59,
+57,0,0,0,0,0,0,0,0,0,0,0,299,299,299,0,0,0,0,0,299,299,0,0,0,0,0,0,0,59,
+57,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,59,
+57,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,299,299,299,0,0,0,0,0,0,0,0,0,0,59,
+57,0,0,0,0,0,0,299,299,299,299,0,0,0,0,0,0,0,0,0,0,0,299,299,299,0,0,0,0,59,
+57,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,59,
+57,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,59,
+57,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,299,299,299,299,0,0,0,0,0,0,0,59,
+57,0,0,0,0,299,299,299,299,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,59,
+57,0,0,0,0,0,0,0,0,0,0,334,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,59,
+57,0,0,0,0,0,0,0,0,0,0,299,0,0,299,299,299,0,0,0,0,0,0,0,0,0,0,0,0,59,
+57,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,59,
+57,0,0,0,0,0,0,0,0,0,0,0,0,334,0,0,299,299,299,0,0,0,0,0,0,0,0,0,0,59,
+57,0,0,0,0,0,0,0,0,299,299,0,0,299,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,59,
+57,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,59,
+57,0,0,0,0,0,0,0,0,0,0,0,0,0,0,299,299,299,0,0,0,0,0,0,0,0,0,0,0,59,
+57,0,0,0,299,299,299,299,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,59,
+57,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,299,299,299,0,0,0,0,0,0,0,59,
+57,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,59,
+57,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,59,
+57,0,0,0,0,0,0,0,299,299,299,299,299,299,299,0,0,0,0,0,0,0,0,0,0,0,0,0,0,59,
+57,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,59,
+57,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,59,
+53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53};
+ 
+
 }
