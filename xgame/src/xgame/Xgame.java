@@ -86,8 +86,8 @@ public class Xgame extends Application{
         enemy.getGameObject().setFill(Color.RED);
         enemy.getGameObject().setX(450);
         enemy.getGameObject().setY(350);
-        enemy.getGameObject().setHeight(100);
-        enemy.getGameObject().setWidth(90);
+        enemy.getGameObject().setHeight(63);
+        enemy.getGameObject().setWidth(81);
                 
         //Adding player & enemy to root
         root.getChildren().add(player.getGameObject());
@@ -199,7 +199,7 @@ public class Xgame extends Application{
                 player.setFalling(true);
                 player.colliding(leveltiles, Type.solid);
                 player.fall();
-                enemy.setFalling(true);
+                enemy.setFalling(false);
                 enemy.colliding(leveltiles, Type.solid);
                 enemy.fall();
                 
@@ -244,26 +244,26 @@ public class Xgame extends Application{
             player.getGameObject().setFill(new ImagePattern(testr));
         }
         if(enemy.facingRight() && !enemy.isFalling()){
-            BufferedImage mRight = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"goblin.gif"));
+            BufferedImage mRight = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"dragonright.gif"));
             ImageIcon imageIcon = new ImageIcon(mRight);
             Image testr = SwingFXUtils.toFXImage(mRight, null );
             
             enemy.getGameObject().setFill(new ImagePattern(testr));
         }
         if(enemy.facingLeft() && !enemy.isFalling()){
-            BufferedImage mLeft = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"goblin.gif"));
+            BufferedImage mLeft = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"dragonleft.gif"));
             ImageIcon imageIcon = new ImageIcon(mLeft);
             Image testr = SwingFXUtils.toFXImage(mLeft, null );
             enemy.getGameObject().setFill(new ImagePattern(testr));
            
         }if(enemy.isFalling()){
-            BufferedImage mLeft = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"goblin.gif"));
+            BufferedImage mLeft = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"dragonleft.gif"));
             ImageIcon imageIcon = new ImageIcon(mLeft);
             Image testr = SwingFXUtils.toFXImage(mLeft, null );
             enemy.getGameObject().setFill(new ImagePattern(testr));
         }
         if(!enemy.facingLeft() && !enemy.facingRight()){
-            BufferedImage mLeft = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"goblin.gif"));
+            BufferedImage mLeft = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"dragonleft.gif"));
             ImageIcon imageIcon = new ImageIcon(mLeft);
             Image testr = SwingFXUtils.toFXImage(mLeft, null );
             enemy.getGameObject().setFill(new ImagePattern(testr));
