@@ -32,11 +32,15 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
-import java.awt.Rectangle;
+import javafx.scene.shape.Rectangle;
 import java.util.Collections;
+import javafx.animation.FadeTransition;
+import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
 import javafx.geometry.Point3D;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -64,6 +68,7 @@ public class Xgame extends Application{
    List<Tile> leveltiles;
    Player player;
    String src_slash;
+   TranslateTransition ft;
     @Override
     public void start(Stage primaryStage) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
          level = new Level();
@@ -151,7 +156,7 @@ public class Xgame extends Application{
             private long time;
             @Override
             public void handle(long now) {
-                
+                ft.play();
                 try {
                     testGraphic();
                 } catch (IOException ex) {
@@ -305,11 +310,23 @@ public class Xgame extends Application{
         player = new Player();
         player.getGameObject().setX(240);
         player.getGameObject().setY(210);
-    
+        
+        Rectangle rect1 = new Rectangle(150,150,30,30);
+
+rect1.setArcHeight(20);
+rect1.setArcWidth(20);
+rect1.setFill(Color.RED);
+
+
+
         //Adding player to root
-        root.getChildren().add(player.getGameObject());
+        
         Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
-     
+ft = new TranslateTransition(Duration.millis(2000), rect1);
+ft.setFromX(0f);
+ft.setByX(90);
+ft.setCycleCount(Timeline.INDEFINITE);
+ft.setAutoReverse(true);
         if (os.indexOf("win") >= 0) {
             //if windows
             this.src_slash = "\\";
