@@ -15,12 +15,17 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import javafx.animation.AnimationTimer;
+import javafx.animation.FadeTransition;
+import javafx.animation.Transition;
+import javafx.animation.TranslateTransition;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.shape.Rectangle; 
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -32,9 +37,9 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
-import java.awt.Rectangle;
 import javafx.geometry.Point3D;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -62,6 +67,8 @@ public class Xgame extends Application{
    Player player;
    Enemy enemy;
    String src_slash;
+   TranslateTransition ft;
+   
     @Override
     public void start(Stage primaryStage) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
          
@@ -84,16 +91,30 @@ public class Xgame extends Application{
         //Enemy is created
         enemy = new Enemy();
         enemy.getGameObject().setFill(Color.RED);
-        enemy.getGameObject().setX(450);
+        enemy.getGameObject().setX(350);
         enemy.getGameObject().setY(350);
         enemy.getGameObject().setHeight(63);
         enemy.getGameObject().setWidth(81);
-                
+        
+        //Test
+        Rectangle r = new Rectangle();
+        r.setX(350);
+        r.setY(350);
+        r.setHeight(63);
+        r.setWidth(81);
+        r.setFill(Color.RED);
+            
         //Adding player & enemy to root
         root.getChildren().add(player.getGameObject());
-        root.getChildren().add(enemy.getGameObject());
+        root.getChildren().addAll(enemy.getGameObject(),r);
         
         Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
+        
+        ft = new TranslateTransition(Duration.millis(2000),r);
+        ft.setFromX(0f);
+        ft.setByX(90);
+        ft.setCycleCount(Timeline.INDEFINITE);
+        ft.setAutoReverse(true);
         
         //Setting a background color, title, primarystage, keylistener
         
@@ -202,6 +223,7 @@ public class Xgame extends Application{
                 enemy.setFalling(false);
                 enemy.colliding(leveltiles, Type.solid);
                 enemy.fall();
+                ft.play();
                 
                 if(player.movingRight()){
                     player.moveRight();
@@ -247,7 +269,6 @@ public class Xgame extends Application{
             BufferedImage mRight = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"dragonright.gif"));
             ImageIcon imageIcon = new ImageIcon(mRight);
             Image testr = SwingFXUtils.toFXImage(mRight, null );
-            
             enemy.getGameObject().setFill(new ImagePattern(testr));
         }
         if(enemy.facingLeft() && !enemy.isFalling()){
