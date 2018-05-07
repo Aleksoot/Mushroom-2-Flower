@@ -33,6 +33,7 @@ public class Level {
     
     public Pane root = new Pane();
     private List<Tile> leveltiles = new ArrayList<>();
+   
     
     private int[] level1;
     private int tilesize = 30;

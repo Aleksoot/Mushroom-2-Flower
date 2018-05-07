@@ -37,8 +37,15 @@ import java.util.Collections;
 import javafx.animation.FadeTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
+import javafx.geometry.Insets;
 import javafx.geometry.Point3D;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javax.imageio.ImageIO;
@@ -68,11 +75,13 @@ public class Xgame extends Application{
    List<Tile> leveltiles;
    Player player;
    String src_slash;
+   Rectangle rect1;
    TranslateTransition ft;
+   Pane root = new Pane();
     @Override
     public void start(Stage primaryStage) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
          level = new Level();
-         Pane root = new Pane();
+         
         if(!level_1){
         drawLevel(primaryStage, level, 1, root);
         }else{ drawLevel(primaryStage, level, 2, root);}
@@ -84,10 +93,14 @@ public class Xgame extends Application{
             }
             if (e.getCode() == KeyCode.RIGHT) {
                 player.setMovingRight(true); 
+                
+                
             }
             if (e.getCode() == KeyCode.UP) {
+                
                 player.setFacingLeft(false);
                 player.setFacingRight(false);
+                
             }
             if (e.getCode() == KeyCode.SPACE && player.facingRight()) {
                 this.level_1=true;
@@ -150,13 +163,19 @@ public class Xgame extends Application{
            
         });
        
-        
+       
         primaryStage.show();
+        
         AnimationTimer animator = new AnimationTimer(){
-            private long time;
+           
+            long before = System.nanoTime();
             @Override
             public void handle(long now) {
-                ft.play();
+                //System.out.println(now / 1000000000.0);
+                 if (now > before + 2e+9) {
+                     System.out.println(before+ ": hello");
+                     before = System.nanoTime();
+                }
                 try {
                     testGraphic();
                 } catch (IOException ex) {
@@ -165,7 +184,14 @@ public class Xgame extends Application{
                 player.setFalling(true);
                 player.colliding(leveltiles, Type.solid);
                 player.fall();
-                
+                if(player.getGameObject().getBoundsInParent().intersects(rect1.getBoundsInParent())){
+                    rect1.setFill(Color.YELLOW);
+                    //root.getChildren().remove(rect1);
+                }
+                if(!player.getGameObject().getBoundsInParent().intersects(rect1.getBoundsInParent())){
+                    rect1.setFill(Color.RED);
+                    //root.getChildren().remove(rect1);
+                }
                 if(player.movingRight()){
                     player.moveRight();
                 }
@@ -303,30 +329,33 @@ public class Xgame extends Application{
         //startMusic(); 
         
         
-        root = level.getRoot();
-        System.out.println(level.getRoot());
+        root.getChildren().addAll(level.getRoot());
+        
         
         //Player is created
         player = new Player();
         player.getGameObject().setX(240);
         player.getGameObject().setY(210);
         
-        Rectangle rect1 = new Rectangle(150,150,30,30);
+        rect1 = new Rectangle(160,390,30,30);
 
-rect1.setArcHeight(20);
-rect1.setArcWidth(20);
-rect1.setFill(Color.RED);
+        rect1.setArcHeight(20);
+        rect1.setArcWidth(20);
+        rect1.setFill(Color.RED);
 
 
 
         //Adding player to root
-        
+        ft = new TranslateTransition(Duration.millis(2000), rect1);
+        ft.setFromX(0f);
+        ft.setByX(90);
+        ft.setCycleCount(Timeline.INDEFINITE);
+        ft.setAutoReverse(true);
+        root.getChildren().addAll(player.getGameObject(),rect1);
         Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
-ft = new TranslateTransition(Duration.millis(2000), rect1);
-ft.setFromX(0f);
-ft.setByX(90);
-ft.setCycleCount(Timeline.INDEFINITE);
-ft.setAutoReverse(true);
+
+        
+ft.play();
         if (os.indexOf("win") >= 0) {
             //if windows
             this.src_slash = "\\";
@@ -339,6 +368,7 @@ ft.setAutoReverse(true);
         scene.setFill(new ImagePattern(card));
         primaryStage.setTitle("Spillbrett");
         primaryStage.setScene(scene);
+        
     }
 
     

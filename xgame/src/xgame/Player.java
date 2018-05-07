@@ -18,16 +18,18 @@ import java.util.logging.Logger;
 import java.util.Date;
 import java.util.List;
 import javafx.animation.AnimationTimer;
+import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
+import javafx.animation.Transition;
 import static javafx.application.Platform.exit;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.ImagePattern;
 import javafx.util.Duration;
 import javax.imageio.ImageIO;
-import javax.swing.Timer;
 import xgame.Tile.Type;
 
 /** player
@@ -54,8 +56,8 @@ public class Player extends GameObject{
     boolean facingRight = false;
     boolean facingLeft = false;
     boolean falling = true;
-    
-    
+    public ImageView sprite;
+    public Animation animation;
     /**
      * Inheriting the necessary parameters from GameObject (specifically setX/setY)
      * Defining the x and y Positions at the start of movement.
@@ -69,7 +71,9 @@ public class Player extends GameObject{
        System.out.println("Player has spawned");
        id = 1; 
     }
-    
+    public ImageView getSprite(){
+        return this.sprite;
+    }
     public boolean facingRight(){
         return this.facingRight;
     }
@@ -172,7 +176,26 @@ public class Player extends GameObject{
     public void stopX(){
         this.getGameObject().setX(this.getGameObject().getX());
     }
-    
+    public void playerBackground(){
+        this.sprite = sprite;
+        this.animation = new Transition() {
+            
+            {
+            setCycleDuration(Duration.millis(500));
+            }
+            @Override
+            protected void interpolate(double frac) {
+                
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        
+        };
+        animation.play();
+        
+    }
+//    public void playerAnimation(){
+//        this.sprite = 
+//    }
     public void colliding(List<Tile> leveltiles, Type type ){
         
         double playerSize = this.getTilesize();
