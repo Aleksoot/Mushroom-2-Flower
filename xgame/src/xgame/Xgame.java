@@ -78,6 +78,11 @@ public class Xgame extends Application{
    Rectangle rect1;
    TranslateTransition ft;
    Pane root = new Pane();
+   int frameCount=0;
+   SpriteAnimation player_right;
+   SpriteAnimation player_left;
+   SpriteAnimation player_fall;
+   public boolean frameChanged=false;
     @Override
     public void start(Stage primaryStage) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
          level = new Level();
@@ -87,7 +92,7 @@ public class Xgame extends Application{
         }else{ drawLevel(primaryStage, level, 2, root);}
         //Keylistener for the controls
         primaryStage.getScene().setOnKeyPressed(e -> {
-        
+            
             if (e.getCode() == KeyCode.LEFT) {
                 player.setMovingLeft(true);
             }
@@ -171,36 +176,52 @@ public class Xgame extends Application{
             long before = System.nanoTime();
             @Override
             public void handle(long now) {
-                //System.out.println(now / 1000000000.0);
-                 if (now > before + 2e+9) {
-                     System.out.println(before+ ": hello");
+                
+                 if (now > before + 0.05e+9) {
+                     
+                     if(frameChanged){
+                         //a frame
+                        
+                         rect1.setFill(Color.YELLOW);
+                         player_right.changeFrame(frameChanged);
+                         frameChanged = false;
+                     }else{
+                         //another frame
+                       
+                         rect1.setFill(Color.PINK);
+                         frameChanged = true;
+                     }
+                     
                      before = System.nanoTime();
                 }
-                try {
-                    testGraphic();
-                } catch (IOException ex) {
-                    Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-                }
+                player.getGameObject().setFill(player_left.getFrame());
+//                try {
+//                    testGraphic();
+//                } catch (IOException ex) {
+//                    Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//                }
                 player.setFalling(true);
                 player.colliding(leveltiles, Type.solid);
                 player.fall();
-                if(player.getGameObject().getBoundsInParent().intersects(rect1.getBoundsInParent())){
-                    rect1.setFill(Color.YELLOW);
-                    //root.getChildren().remove(rect1);
-                }
-                if(!player.getGameObject().getBoundsInParent().intersects(rect1.getBoundsInParent())){
-                    rect1.setFill(Color.RED);
-                    //root.getChildren().remove(rect1);
-                }
+//                if(player.getGameObject().getBoundsInParent().intersects(rect1.getBoundsInParent())){
+//                    rect1.setFill(Color.YELLOW);
+//                    //root.getChildren().remove(rect1);
+//                }
+//                if(!player.getGameObject().getBoundsInParent().intersects(rect1.getBoundsInParent())){
+//                    rect1.setFill(Color.RED);
+//                    //root.getChildren().remove(rect1);
+//                }
                 if(player.movingRight()){
                     player.moveRight();
+                    player.getGameObject().setFill(player_right.getFrame());
                 }
                 if(player.movingLeft()){
                     player.moveLeft();
+                    
                 }
                 
                 if(player.isJumping()){
-                    player.jump();
+                    
                     
                 }
                 
@@ -215,7 +236,6 @@ public class Xgame extends Application{
             BufferedImage mRight = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"run.gif"));
             ImageIcon imageIcon = new ImageIcon(mRight);
             Image testr = SwingFXUtils.toFXImage(mRight, null );
-            
             player.getGameObject().setFill(new ImagePattern(testr));
      
         }
@@ -314,7 +334,22 @@ public class Xgame extends Application{
         };
         audio.start();
 	}
-
+    public void changeFrame(){
+        
+        if(frameChanged && frameCount < 5){
+            frameCount++;
+            System.out.println("frame: "+frameCount);
+        }else if(frameChanged && frameCount >= 5){
+            System.out.println("last frame");
+            System.out.println("resetting framecounter");
+            frameCount=0;
+        }
+        
+    }
+    public void playerAnimation(){
+        if(frameCount==0){
+        }
+    }
     private void drawLevel(Stage primaryStage, Level level, int s, Pane root) throws IOException {
         //Level is created
         
@@ -342,9 +377,49 @@ public class Xgame extends Application{
         rect1.setArcHeight(20);
         rect1.setArcWidth(20);
         rect1.setFill(Color.RED);
+BufferedImage player1 = ImageIO.read(new File("C:\\Users\\faete\\Documents\\NetBeansProjects\\xgame-master\\xgame\\src\\xgame\\player\\runner\\runner-1.png"));
+BufferedImage player2 = ImageIO.read(new File("C:\\Users\\faete\\Documents\\NetBeansProjects\\xgame-master\\xgame\\src\\xgame\\player\\runner\\runner-2.png"));
+BufferedImage player3 = ImageIO.read(new File("C:\\Users\\faete\\Documents\\NetBeansProjects\\xgame-master\\xgame\\src\\xgame\\player\\runner\\runner-3.png"));
+BufferedImage player4 = ImageIO.read(new File("C:\\Users\\faete\\Documents\\NetBeansProjects\\xgame-master\\xgame\\src\\xgame\\player\\runner\\runner-4.png"));
+BufferedImage player5 = ImageIO.read(new File("C:\\Users\\faete\\Documents\\NetBeansProjects\\xgame-master\\xgame\\src\\xgame\\player\\runner\\runner-5.png"));       
+BufferedImage player6 = ImageIO.read(new File("C:\\Users\\faete\\Documents\\NetBeansProjects\\xgame-master\\xgame\\src\\xgame\\player\\runner\\runner-6.png"));
+BufferedImage player7 = ImageIO.read(new File("C:\\Users\\faete\\Documents\\NetBeansProjects\\xgame-master\\xgame\\src\\xgame\\player\\runner\\runner-7.png"));
+BufferedImage player8 = ImageIO.read(new File("C:\\Users\\faete\\Documents\\NetBeansProjects\\xgame-master\\xgame\\src\\xgame\\player\\runner\\runner-8.png"));
+List<BufferedImage> player_sprites = new ArrayList<BufferedImage>();
+        player_sprites.add(player1);
+        player_sprites.add(player2);
+        player_sprites.add(player3);
+        player_sprites.add(player4);
+        player_sprites.add(player5);
+        player_sprites.add(player6);
+        player_sprites.add(player7);
+        player_sprites.add(player8);
+        player_right = new SpriteAnimation(player_sprites);
 
-
-
+BufferedImage player11 = ImageIO.read(new File("C:\\Users\\faete\\Documents\\NetBeansProjects\\xgame-master\\xgame\\src\\xgame\\player\\runner_left\\runner_left-1.png"));
+BufferedImage player22 = ImageIO.read(new File("C:\\Users\\faete\\Documents\\NetBeansProjects\\xgame-master\\xgame\\src\\xgame\\player\\runner_left\\runner_left-2.png"));
+BufferedImage player33 = ImageIO.read(new File("C:\\Users\\faete\\Documents\\NetBeansProjects\\xgame-master\\xgame\\src\\xgame\\player\\runner_left\\runner_left-3.png"));
+BufferedImage player44 = ImageIO.read(new File("C:\\Users\\faete\\Documents\\NetBeansProjects\\xgame-master\\xgame\\src\\xgame\\player\\runner_left\\runner_left-4.png"));
+BufferedImage player55 = ImageIO.read(new File("C:\\Users\\faete\\Documents\\NetBeansProjects\\xgame-master\\xgame\\src\\xgame\\player\\runner_left\\runner_left-5.png"));       
+BufferedImage player66 = ImageIO.read(new File("C:\\Users\\faete\\Documents\\NetBeansProjects\\xgame-master\\xgame\\src\\xgame\\player\\runner_left\\runner_left-6.png"));
+BufferedImage player77 = ImageIO.read(new File("C:\\Users\\faete\\Documents\\NetBeansProjects\\xgame-master\\xgame\\src\\xgame\\player\\runner_left\\runner_left-7.png"));
+BufferedImage player88 = ImageIO.read(new File("C:\\Users\\faete\\Documents\\NetBeansProjects\\xgame-master\\xgame\\src\\xgame\\player\\runner_left\\runner_left-8.png"));
+List<BufferedImage> player_sprites2 = new ArrayList<BufferedImage>();
+        player_sprites2.add(player11);
+        player_sprites2.add(player22);
+        player_sprites2.add(player33);
+        player_sprites2.add(player44);
+        player_sprites2.add(player55);
+        player_sprites2.add(player66);
+        player_sprites2.add(player77);
+        player_sprites2.add(player88);
+        player_left = new SpriteAnimation(player_sprites2);
+BufferedImage playerfall = ImageIO.read(new File("C:\\Users\\faete\\Documents\\NetBeansProjects\\xgame-master\\xgame\\src\\xgame\\player\\mid_air\\mid_air-1.png"));
+BufferedImage playerfall2 = ImageIO.read(new File("C:\\Users\\faete\\Documents\\NetBeansProjects\\xgame-master\\xgame\\src\\xgame\\player\\mid_air\\mid_air-2.png"));
+List<BufferedImage> player_sprites3 = new ArrayList<BufferedImage>();
+player_sprites3.add(playerfall);
+player_sprites3.add(playerfall2);
+player_fall = new SpriteAnimation(player_sprites3);
         //Adding player to root
         ft = new TranslateTransition(Duration.millis(2000), rect1);
         ft.setFromX(0f);
