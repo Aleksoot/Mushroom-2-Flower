@@ -86,14 +86,7 @@ public class Xgame extends Application{
    
     @Override
     public void start(Stage primaryStage) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
-        String src_slash;
-        if (os.indexOf("win") >= 0) {
-            //if windows
-            src_slash = "\\";
         
-        }else{
-            src_slash = "/";
-        }
          level = new Level();
          
         if(!level_1){
@@ -275,6 +268,7 @@ public class Xgame extends Application{
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        
         launch(args);
         //System.out.println("Number of active threads from the given thread: " + Thread.activeCount());
         
@@ -331,25 +325,10 @@ public class Xgame extends Application{
         };
         audio.start();
 	}
-    public void changeFrame(){
-        
-        if(frameChanged && frameCount < 5){
-            frameCount++;
-            System.out.println("frame: "+frameCount);
-        }else if(frameChanged && frameCount >= 5){
-            System.out.println("last frame");
-            System.out.println("resetting framecounter");
-            frameCount=0;
-        }
-        
-    }
-    public void playerAnimation(){
-        if(frameCount==0){
-        }
-    }
+
     private void drawLevel(Stage primaryStage, Level level, int s, Pane root) throws IOException {
         //Level is created
-        
+        src_slash = src();
         leveltiles = level.getLevelTiles();
         if(s == 1){
             level.createLevel(level.level_1());
@@ -374,7 +353,7 @@ public class Xgame extends Application{
         rect1.setArcHeight(20);
         rect1.setArcWidth(20);
         rect1.setFill(Color.RED);
-        String src_slash ="\\";
+        
 BufferedImage player1 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner"+src_slash+"runner-1.png"));
 BufferedImage player2 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner"+src_slash+"runner-2.png"));
 BufferedImage player3 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner"+src_slash+"runner-3.png"));
@@ -429,13 +408,7 @@ player_fall = new SpriteAnimation(player_sprites3);
 
         
 ft.play();
-        if (os.indexOf("win") >= 0) {
-            //if windows
-            this.src_slash = "\\";
         
-        }else{
-            this.src_slash = "/";
-        }
         BufferedImage bg = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"BG.png"));
         Image card = SwingFXUtils.toFXImage(bg, null );
         scene.setFill(new ImagePattern(card));
@@ -444,5 +417,15 @@ ft.play();
         
     }
 
-    
+    public String src(){
+        String src_slash;
+        if (os.indexOf("win") >= 0) {
+            //if windows
+            src_slash = "\\";
+        
+        }else{
+            src_slash = "/";
+        }
+        return src_slash;
+    }
 }
