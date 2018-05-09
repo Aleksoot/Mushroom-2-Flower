@@ -83,6 +83,8 @@ public class Xgame extends Application{
    SpriteAnimation player_right;
    SpriteAnimation player_left;
    SpriteAnimation player_fall;
+   SpriteAnimation dragon_right;
+   SpriteAnimation dragon_left;
    public boolean frameChanged=false;
    
     @Override
@@ -193,6 +195,8 @@ public class Xgame extends Application{
                          player_right.changeFrame(frameChanged);
                          player_left.changeFrame(frameChanged);
                          player_fall.changeFrame(frameChanged);
+                         dragon_left.changeFrame(frameChanged);
+                         dragon_right.changeFrame(frameChanged);
                          pos_last = rect1.getTranslateX();
                             frameChanged = false;
                      }else{
@@ -206,9 +210,9 @@ public class Xgame extends Application{
                 }
                 double pos_now = rect1.getTranslateX();
                 if(pos_now > pos_last){
-                    rect1.setFill(player_right.getFrame());
+                    rect1.setFill(dragon_left.getFrame());
                 }else if(pos_now < pos_last ){
-                    rect1.setFill(player_left.getFrame());
+                    rect1.setFill(dragon_right.getFrame());
                 }
                 
                 
@@ -325,7 +329,7 @@ public class Xgame extends Application{
         player.getGameObject().setX(240);
         player.getGameObject().setY(210);
         
-        rect1 = new Rectangle(160,390,30,30);
+        rect1 = new Rectangle(160,320,99,99);
 
         rect1.setArcHeight(20);
         rect1.setArcWidth(20);
@@ -334,11 +338,13 @@ public class Xgame extends Application{
         player_right = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner") ) );
         player_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner_left") ) );
         player_fall = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"mid_air") ) );
-        
+        dragon_right = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"dragon_left") ) );
+        dragon_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"dragon_right") ) );
+    
         //Adding player to root
-        ft = new TranslateTransition(Duration.millis(2000), rect1);
+        ft = new TranslateTransition(Duration.millis(1500), rect1);
         ft.setFromX(0f);
-        ft.setByX(90);
+        ft.setByX(120);
         ft.setCycleCount(Timeline.INDEFINITE);
         ft.setAutoReverse(true);
         root.getChildren().addAll(player.getGameObject(),rect1);
