@@ -235,7 +235,7 @@ public class Xgame extends Application{
                 }
                 
                 
-                if(player.movingRight()){
+                if(player.movingRight()){ 
                     player.moveRight();
                     player.getGameObject().setFill(player_right.getFrame());
                 }
