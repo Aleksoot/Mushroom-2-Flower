@@ -153,12 +153,14 @@ public class Xgame extends Application{
                     Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
                 }
                 }
+                
             }
             
         });
         primaryStage.getScene().setOnKeyReleased(e -> {
        player.setMovingRight(false);
         player.setMovingLeft(false);
+       
             if (e.getCode() == KeyCode.LEFT) {
                     player.setMovingLeft(false);
             }
@@ -174,17 +176,24 @@ public class Xgame extends Application{
         AnimationTimer animator = new AnimationTimer(){
            
             long before = System.nanoTime();
+            double posy = player.getGameObject().getY();
             @Override
             public void handle(long now) {
                 
-                 if (now > before + 0.05e+9) {
-                     
+                player.colliding(leveltiles, Type.solid);
+                
+                 if (now > before + 0.02e+9) {
+                     //changes frame every 0.02e+9ns
                      if(frameChanged){
                          //a frame
                         
                          rect1.setFill(Color.YELLOW);
                          player_right.changeFrame(frameChanged);
-                         frameChanged = false;
+                         player_left.changeFrame(frameChanged);
+                         player_fall.changeFrame(frameChanged);
+                         
+                    
+                            frameChanged = false;
                      }else{
                          //another frame
                        
@@ -194,37 +203,30 @@ public class Xgame extends Application{
                      
                      before = System.nanoTime();
                 }
-                player.getGameObject().setFill(player_left.getFrame());
-//                try {
-//                    testGraphic();
-//                } catch (IOException ex) {
-//                    Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//                }
-                player.setFalling(true);
-                player.colliding(leveltiles, Type.solid);
-                player.fall();
-//                if(player.getGameObject().getBoundsInParent().intersects(rect1.getBoundsInParent())){
-//                    rect1.setFill(Color.YELLOW);
-//                    //root.getChildren().remove(rect1);
-//                }
-//                if(!player.getGameObject().getBoundsInParent().intersects(rect1.getBoundsInParent())){
-//                    rect1.setFill(Color.RED);
-//                    //root.getChildren().remove(rect1);
-//                }
+
+                
                 if(player.movingRight()){
                     player.moveRight();
                     player.getGameObject().setFill(player_right.getFrame());
                 }
                 if(player.movingLeft()){
                     player.moveLeft();
+                    player.getGameObject().setFill(player_left.getFrame());
                     
                 }
                 
-                if(player.isJumping()){
-                    
+                if(player.getCollidingYu()){
+                    player.setFalling(false);
                     
                 }
+                if(!player.getCollidingYu() || player.getCollidingYo() ){
+                    player.setFalling(true);
+                    player.fall();
+                    player.getGameObject().setFill(player_fall.getFrame());
+                }
                 
+//                System.out.println("falling: "+player.isFalling());
+//                System.out.println("jumping: "+player.isJumping());
             } 
             
         };

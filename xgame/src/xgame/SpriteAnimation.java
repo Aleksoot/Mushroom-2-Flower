@@ -41,7 +41,7 @@ public class SpriteAnimation {
         if(framechange && controll < sprites){
             visible = images.get(controll);
             controll++;
-            System.out.println("controll: "+controll);
+            
         }else if(controll == sprites){
             controll = 0;
             visible = images.get(controll);

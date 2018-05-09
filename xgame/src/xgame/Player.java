@@ -45,12 +45,15 @@ public class Player extends GameObject{
      */
     File resourcesDirectory = new File("src/xgame");
 
-    public int i;
+    
     boolean jumping;
+    int controll = 0;
+    public boolean jumpingTick=false;
     private boolean alive = true;
     boolean collisionXr = false;
     boolean collisionXl = false;
-    boolean collisiony = false;
+    boolean collisionYo;
+    boolean collisionYu;
     boolean movingRight = false;
     boolean movingLeft = false;
     boolean facingRight = false;
@@ -70,6 +73,9 @@ public class Player extends GameObject{
       
        System.out.println("Player has spawned");
        id = 1; 
+    }
+    public void JumpTick(boolean tick){
+        this.jumpingTick = tick;
     }
     public ImageView getSprite(){
         return this.sprite;
@@ -126,15 +132,22 @@ public class Player extends GameObject{
         return this.collisionXl;
     }
     //Collisions y-axis
-    public void setCollidingY(boolean collision){
-        this.collisiony = collision;
+    public void setCollidingYo(boolean collision){
+        this.collisionYo = collision;
     }
     
-    public boolean getCollidingY(){
-        return this.collisiony;
+    public boolean getCollidingYo(){
+        return this.collisionYo;
+    }
+     public void setCollidingYu(boolean collision){
+        this.collisionYu = collision;
+    }
+    
+    public boolean getCollidingYu(){
+        return this.collisionYu;
     }
     public void fall(){
-        if(!collisiony && falling){
+        if(!collisionYu && falling){
             this.getGameObject().setY(this.getGameObject().getY()+3);
         }else if(jumping){
             this.getGameObject().setY(this.getGameObject().getY()-10);
@@ -171,10 +184,12 @@ public class Player extends GameObject{
     public void jump(){
         if(!falling){
             this.getGameObject().setY(this.getGameObject().getY()-90);
-        }   
+        } 
+        
     }
-    public void stopX(){
-        this.getGameObject().setX(this.getGameObject().getX());
+    
+    public void stopY(){
+        this.getGameObject().setY(this.getGameObject().getY());
     }
     public void playerBackground(){
         this.sprite = sprite;
@@ -215,7 +230,7 @@ public class Player extends GameObject{
        
                 //Collision right of player
                 if( yPos-1 >= tileYmin && yPosMin+1 <= tileY && xPos == tileXmin){
-                    tile.getGameObject().applyCss();
+                    
                     //tile.getGameObject().setFill(Color.RED);
                     this.collisionXr = true;
                     this.movingRight = false; 
@@ -232,17 +247,25 @@ public class Player extends GameObject{
                 }
                 
                 //Collision under player 
-                if( yPos == tileYmin && xPos >= tileXmin+1 && xPosMin <= tileX-1 ){  
-                    //tile.getGameObject().setFill(Color.RED);
+                if(  xPos >= tileXmin+1 && xPosMin <= tileX-1 ){  
+                    if(yPos == tileYmin){
+                    tile.getGameObject().setFill(Color.RED);
                     this.falling = false;
-                    this.collisiony = false;
-                } 
-                if( yPosMin == tileY && xPos >= tileXmin+1 && xPosMin <= tileX-1 ){  
-                    tile.getGameObject().setFill(Color.YELLOWGREEN);
-                    
-                    this.falling = true;
-                   
+                    this.collisionYu = true;
+                    }else if(yPos > tileYmin){this.collisionYu = false;}
                 }
+                //Collision over player 
+                if( xPos >= tileXmin+1 && xPosMin <= tileX-1 ){  
+                    if(yPosMin == tileY){
+                    tile.getGameObject().setFill(Color.YELLOWGREEN);
+                    this.collisionYo = true;
+                    this.falling = true;
+                    this.jumping = false;
+                    }else if(yPos < tileYmin){
+                        this.collisionYo = false;
+                    }
+                }
+                    
             }
         }
 }
