@@ -7,6 +7,7 @@ package xgame;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
@@ -20,7 +21,7 @@ import javax.swing.ImageIcon;
  * @author faete
  */
 public class SpriteAnimation {
-    
+    String os = System.getProperty("os.name").toLowerCase();
     int sprites = 0;
     public BufferedImage visible = null;
     public List<BufferedImage> images = null;
@@ -52,5 +53,17 @@ public class SpriteAnimation {
             return new ImagePattern(testr);
     }
     
+    public String src(){
+        
+        String src_slash;
+        if (os.indexOf("win") >= 0) {
+            //if windows
+            src_slash = "\\";
+        
+        }else{
+            src_slash = "/";
+        }
+        return src_slash;
+    }   
     
 }

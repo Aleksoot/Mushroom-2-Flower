@@ -44,7 +44,7 @@ public class Player extends GameObject{
      * player is "alive" (which implies properties for alive objects)
      */
     File resourcesDirectory = new File("src/xgame");
-
+String os = System.getProperty("os.name").toLowerCase();
     
     boolean jumping;
     int controll = 0;
@@ -269,7 +269,12 @@ public class Player extends GameObject{
             }
         }
 }
+//sprites
+    public void player_right(){
     
-
+    }
+    
+    
+    
     
 }

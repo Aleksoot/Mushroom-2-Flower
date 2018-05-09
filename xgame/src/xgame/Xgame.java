@@ -308,7 +308,7 @@ public class Xgame extends Application{
         Clip background = AudioSystem.getClip();
         background.open(audioInputStream);
         FloatControl volume= (FloatControl) background.getControl(FloatControl.Type.MASTER_GAIN);
-        volume.setValue(-20.4f); // Reduce volume by 10 decibels.
+        volume.setValue(-20.4f); 
  
         Thread audio = new Thread(){
             @Override
@@ -353,50 +353,11 @@ public class Xgame extends Application{
         rect1.setArcHeight(20);
         rect1.setArcWidth(20);
         rect1.setFill(Color.RED);
-        
-BufferedImage player1 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner"+src_slash+"runner-1.png"));
-BufferedImage player2 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner"+src_slash+"runner-2.png"));
-BufferedImage player3 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner"+src_slash+"runner-3.png"));
-BufferedImage player4 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner"+src_slash+"runner-4.png"));
-BufferedImage player5 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner"+src_slash+"runner-5.png"));       
-BufferedImage player6 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner"+src_slash+"runner-6.png"));
-BufferedImage player7 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner"+src_slash+"runner-7.png"));
-BufferedImage player8 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner"+src_slash+"runner-8.png"));
-List<BufferedImage> player_sprites = new ArrayList<BufferedImage>();
-        player_sprites.add(player1);
-        player_sprites.add(player2);
-        player_sprites.add(player3);
-        player_sprites.add(player4);
-        player_sprites.add(player5);
-        player_sprites.add(player6);
-        player_sprites.add(player7);
-        player_sprites.add(player8);
-        player_right = new SpriteAnimation(player_sprites);
 
-BufferedImage player11 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner_left"+src_slash+"runner_left-1.png"));
-BufferedImage player22 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner_left"+src_slash+"runner_left-2.png"));
-BufferedImage player33 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner_left"+src_slash+"runner_left-3.png"));
-BufferedImage player44 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner_left"+src_slash+"runner_left-4.png"));
-BufferedImage player55 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner_left"+src_slash+"runner_left-5.png"));       
-BufferedImage player66 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner_left"+src_slash+"runner_left-6.png"));
-BufferedImage player77 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner_left"+src_slash+"runner_left-7.png"));
-BufferedImage player88 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner_left"+src_slash+"runner_left-8.png"));
-List<BufferedImage> player_sprites2 = new ArrayList<BufferedImage>();
-        player_sprites2.add(player11);
-        player_sprites2.add(player22);
-        player_sprites2.add(player33);
-        player_sprites2.add(player44);
-        player_sprites2.add(player55);
-        player_sprites2.add(player66);
-        player_sprites2.add(player77);
-        player_sprites2.add(player88);
-        player_left = new SpriteAnimation(player_sprites2);
-BufferedImage playerfall = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"mid_air"+src_slash+"mid_air-1.png"));
-BufferedImage playerfall2 = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"mid_air"+src_slash+"mid_air-2.png"));
-List<BufferedImage> player_sprites3 = new ArrayList<BufferedImage>();
-player_sprites3.add(playerfall);
-player_sprites3.add(playerfall2);
-player_fall = new SpriteAnimation(player_sprites3);
+        player_right = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner") ) );
+        player_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner_left") ) );
+        player_fall = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"mid_air") ) );
+        
         //Adding player to root
         ft = new TranslateTransition(Duration.millis(2000), rect1);
         ft.setFromX(0f);
@@ -427,5 +388,16 @@ ft.play();
             src_slash = "/";
         }
         return src_slash;
+    }
+    
+    public List<BufferedImage> addFolderSprites(final File folder) throws IOException {
+        List<BufferedImage> list = new ArrayList<BufferedImage>();
+  
+        for (final File fileEntry : folder.listFiles()) {
+           
+           list.add(ImageIO.read(new File(folder+src()+fileEntry.getName())));
+        }
+        return list;
+    
     }
 }
