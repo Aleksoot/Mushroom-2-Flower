@@ -4,7 +4,10 @@
  * and open the template in the editor.
  */
 package xgame;
-
+   
+import java.io.PrintWriter;
+import java.util.Scanner;
+import java.io.*;
 import com.sun.javafx.tk.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -83,6 +86,8 @@ public class Xgame extends Application{
    SpriteAnimation player_left;
    SpriteAnimation player_fall;
    public boolean frameChanged=false;
+   int score = 0;
+   File file = new File("test.txt");
    
     @Override
     public void start(Stage primaryStage) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
@@ -114,6 +119,21 @@ public class Xgame extends Application{
                 if(!player.isFalling() ){
                     player.setMovingRight(true);
                     player.jump();
+                    score += 1;
+                    try{
+            PrintWriter output = new PrintWriter(file);
+            output.println(score);
+            output.close();
+        }catch (FileNotFoundException ex){
+            System.out.printf("ERROR: %s\n", ex);
+        }
+         try{
+            Scanner input = new Scanner(file);
+            int score = input.nextInt();
+            System.out.printf("Points: %d\n", score);
+        }catch(IOException ex){
+            System.err.println("ERROR");
+        }
                 try {
                     jumpSound();
                 } catch (UnsupportedAudioFileException ex) {
@@ -159,6 +179,39 @@ public class Xgame extends Application{
             }
             
         });
+        // determine the high score
+    int highScore = 0;
+    try {
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        String line = reader.readLine();
+        while (line != null)                 // read the score file line by line
+        {
+            try {
+                int score = Integer.parseInt(line.trim());   // parse each line as an int
+                if (score > highScore)                       // and keep track of the largest
+                { 
+                    highScore = score; 
+                }
+            } catch (NumberFormatException e1) {
+                // ignore invalid scores
+                //System.err.println("ignoring invalid score: " + line);
+            }
+            line = reader.readLine();
+        }
+        reader.close();
+
+    } catch (IOException ex) {
+        System.err.println("ERROR reading scores from file");
+    }
+    // display the high score
+    if (score > highScore)
+    {    
+        System.out.println("You now have the new high score! The previous high score was " + highScore);
+    } else if (score == highScore) {
+        System.out.println("You tied the high score!");
+    } else {
+        System.out.println("The all time high score was " + highScore);
+    }
         primaryStage.getScene().setOnKeyReleased(e -> {
        player.setMovingRight(false);
         player.setMovingLeft(false);
@@ -414,9 +467,20 @@ ft.play();
         scene.setFill(new ImagePattern(card));
         primaryStage.setTitle("Spillbrett");
         primaryStage.setScene(scene);
+
+// append the last score to the end of the file
+    try {
+        BufferedWriter output = new BufferedWriter(new FileWriter(file, true));
+        output.newLine();
+        output.append("" + score);
+        output.close();
+
+    } catch (IOException ex1) {
+        System.out.printf("ERROR writing score to file: %s\n", ex1);
+    }
         
     }
-
+    
     public String src(){
         String src_slash;
         if (os.indexOf("win") >= 0) {
