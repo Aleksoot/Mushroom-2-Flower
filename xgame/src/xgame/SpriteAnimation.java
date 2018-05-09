@@ -25,7 +25,6 @@ public class SpriteAnimation {
     int sprites = 0;
     public BufferedImage visible = null;
     public List<BufferedImage> images = null;
-    public boolean frameChanged = false;
     int controll = 0;
     
     public SpriteAnimation(List<BufferedImage> images) {
@@ -34,9 +33,7 @@ public class SpriteAnimation {
         this.images = images;
         this.visible = images.get(0);
     }
-    public boolean setFrameChange(){
-        return this.frameChanged;
-    }
+   
     public void changeFrame(boolean framechange){
         
         if(framechange && controll < sprites){
@@ -49,8 +46,7 @@ public class SpriteAnimation {
         }
     }
     public ImagePattern getFrame(){
-            Image testr = SwingFXUtils.toFXImage(visible, null );
-            return new ImagePattern(testr);
+            return new ImagePattern(SwingFXUtils.toFXImage(visible, null ));
     }
     
     public String src(){

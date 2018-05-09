@@ -249,7 +249,7 @@ String os = System.getProperty("os.name").toLowerCase();
                 //Collision under player 
                 if(  xPos >= tileXmin+1 && xPosMin <= tileX-1 ){  
                     if(yPos == tileYmin){
-                    tile.getGameObject().setFill(Color.RED);
+                    //tile.getGameObject().setFill(Color.RED);
                     this.falling = false;
                     this.collisionYu = true;
                     }else if(yPos > tileYmin){this.collisionYu = false;}
@@ -257,7 +257,7 @@ String os = System.getProperty("os.name").toLowerCase();
                 //Collision over player 
                 if( xPos >= tileXmin+1 && xPosMin <= tileX-1 ){  
                     if(yPosMin == tileY){
-                    tile.getGameObject().setFill(Color.YELLOWGREEN);
+                    //tile.getGameObject().setFill(Color.YELLOWGREEN);
                     this.collisionYo = true;
                     this.falling = true;
                     this.jumping = false;

@@ -46,6 +46,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javax.imageio.ImageIO;
@@ -179,6 +180,7 @@ public class Xgame extends Application{
            
             long before = System.nanoTime();
             double posy = player.getGameObject().getY();
+            double pos_last;
             @Override
             public void handle(long now) {
                 
@@ -188,24 +190,27 @@ public class Xgame extends Application{
                      //changes frame every 0.02e+9ns
                      if(frameChanged){
                          //a frame
-                        
-                         rect1.setFill(Color.YELLOW);
                          player_right.changeFrame(frameChanged);
                          player_left.changeFrame(frameChanged);
                          player_fall.changeFrame(frameChanged);
-                         
-                    
+                         pos_last = rect1.getTranslateX();
                             frameChanged = false;
                      }else{
                          //another frame
                        
-                         rect1.setFill(Color.PINK);
+                         
                          frameChanged = true;
                      }
                      
                      before = System.nanoTime();
                 }
-
+                double pos_now = rect1.getTranslateX();
+                if(pos_now > pos_last){
+                    rect1.setFill(player_right.getFrame());
+                }else if(pos_now < pos_last ){
+                    rect1.setFill(player_left.getFrame());
+                }
+                
                 
                 if(player.movingRight()){
                     player.moveRight();
@@ -235,35 +240,7 @@ public class Xgame extends Application{
 
         animator.start();  
     }
-    public void testGraphic() throws IOException{
-        if(player.facingRight() && !player.isFalling()){
-            BufferedImage mRight = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"run.gif"));
-            ImageIcon imageIcon = new ImageIcon(mRight);
-            Image testr = SwingFXUtils.toFXImage(mRight, null );
-            player.getGameObject().setFill(new ImagePattern(testr));
-     
-        }
-        if(player.facingLeft() && !player.isFalling()){
-            BufferedImage mLeft = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"run_left.gif"));
-            ImageIcon imageIcon = new ImageIcon(mLeft);
-            Image testr = SwingFXUtils.toFXImage(mLeft, null );
-            
-            player.getGameObject().setFill(new ImagePattern(testr));
-           
-        }if(player.isFalling()){
-            BufferedImage mLeft = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"mid_air.gif"));
-            ImageIcon imageIcon = new ImageIcon(mLeft);
-            Image testr = SwingFXUtils.toFXImage(mLeft, null );
-            player.getGameObject().setFill(new ImagePattern(testr));
-        }
-        if(!player.facingLeft() && !player.facingRight()){
-            BufferedImage mLeft = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"idle.gif"));
-            ImageIcon imageIcon = new ImageIcon(mLeft);
-            Image testr = SwingFXUtils.toFXImage(mLeft, null );
-            player.getGameObject().setFill(new ImagePattern(testr));
-        }
-        
-    }
+
     /**
      * @param args the command line arguments
      */
@@ -368,11 +345,11 @@ public class Xgame extends Application{
         Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
 
         
-ft.play();
+        ft.play();
         
         BufferedImage bg = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"BG.png"));
         Image card = SwingFXUtils.toFXImage(bg, null );
-        scene.setFill(new ImagePattern(card));
+        scene.setFill(new ImagePattern(card,0,0,900,900,false));
         primaryStage.setTitle("Spillbrett");
         primaryStage.setScene(scene);
         
