@@ -80,7 +80,12 @@ public class Xgame extends Application{
    String src_slash;
    Rectangle rect1;
    TranslateTransition ft;
-   Pane root = new Pane();
+   Pane root =  new Pane();
+   Pane root2 = new Pane();
+   Pane root3 = new Pane();
+   
+    Scene scene, scene2, scene3;
+    Stage stage;
    int frameCount=0;
    SpriteAnimation player_right;
    SpriteAnimation player_left;
@@ -91,6 +96,12 @@ public class Xgame extends Application{
    
     @Override
     public void start(Stage primaryStage) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
+        
+        stage = primaryStage;
+        
+        scene = new Scene(root,900,900);
+        scene2 = new Scene(root2,900,900);
+        scene3 = new Scene(root3,900,900);
         
          level = new Level();
          
@@ -362,7 +373,7 @@ public class Xgame extends Application{
         ft.setCycleCount(Timeline.INDEFINITE);
         ft.setAutoReverse(true);
         root.getChildren().addAll(player.getGameObject(),rect1);
-        Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
+        scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
 
         
         ft.play();
