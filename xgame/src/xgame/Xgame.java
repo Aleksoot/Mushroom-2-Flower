@@ -87,7 +87,7 @@ public class Xgame extends Application{
    SpriteAnimation player_fall;
    public boolean frameChanged=false;
    int score = 0;
-   File file = new File("test.txt");
+   File file = new File(resourcesDirectory.getAbsolutePath()+src_slash+"scores"+src_slash+"score");
    
     @Override
     public void start(Stage primaryStage) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
@@ -130,7 +130,7 @@ public class Xgame extends Application{
          try{
             Scanner input = new Scanner(file);
             int score = input.nextInt();
-            System.out.printf("Points: %d\n", score);
+            System.out.printf("Scores: %d\n", score);
         }catch(IOException ex){
             System.err.println("ERROR");
         }
@@ -187,10 +187,10 @@ public class Xgame extends Application{
         while (line != null)                 // read the score file line by line
         {
             try {
-                int score = Integer.parseInt(line.trim());   // parse each line as an int
-                if (score > highScore)                       // and keep track of the largest
+                int point = Integer.parseInt(line.trim());   // parse each line as an int
+                if (point > highScore)                       // and keep track of the largest
                 { 
-                    highScore = score; 
+                    highScore = point; 
                 }
             } catch (NumberFormatException e1) {
                 // ignore invalid scores
