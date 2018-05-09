@@ -46,6 +46,8 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -83,6 +85,8 @@ public class Xgame extends Application{
    SpriteAnimation player_right;
    SpriteAnimation player_left;
    SpriteAnimation player_fall;
+   SpriteAnimation skeleton_right;
+   SpriteAnimation skeleton_left;
    public boolean frameChanged=false;
    
     @Override
@@ -91,7 +95,7 @@ public class Xgame extends Application{
          level = new Level();
          
         if(!level_1){
-        drawLevel(primaryStage, level, 1, root);
+        drawLevel(primaryStage, level, 2, root);
         }else{ drawLevel(primaryStage, level, 2, root);}
         //Keylistener for the controls
         primaryStage.getScene().setOnKeyPressed(e -> {
@@ -116,7 +120,7 @@ public class Xgame extends Application{
                     player.setMovingRight(true);
                     player.jump();
                 try {
-                    jumpSound();
+                    playAudio(resourcesDirectory.getAbsolutePath()+src_slash+"music"+src_slash+"jump.wav");
                 } catch (UnsupportedAudioFileException ex) {
                     Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
                 } catch (IOException ex) {
@@ -132,7 +136,7 @@ public class Xgame extends Application{
                     player.setMovingLeft(true);
                     player.jump();
                 try {
-                    jumpSound();
+                    playAudio(resourcesDirectory.getAbsolutePath()+src_slash+"music"+src_slash+"jump.wav");
                 } catch (UnsupportedAudioFileException ex) {
                     Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
                 } catch (IOException ex) {
@@ -147,7 +151,7 @@ public class Xgame extends Application{
                 if(!player.isFalling() ){
                     player.jump();
                 try {
-                    jumpSound();
+                    playAudio(resourcesDirectory.getAbsolutePath()+src_slash+"music"+src_slash+"jump.wav");
                 } catch (UnsupportedAudioFileException ex) {
                     Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
                 } catch (IOException ex) {
@@ -193,22 +197,41 @@ public class Xgame extends Application{
                          player_right.changeFrame(frameChanged);
                          player_left.changeFrame(frameChanged);
                          player_fall.changeFrame(frameChanged);
+                         skeleton_right.changeFrame(frameChanged);
+                         skeleton_left.changeFrame(frameChanged);
+                         player.collidingEnemy(rect1);
+                         player.checkAlive();
                          pos_last = rect1.getTranslateX();
                             frameChanged = false;
                      }else{
                          //another frame
-                       
-                         
                          frameChanged = true;
                      }
                      
                      before = System.nanoTime();
                 }
+                if(!player.isAlive()){
+                    try {
+                        playAudio(resourcesDirectory.getAbsolutePath()+src_slash+"music"+src_slash+"sad.wav");
+                    } catch (UnsupportedAudioFileException ex) {
+                        Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                    } catch (LineUnavailableException ex) {
+                        Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                    }
+                    Text t = new Text (300, 450, "You are DEAD!");
+                    t.setFont(Font.font ("Verdana", 60));
+                    t.setFill(Color.RED);
+                root.getChildren().add(t);
+                    ft.stop();
+                    this.stop();
+                }
                 double pos_now = rect1.getTranslateX();
                 if(pos_now > pos_last){
-                    rect1.setFill(player_right.getFrame());
+                    rect1.setFill(skeleton_right.getFrame());
                 }else if(pos_now < pos_last ){
-                    rect1.setFill(player_left.getFrame());
+                    rect1.setFill(skeleton_left.getFrame());
                 }
                 
                 
@@ -226,7 +249,7 @@ public class Xgame extends Application{
                     player.setFalling(false);
                     
                 }
-                if(!player.getCollidingYu() || player.getCollidingYo() ){
+                if(!player.getCollidingYu() ){
                     player.setFalling(true);
                     player.fall();
                     player.getGameObject().setFill(player_fall.getFrame());
@@ -277,10 +300,10 @@ public class Xgame extends Application{
         musikk.start();
         
 	}
-        public void jumpSound() throws UnsupportedAudioFileException, IOException, LineUnavailableException{
+        public void playAudio(String src) throws UnsupportedAudioFileException, IOException, LineUnavailableException{
         
         
-        File in = new File(resourcesDirectory.getAbsolutePath()+src_slash+"music"+src_slash+"jump.wav");
+        File in = new File(src);
         AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(in);
         Clip background = AudioSystem.getClip();
         background.open(audioInputStream);
@@ -291,10 +314,7 @@ public class Xgame extends Application{
             @Override
             public void run() {
                 try{
-                               
-                            background.start();
-                        
-                    
+                    background.start();
                 }catch(Exception e){
                     System.out.println(e);
                 }  
@@ -325,15 +345,15 @@ public class Xgame extends Application{
         player.getGameObject().setX(240);
         player.getGameObject().setY(210);
         
-        rect1 = new Rectangle(160,390,30,30);
+        rect1 = new Rectangle(160,360,60,60);
 
-        rect1.setArcHeight(20);
-        rect1.setArcWidth(20);
         rect1.setFill(Color.RED);
 
         player_right = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner") ) );
         player_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner_left") ) );
         player_fall = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"mid_air") ) );
+        skeleton_right = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"skeleton"+src_slash+"walk_right") ) );
+        skeleton_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"skeleton"+src_slash+"walk") ) );
         
         //Adding player to root
         ft = new TranslateTransition(Duration.millis(2000), rect1);

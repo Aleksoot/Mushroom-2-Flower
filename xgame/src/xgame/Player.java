@@ -48,6 +48,7 @@ String os = System.getProperty("os.name").toLowerCase();
     
     boolean jumping;
     int controll = 0;
+    public int playerHealth = 100;
     public boolean jumpingTick=false;
     private boolean alive = true;
     boolean collisionXr = false;
@@ -76,6 +77,9 @@ String os = System.getProperty("os.name").toLowerCase();
     }
     public void JumpTick(boolean tick){
         this.jumpingTick = tick;
+    }
+    public boolean isAlive(){
+        return this.alive;
     }
     public ImageView getSprite(){
         return this.sprite;
@@ -260,7 +264,7 @@ String os = System.getProperty("os.name").toLowerCase();
                     //tile.getGameObject().setFill(Color.YELLOWGREEN);
                     this.collisionYo = true;
                     this.falling = true;
-                    this.jumping = false;
+//                    this.jumping = false;
                     }else if(yPos < tileYmin){
                         this.collisionYo = false;
                     }
@@ -269,10 +273,21 @@ String os = System.getProperty("os.name").toLowerCase();
             }
         }
 }
-//sprites
-    public void player_right(){
-    
+    public void checkAlive(){
+        if(this.playerHealth > 0){
+            this.alive = true;
+        }else{
+            this.alive = false;
+        }
+        System.out.println("player alive: "+alive);
     }
+    public void collidingEnemy(Rectangle x){
+        if(this.getGameObject().getBoundsInParent().intersects(x.getBoundsInParent()) && alive){
+            this.playerHealth = this.playerHealth - 10;
+            System.out.println("player lost 10 from the healthbar. health: "+playerHealth);
+        }
+    }
+     
     
     
     
