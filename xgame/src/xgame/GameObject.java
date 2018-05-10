@@ -48,13 +48,7 @@ public class GameObject {
     public void setTilesize(int tilesize) {
         this.tilesize = tilesize;
     }
-    
-//    public enum Type {
-//    PLAYER,
-//    ENEMY,
-//    LEVEL,
-//    ITEM	
-//    }
+
      public int getId() {
         return id;
     }

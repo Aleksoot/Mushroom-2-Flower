@@ -18,16 +18,18 @@ import java.util.logging.Logger;
 import java.util.Date;
 import java.util.List;
 import javafx.animation.AnimationTimer;
+import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
+import javafx.animation.Transition;
 import static javafx.application.Platform.exit;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.ImagePattern;
 import javafx.util.Duration;
 import javax.imageio.ImageIO;
-import javax.swing.Timer;
 import xgame.Tile.Type;
 
 /** player
@@ -37,25 +39,29 @@ import xgame.Tile.Type;
 public class Player extends GameObject{
     
     /**
+     * Type.PLAYER comes from the enum in GameObject
      * xPos & yPos defined for the player object
      * player is "alive" (which implies properties for alive objects)
      */
     File resourcesDirectory = new File("src/xgame");
-
-    public int i;
+String os = System.getProperty("os.name").toLowerCase();
+    
     boolean jumping;
+    int controll = 0;
+    public int playerHealth = 100;
+    public boolean jumpingTick=false;
     private boolean alive = true;
     boolean collisionXr = false;
     boolean collisionXl = false;
-    boolean collisionX = false;
-    boolean collisiony = false;
+    boolean collisionYo;
+    boolean collisionYu;
     boolean movingRight = false;
     boolean movingLeft = false;
     boolean facingRight = false;
     boolean facingLeft = false;
     boolean falling = true;
-    
-    
+    public ImageView sprite;
+    public Animation animation;
     /**
      * Inheriting the necessary parameters from GameObject (specifically setX/setY)
      * Defining the x and y Positions at the start of movement.
@@ -69,7 +75,15 @@ public class Player extends GameObject{
        System.out.println("Player has spawned");
        id = 1; 
     }
-    
+    public void JumpTick(boolean tick){
+        this.jumpingTick = tick;
+    }
+    public boolean isAlive(){
+        return this.alive;
+    }
+    public ImageView getSprite(){
+        return this.sprite;
+    }
     public boolean facingRight(){
         return this.facingRight;
     }
@@ -108,13 +122,7 @@ public class Player extends GameObject{
     public void setJumping(boolean jumping) {
         this.jumping = jumping;
     }
-    //Collisions x-axis
-    public void setCollidingX(boolean collision){
-        this.collisionX = collision;
-    }
-    public boolean getCollidingX(){
-        return this.collisionX;
-    }
+
     public void setCollidingXr(boolean collision){
         this.collisionXr = collision;
     }
@@ -128,16 +136,25 @@ public class Player extends GameObject{
         return this.collisionXl;
     }
     //Collisions y-axis
-    public void setCollidingY(boolean collision){
-        this.collisiony = collision;
+    public void setCollidingYo(boolean collision){
+        this.collisionYo = collision;
     }
     
-    public boolean getCollidingY(){
-        return this.collisiony;
+    public boolean getCollidingYo(){
+        return this.collisionYo;
+    }
+     public void setCollidingYu(boolean collision){
+        this.collisionYu = collision;
+    }
+    
+    public boolean getCollidingYu(){
+        return this.collisionYu;
     }
     public void fall(){
-        if(!collisiony && falling){
+        if(!collisionYu && falling){
             this.getGameObject().setY(this.getGameObject().getY()+3);
+        }else if(jumping){
+            this.getGameObject().setY(this.getGameObject().getY()-10);
         }
     }
 
@@ -167,19 +184,37 @@ public class Player extends GameObject{
             this.getGameObject().setX(this.getGameObject().getX()+3);
         }
     }
-    /*public void jumping(){
-        if(!falling) {
-            this.getGameObject().setY(this.getGameObject().getY()-15);
-    }*/ //This Will allow for smooother jumping
+ 
     public void jump(){
         if(!falling){
             this.getGameObject().setY(this.getGameObject().getY()-90);
-        }   
-    }
-    public void stopX(){
-        this.getGameObject().setX(this.getGameObject().getX());
+        } 
+        
     }
     
+    public void stopY(){
+        this.getGameObject().setY(this.getGameObject().getY());
+    }
+    public void playerBackground(){
+        this.sprite = sprite;
+        this.animation = new Transition() {
+            
+            {
+            setCycleDuration(Duration.millis(500));
+            }
+            @Override
+            protected void interpolate(double frac) {
+                
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        
+        };
+        animation.play();
+        
+    }
+//    public void playerAnimation(){
+//        this.sprite = 
+//    }
     public void colliding(List<Tile> leveltiles, Type type ){
         
         double playerSize = this.getTilesize();
@@ -199,7 +234,7 @@ public class Player extends GameObject{
        
                 //Collision right of player
                 if( yPos-1 >= tileYmin && yPosMin+1 <= tileY && xPos == tileXmin){
-                    tile.getGameObject().applyCss();
+                    
                     //tile.getGameObject().setFill(Color.RED);
                     this.collisionXr = true;
                     this.movingRight = false; 
@@ -216,21 +251,45 @@ public class Player extends GameObject{
                 }
                 
                 //Collision under player 
-                if( yPos == tileYmin && xPos >= tileXmin+1 && xPosMin <= tileX-1 ){  
+                if(  xPos >= tileXmin+1 && xPosMin <= tileX-1 ){  
+                    if(yPos == tileYmin){
                     //tile.getGameObject().setFill(Color.RED);
                     this.falling = false;
-                    this.collisiony = false;
-                } 
-                if( yPosMin == tileY && xPos >= tileXmin+1 && xPosMin <= tileX-1 ){  
-                    tile.getGameObject().setFill(Color.YELLOWGREEN);
-                    
-                    this.falling = true;
-                   
+                    this.collisionYu = true;
+                    }else if(yPos > tileYmin){this.collisionYu = false;}
                 }
+                //Collision over player 
+                if( xPos >= tileXmin+1 && xPosMin <= tileX-1 ){  
+                    if(yPosMin == tileY){
+                    //tile.getGameObject().setFill(Color.YELLOWGREEN);
+                    this.collisionYo = true;
+                    this.falling = true;
+//                    this.jumping = false;
+                    }else if(yPos < tileYmin){
+                        this.collisionYo = false;
+                    }
+                }
+                    
             }
         }
 }
+    public void checkAlive(){
+        if(this.playerHealth > 0){
+            this.alive = true;
+        }else{
+            this.alive = false;
+        }
+        System.out.println("player alive: "+alive);
+    }
+    public void collidingEnemy(Rectangle x){
+        if(this.getGameObject().getBoundsInParent().intersects(x.getBoundsInParent()) && alive){
+            this.playerHealth = this.playerHealth - 10;
+            System.out.println("player lost 10 from the healthbar. health: "+playerHealth);
+        }
+    }
+     
     
-
+    
+    
     
 }

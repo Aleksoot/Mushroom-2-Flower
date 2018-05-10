@@ -26,7 +26,7 @@ public class Tile extends GameObject{
     public Type type = Type.empty; //DEFAULT 
 
     public enum Type {
-        player,empty,solid,spawn,enemy,loot;
+        empty,solid,spawn,enemy,loot;
     }
     public Type getType(){
         return this.type;
