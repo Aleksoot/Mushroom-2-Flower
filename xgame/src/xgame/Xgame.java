@@ -107,7 +107,7 @@ public class Xgame extends Application{
    /**
     * Will parse from .txt containing spawn information in arrays
     */
-    public void spawns (){
+    public void spawnpoints (){
         try {
             File spawns = new File(resourcesDirectory.getAbsolutePath()+"spawning.txt");
             FileReader spawner = new FileReader(spawns);
@@ -115,6 +115,11 @@ public class Xgame extends Application{
             StringBuffer stringspawn = new StringBuffer();
             String line;
             while ((line = bufferedspawner.readLine()) != null) {
+                String[] array1 = line.split(":");
+                String[] array2 = array1[1].split(",");
+                String[] array3 = array1[2].split(".");
+                for (int i = 0; i < array3.length; i++)
+                    //spawn(array1[i], array2[i], array3[i]);
                 stringspawn.append(line);
                 stringspawn.append("\n");
             }
