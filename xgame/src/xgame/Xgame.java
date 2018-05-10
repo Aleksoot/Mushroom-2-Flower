@@ -109,7 +109,7 @@ public class Xgame extends Application{
     */
     public void spawns (){
         try {
-            File spawns = new File("spawning.txt");
+            File spawns = new File(resourcesDirectory.getAbsolutePath()+"spawning.txt");
             FileReader spawner = new FileReader(spawns);
             BufferedReader bufferedspawner = new BufferedReader(spawner);
             StringBuffer stringspawn = new StringBuffer();
