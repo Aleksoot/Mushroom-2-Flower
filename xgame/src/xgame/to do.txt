@@ -1,6 +1,0 @@
-1. Create "fireballs" (when y of player == y of dragon)
-- creates fireball object, propelled by translatetransition (fast in a direction, then disappears)
-- spawn 5 unites in the x-axis infront on dragon
-2. Create spawn points
-- A .txt containing arrays for enemy spawns
-- a for-loop method for parsing/reading .txt & for spawning in the desired amount/type of enemies

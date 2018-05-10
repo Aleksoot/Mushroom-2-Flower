@@ -107,11 +107,25 @@ public class Xgame extends Application{
    /**
     * Will parse from .txt containing spawn information in arrays
     */
-   //public void spawns (){
-       //try {
-           //File spawns = new File()
-       //}
-   //}
+    public void spawns (){
+        try {
+            File spawns = new File("spawning.txt");
+            FileReader spawner = new FileReader(spawns);
+            BufferedReader bufferedspawner = new BufferedReader(spawner);
+            StringBuffer stringspawn = new StringBuffer();
+            String line;
+            while ((line = bufferedspawner.readLine()) != null) {
+                stringspawn.append(line);
+                stringspawn.append("\n");
+            }
+            spawner.close();
+            System.out.println("Contents of file:");
+            System.out.println(stringspawn.toString());
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
    
     @Override
     
@@ -263,9 +277,10 @@ public class Xgame extends Application{
                     Text t = new Text (300, 450, "You are DEAD!");
                     t.setFont(Font.font ("Verdana", 60));
                     t.setFill(Color.RED);
-                root.getChildren().add(t);
+                    root.getChildren().add(t);
                     ft.stop();
                     ft2.stop();
+                    ftfb.stop();
                     this.stop();
                 }
                 double pos_now = rect1.getTranslateX();
@@ -287,7 +302,7 @@ public class Xgame extends Application{
                     fball.setFill(fireball_right.getFrame());
                 }
                 else{
-                    System.out.println("Y axis:" + "" + posy);
+                    //System.out.println("Y axis: " + posy);
                     fball.setVisible(false);
                 }
                 if(player.movingRight()){ 
@@ -322,7 +337,7 @@ public class Xgame extends Application{
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) { 
         
         launch(args);
         //System.out.println("Number of active threads from the given thread: " + Thread.activeCount());
@@ -428,7 +443,7 @@ public class Xgame extends Application{
         ft2 = new TranslateTransition(Duration.millis(4000), rect2);
         ft2.setFromX(0f);
         ft2.setByX(200);
-        ft2.setCycleCount(1);
+        ft2.setCycleCount(Timeline.INDEFINITE);
         ft2.setAutoReverse(true);
         ftfb = new TranslateTransition(Duration.millis(1000), fball);
         ftfb.setFromX(0f);
