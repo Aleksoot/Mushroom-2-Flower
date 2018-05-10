@@ -5,6 +5,11 @@
  */
 package xgame;
 
+import com.sun.javafx.geom.BaseBounds;
+import com.sun.javafx.geom.transform.BaseTransform;
+import com.sun.javafx.jmx.MXNodeAlgorithm;
+import com.sun.javafx.jmx.MXNodeAlgorithmContext;
+import com.sun.javafx.sg.prism.NGNode;
 import com.sun.javafx.tk.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -39,6 +44,8 @@ import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Point3D;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -75,15 +82,14 @@ public class Xgame extends Application{
    boolean level_1=false;
    boolean level_2=false;
    Level level;
-   List<Tile> leveltiles;
-   Player player;
+   List<Tile> leveltiles, leveltiles1, leveltiles2;
+   Player player, player1, player2;
    String src_slash;
    Rectangle rect1;
    TranslateTransition ft;
-   Pane root =  new Pane();
-   Pane root2 = new Pane();
-   Pane root3 = new Pane();
-   
+   Pane pane1, pane2, pane3;
+   Button btnscene1, btnscene2;
+    Label lblscene1, lblscene2;
     Scene scene, scene2, scene3;
     Stage stage;
    int frameCount=0;
@@ -98,16 +104,39 @@ public class Xgame extends Application{
     public void start(Stage primaryStage) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
         
         stage = primaryStage;
+        Level level = new Level();
+        Level level2 = new Level();
+        player = new Player();
+        player.getGameObject().setX(240);
+        player.getGameObject().setY(210);
+      
         
-        scene = new Scene(root,900,900);
-        scene2 = new Scene(root2,900,900);
-        scene3 = new Scene(root3,900,900);
         
-         level = new Level();
+        btnscene1=new Button("next level");
+        btnscene2=new Button("previous level");
+        btnscene1.setOnAction(e-> ButtonClicked(e));
+        btnscene2.setOnAction(e-> ButtonClicked(e));
+        lblscene1=new Label("Scene 1");
+        pane1 =  new Pane();
+        pane2 = new Pane();
+        pane1 = drawLevel(level);
+        pane2 = drawLevel(level2);
+        pane1.getChildren().addAll(btnscene1,player.getGameObject());
+        pane2.getChildren().addAll(btnscene2);
+        
+        scene = new Scene(pane1,900,900);
+       
+        
+         //level = new Level();
          
-        if(!level_1){
-        drawLevel(primaryStage, level, 2, root);
-        }else{ drawLevel(primaryStage, level, 2, root);}
+//        if(!level_1){
+//        drawLevel(primaryStage, level, 2, root);
+//        }else{ drawLevel(primaryStage, level, 2, root);}
+
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Hello World!");
+        
+        primaryStage.show();
         //Keylistener for the controls
         primaryStage.getScene().setOnKeyPressed(e -> {
             
@@ -146,11 +175,11 @@ public class Xgame extends Application{
                 if(!player.isFalling() ){
                     player.setMovingLeft(true);
                     player.jump();
-                try {
-                    playAudio(resourcesDirectory.getAbsolutePath()+src_slash+"music"+src_slash+"jump.wav");
+               try {
+                   playAudio(resourcesDirectory.getAbsolutePath()+src_slash+"music"+src_slash+"jump.wav");
                 } catch (UnsupportedAudioFileException ex) {
                     Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-                } catch (IOException ex) {
+               } catch (IOException ex) {
                     Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
                 } catch (LineUnavailableException ex) {
                     Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
@@ -179,17 +208,15 @@ public class Xgame extends Application{
        player.setMovingRight(false);
         player.setMovingLeft(false);
        
-            if (e.getCode() == KeyCode.LEFT) {
+           if (e.getCode() == KeyCode.LEFT) {
                     player.setMovingLeft(false);
-            }
-            if (e.getCode() == KeyCode.RIGHT) {
+           }
+           if (e.getCode() == KeyCode.RIGHT) {
                 player.setMovingRight(false);
-            }
-           
+           }
+                      
         });
        
-       
-        primaryStage.show();
         
         AnimationTimer animator = new AnimationTimer(){
            
@@ -234,7 +261,7 @@ public class Xgame extends Application{
                     Text t = new Text (300, 450, "You are DEAD!");
                     t.setFont(Font.font ("Verdana", 60));
                     t.setFill(Color.RED);
-                root.getChildren().add(t);
+                //root.getChildren().add(t);
                     ft.stop();
                     this.stop();
                 }
@@ -334,27 +361,24 @@ public class Xgame extends Application{
         audio.start();
 	}
 
-    private void drawLevel(Stage primaryStage, Level level, int s, Pane root) throws IOException {
+    private Pane drawLevel(Level level) throws IOException {
         //Level is created
+        Pane s = new Pane();
         src_slash = src();
         leveltiles = level.getLevelTiles();
-        if(s == 1){
-            level.createLevel(level.level_1());
-            System.out.println("creating level1");
-        }else if(s == 2){
+        
             level.createLevel(level.level_2());
-            System.out.println("creating level2");
-        }
+        
         //startMusic(); 
+//        player = new Player();
+//        player.getGameObject().setX(240);
+//        player.getGameObject().setY(210);
         
-        
-        root.getChildren().addAll(level.getRoot());
+        s.getChildren().addAll(level.getRoot());
         
         
         //Player is created
-        player = new Player();
-        player.getGameObject().setX(240);
-        player.getGameObject().setY(210);
+        
         
         rect1 = new Rectangle(160,360,60,60);
 
@@ -372,17 +396,9 @@ public class Xgame extends Application{
         ft.setByX(90);
         ft.setCycleCount(Timeline.INDEFINITE);
         ft.setAutoReverse(true);
-        root.getChildren().addAll(player.getGameObject(),rect1);
-        scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
-
-        
+        s.getChildren().addAll(rect1);
         ft.play();
-        
-        BufferedImage bg = ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"BG.png"));
-        Image card = SwingFXUtils.toFXImage(bg, null );
-        scene.setFill(new ImagePattern(card,0,0,900,900,false));
-        primaryStage.setTitle("Spillbrett");
-        primaryStage.setScene(scene);
+        return s;
         
     }
 
@@ -407,5 +423,22 @@ public class Xgame extends Application{
         }
         return list;
     
+    }
+    public void ButtonClicked(ActionEvent e)
+    {
+        if (e.getSource()==btnscene1){
+            
+            pane1.getChildren().remove(player.getGameObject());
+            pane2.getChildren().addAll(player.getGameObject());
+            scene.setRoot(pane2);
+            player.colliding(leveltiles, Type.solid);
+        }
+        else{
+            
+            pane1.getChildren().add(player.getGameObject());
+            pane2.getChildren().remove(player.getGameObject());
+            scene.setRoot(pane1);
+            player.colliding(leveltiles, Type.solid);
+        }
     }
 }

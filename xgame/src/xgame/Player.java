@@ -279,12 +279,11 @@ String os = System.getProperty("os.name").toLowerCase();
         }else{
             this.alive = false;
         }
-        System.out.println("player alive: "+alive);
+        
     }
     public void collidingEnemy(Rectangle x){
         if(this.getGameObject().getBoundsInParent().intersects(x.getBoundsInParent()) && alive){
             this.playerHealth = this.playerHealth - 10;
-            System.out.println("player lost 10 from the healthbar. health: "+playerHealth);
         }
     }
      
