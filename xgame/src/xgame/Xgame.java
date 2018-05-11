@@ -106,10 +106,10 @@ public class Xgame extends Application{
         stage = primaryStage;
         Level level = new Level();
         Level level2 = new Level();
-        player = new Player();
-        player.getGameObject().setX(240);
-        player.getGameObject().setY(210);
-      
+//        player = new Player();
+//        player.getGameObject().setX(240);
+//        player.getGameObject().setY(210);
+//       
         
         
         btnscene1=new Button("next level");
@@ -117,12 +117,13 @@ public class Xgame extends Application{
         btnscene1.setOnAction(e-> ButtonClicked(e));
         btnscene2.setOnAction(e-> ButtonClicked(e));
         lblscene1=new Label("Scene 1");
-        pane1 =  new Pane();
-        pane2 = new Pane();
+        
+        level.createLevel(level.level_1());
+        level2.createLevel(level.level_2());
         pane1 = drawLevel(level);
         pane2 = drawLevel(level2);
         pane1.getChildren().addAll(btnscene1,player.getGameObject());
-        pane2.getChildren().addAll(btnscene2);
+        pane2.getChildren().addAll(btnscene2,player.getGameObject());
         
         scene = new Scene(pane1,900,900);
        
@@ -298,7 +299,6 @@ public class Xgame extends Application{
             } 
             
         };
-
         animator.start();  
     }
 
@@ -367,14 +367,14 @@ public class Xgame extends Application{
         src_slash = src();
         leveltiles = level.getLevelTiles();
         
-            level.createLevel(level.level_2());
+            
         
         //startMusic(); 
-//        player = new Player();
-//        player.getGameObject().setX(240);
-//        player.getGameObject().setY(210);
+        player = new Player();
+        player.getGameObject().setX(240);
+        player.getGameObject().setY(210);
         
-        s.getChildren().addAll(level.getRoot());
+        s.getChildren().addAll(level.getRoot(), player.getGameObject());
         
         
         //Player is created
@@ -428,17 +428,19 @@ public class Xgame extends Application{
     {
         if (e.getSource()==btnscene1){
             
-            pane1.getChildren().remove(player.getGameObject());
-            pane2.getChildren().addAll(player.getGameObject());
+            
+            
             scene.setRoot(pane2);
-            player.colliding(leveltiles, Type.solid);
+            
+            //player.colliding(leveltiles, Type.solid);
         }
         else{
             
-            pane1.getChildren().add(player.getGameObject());
-            pane2.getChildren().remove(player.getGameObject());
+           
+            
             scene.setRoot(pane1);
-            player.colliding(leveltiles, Type.solid);
+            //player.fall();
+            //player.colliding(leveltiles, Type.solid);
         }
     }
 }

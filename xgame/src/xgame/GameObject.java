@@ -58,8 +58,8 @@ public class GameObject {
     }
     
     public void GameObjectToScene(Pane root, double x, double y){
-        this.tile.setTranslateX(x - this.tilesize );
-        this.tile.setTranslateY(y - this.tilesize );
+        this.tile.setX(x - this.tilesize );
+        this.tile.setY(y - this.tilesize );
         root.getChildren().add( this.tile );
     }
 }
