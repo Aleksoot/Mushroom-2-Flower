@@ -48,6 +48,7 @@ String os = System.getProperty("os.name").toLowerCase();
     
     boolean jumping;
     int controll = 0;
+    public int level = 0;
     public int playerHealth = 100;
     public boolean jumpingTick=false;
     private boolean alive = true;
@@ -74,6 +75,12 @@ String os = System.getProperty("os.name").toLowerCase();
       
        System.out.println("Player has spawned");
        id = 1; 
+    }
+    public void setLevel(int i){
+        this.level = i;
+    }
+    public int getLevel(){
+        return this.level;
     }
     public void JumpTick(boolean tick){
         this.jumpingTick = tick;
@@ -253,7 +260,7 @@ String os = System.getProperty("os.name").toLowerCase();
                 //Collision under player 
                 if(  xPos >= tileXmin+1 && xPosMin <= tileX-1 ){  
                     if(yPos == tileYmin){
-                    //tile.getGameObject().setFill(Color.RED);
+                    tile.getGameObject().setFill(Color.RED);
                     this.falling = false;
                     this.collisionYu = true;
                     }else if(yPos > tileYmin){this.collisionYu = false;}
@@ -288,7 +295,17 @@ String os = System.getProperty("os.name").toLowerCase();
     }
      
     
-    
+    public void reset(){
+        this.collisionXr = false;
+        this.collisionXl = false;
+    this.collisionYo = false;
+    this.collisionYu=false;
+    this.movingRight = false;
+    this.movingLeft = false;
+    this.facingRight = false;
+    this.facingLeft = false;
+    this.falling = false;
+    }
     
     
 }
