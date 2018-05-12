@@ -100,7 +100,7 @@ public class Xgame extends Application{
     Scene scenemenu, scene1, scene2, scene3;
     Stage stage;
    int frameCount=0;
-   SpriteAnimation player_right,player_left,player_fall,player_fall_left,player_idle,player_idle_left,skeleton_right,skeleton_left;
+   SpriteAnimation player_right,player_left,player_fall,player_fall_left,player_idle,player_idle_left,skeleton_right,skeleton_left,dragon_right,dragon_left,fireball_left,fireball_right;
    AnimationTimer animator;
    boolean animating = true;
    public boolean frameChanged=false;
@@ -175,7 +175,11 @@ public class Xgame extends Application{
         player_idle_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"idle_left") ) );
         skeleton_right = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"skeleton"+src_slash+"walk_right") ) );
         skeleton_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"skeleton"+src_slash+"walk") ) );
-       
+        dragon_right = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"dragon_right") ) );
+        dragon_left = new  SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"dragon_right") ) );
+        fireball_right = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"fireball_right") ) );
+        fireball_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"fireball_left") ) );
+                
         animator = new AnimationTimer(){
            
             long before = System.nanoTime();

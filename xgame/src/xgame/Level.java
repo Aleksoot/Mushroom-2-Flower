@@ -117,34 +117,7 @@ public class Level {
     public int[] level_2(){
         return this.gameboard_2;
     }
-    public static BufferedImage makeBufferedImage(BufferedImage i){
-      BufferedImage result;
-      PixelGrabber pg = new PixelGrabber(i, 0, 0, 1, 1, false);
-      boolean alpha;
-
-      if(i instanceof BufferedImage)
-      {
-         return((BufferedImage)i);
-      }
-      try
-      {
-         pg.grabPixels();
-         alpha = pg.getColorModel().hasAlpha();
-      }
-      catch(InterruptedException e)
-      {
-         alpha = false;
-      }
-
-      result = new BufferedImage
-      (
-         i.getWidth(null),
-         i.getHeight(null),
-         alpha ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB
-      );
-      result.getGraphics().drawImage(i,0,0,null);
-      return(result);
-   }
+  
     public Image[] getSprites(int antall) {
         BufferedImage source = null;
         File resourcesDirectory = new File("src/xgame");
@@ -158,7 +131,7 @@ public class Level {
             src_slash = "/";
         }
         try {
-            source= makeBufferedImage(ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"level.png")));
+            source= (ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"level.png")));
                 
         } catch (IOException ex) {
             
