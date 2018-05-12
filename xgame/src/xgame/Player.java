@@ -31,6 +31,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.util.Duration;
 import javax.imageio.ImageIO;
 import xgame.Tile.Type;
+import static xgame.Tile.Type.end;
 
 /** player
  *
@@ -202,26 +203,7 @@ String os = System.getProperty("os.name").toLowerCase();
     public void stopY(){
         this.getGameObject().setY(this.getGameObject().getY());
     }
-    public void playerBackground(){
-        this.sprite = sprite;
-        this.animation = new Transition() {
-            
-            {
-            setCycleDuration(Duration.millis(500));
-            }
-            @Override
-            protected void interpolate(double frac) {
-                
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        
-        };
-        animation.play();
-        
-    }
-//    public void playerAnimation(){
-//        this.sprite = 
-//    }
+
     public void colliding(List<Tile> leveltiles, Type type ){
         
         double playerSize = this.getTilesize();
@@ -256,30 +238,45 @@ String os = System.getProperty("os.name").toLowerCase();
                }else{
                     this.collisionXl = false;
                 }
-                
+//                System.out.println("tileY: "+yPos);
+//                System.out.println("tileYmin: "+yPosMin);
                 //Collision under player 
                 if(  xPos >= tileXmin+1 && xPosMin <= tileX-1 ){  
                     if(yPos == tileYmin){
-                    tile.getGameObject().setFill(Color.RED);
+//                    tile.getGameObject().setFill(Color.RED);
                     this.falling = false;
                     this.collisionYu = true;
-                    }else if(yPos > tileYmin){this.collisionYu = false;}
+                    }
+                    if(yPos > tileYmin ){this.collisionYu = false;}
                 }
                 //Collision over player 
                 if( xPos >= tileXmin+1 && xPosMin <= tileX-1 ){  
-                    if(yPosMin == tileY){
+                    if(yPosMin != tileY){
+                        this.collisionYo = false;
+                    }
+                    else{
                     //tile.getGameObject().setFill(Color.YELLOWGREEN);
                     this.collisionYo = true;
                     this.falling = true;
 //                    this.jumping = false;
-                    }else if(yPos < tileYmin){
-                        this.collisionYo = false;
                     }
                 }
                     
             }
         }
 }
+    public void collideObject(List<Tile> leveltiles, Type type){
+        for (Tile tile : leveltiles) {
+            
+            if( tile.getType() == type){
+                if(this.getGameObject().getBoundsInParent().intersects(tile.getGameObject().getBoundsInParent())){
+                System.out.println("end");
+                }else{}
+            }
+            
+        
+        }
+    }
     public void checkAlive(){
         if(this.playerHealth > 0){
             this.alive = true;
@@ -288,11 +285,7 @@ String os = System.getProperty("os.name").toLowerCase();
         }
         
     }
-    public void collidingEnemy(Rectangle x){
-        if(this.getGameObject().getBoundsInParent().intersects(x.getBoundsInParent()) && alive){
-            this.playerHealth = this.playerHealth - 10;
-        }
-    }
+
      
     
     public void reset(){

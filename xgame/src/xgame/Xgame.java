@@ -84,9 +84,8 @@ public class Xgame extends Application{
    File resourcesDirectory = new File("src/xgame");
    String os = System.getProperty("os.name").toLowerCase();
    AudioClip mediaPlayer;
-   boolean level_1=false;
-   boolean level_2=false;
-   Level level;
+   boolean level_menu=true, level_1=false, level_2=false;
+   Level level, level1, level2;
    List<Tile> leveltiles, leveltiles1, leveltiles2;
    Player player, player1, player2;
    String src_slash;
@@ -99,31 +98,32 @@ public class Xgame extends Application{
     Scene scenemenu, scene1, scene2, scene3;
     Stage stage;
    int frameCount=0;
-   SpriteAnimation player_right;
-   SpriteAnimation player_left;
-   SpriteAnimation player_fall;
-   SpriteAnimation skeleton_right;
-   SpriteAnimation skeleton_left;
+   SpriteAnimation player_right,player_left,player_fall,player_fall_left,player_idle,player_idle_left,skeleton_right,skeleton_left;
    AnimationTimer animator;
    boolean animating = true;
    public boolean frameChanged=false;
-   
+   public boolean frameChanged2=false;
+   public long playerY;
+   public boolean playerJump;
+   public int jumpTick;
     @Override
     public void start(Stage primaryStage) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
         
         stage = primaryStage;
-        Level level = new Level();
-        Level level2 = new Level();
+        stage.setResizable(false);
+        level = new Level();
+        level1 = new Level();
+        level2 = new Level();
         player = new Player();
-        player.getGameObject().setFill(Color.TRANSPARENT);
+        
         player1 = new Player(); 
-        player1.getGameObject().setX(240);
-        player1.getGameObject().setY(210);
+        player1.getGameObject().setX(60);
+        player1.getGameObject().setY(810);
         player1.setLevel(1);
         
         player2 = new Player(); 
-        player2.getGameObject().setX(240);
-        player2.getGameObject().setY(210);
+        player2.getGameObject().setX(60);
+        player2.getGameObject().setY(810);
         player2.setLevel(2);
         
         btnscene1=new Button("next level");
@@ -132,19 +132,23 @@ public class Xgame extends Application{
         btnscene2.setOnAction(e-> testClicked(e));
         lblscene1=new Label("Scene 1");
         
-        level.createLevel(level.level_1());
-        level2.createLevel(level.level_2());
-        leveltiles1 = level.getLevelTiles();
+        level1.createLevel(level1.level_1());
+        level2.createLevel(level2.level_2());
+        leveltiles1 = level1.getLevelTiles();
         leveltiles2 = level2.getLevelTiles();
-        pane1 = drawLevel(level);
+        pane1 = drawLevel(level1);
         pane2 = drawLevel(level2);
-        pane1.getChildren().addAll(btnscene1);
-        pane2.getChildren().addAll(btnscene2);
-        
+//        pane1.getChildren().addAll(btnscene1);
+//        pane2.getChildren().addAll(btnscene2);
+        Rectangle logo = new Rectangle(300,300);
+        logo.setX(300); logo.setY(200);
+        File logofile = new File(resourcesDirectory.getAbsolutePath()+src_slash+"logo.png");
+        Image logoimg = new Image(logofile.toURI().toString());
+        logo.setFill(new ImagePattern(logoimg));
         panemenu = new Pane();
-        
-        
-        panemenu.getChildren().add( menuCreator() );
+        File fil = new File(resourcesDirectory.getAbsolutePath()+src_slash+"sky.jpg");
+        ImageView background = new ImageView(new Image(fil.toURI().toString(), 930, 930, false, false));
+        panemenu.getChildren().addAll(background, logo, menuCreator() );
         scenemenu = new Scene(panemenu,900,900);
         scene1 = new Scene(pane1,900,900);
         scene2 = new Scene(pane2,900,900);
@@ -158,17 +162,21 @@ public class Xgame extends Application{
         player_right = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner") ) );
         player_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner_left") ) );
         player_fall = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"mid_air") ) );
+        player_fall_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"mid_air_left") ) );
+        player_idle = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"idle_right") ) );
+        player_idle_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"idle_left") ) );
         skeleton_right = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"skeleton"+src_slash+"walk_right") ) );
         skeleton_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"skeleton"+src_slash+"walk") ) );
        
         animator = new AnimationTimer(){
            
             long before = System.nanoTime();
-            
+            long before2 = before;
             double pos_last;
             @Override
             public void handle(long now) {
-                
+                if(!level_menu){
+                long now2 = now;
                 levelCheck();
                 controls();
                 player.colliding(leveltiles, Type.solid);
@@ -180,19 +188,38 @@ public class Xgame extends Application{
                          player_right.changeFrame(frameChanged);
                          player_left.changeFrame(frameChanged);
                          player_fall.changeFrame(frameChanged);
+                         player_fall_left.changeFrame(frameChanged);
+                         player_idle.changeFrame(frameChanged);
+                         player_idle_left.changeFrame(frameChanged);
                          skeleton_right.changeFrame(frameChanged);
                          skeleton_left.changeFrame(frameChanged);
-                         player.collidingEnemy(rect1);
+                         if(playerJump){
+                            jumpTick++;
+                        }
                          player.checkAlive();
                          pos_last = rect1.getTranslateX();
                             frameChanged = false;
                      }else{
                          //another frame
+                         if(jumpTick>3){jumpTick=0; playerJump=false; player.setFalling(true);}
                          frameChanged = true;
                      }
                      
                      before = System.nanoTime();
                 }
+                 
+                
+                if(player.getGameObject().getBoundsInLocal().intersects(level.getEnd().getBoundsInLocal())){
+                    changeLevel();
+                }
+                 
+                  
+                 if(playerJump ){
+                        
+                        player.getGameObject().setY(player.getGameObject().getY()-6);
+                        
+                     
+                 }
                 if(!player.isAlive()){
                     try {
                         playAudio(resourcesDirectory.getAbsolutePath()+src_slash+"music"+src_slash+"sad.wav");
@@ -235,18 +262,34 @@ public class Xgame extends Application{
                     player.getGameObject().setFill(player_left.getFrame());
                     
                 }
-                
+                if(!player.movingLeft() && !player.movingRight()){
+                   if(player.facingRight()){
+                       player.getGameObject().setFill(player_idle.getFrame());
+                   }else{
+                       player.getGameObject().setFill(player_idle_left.getFrame());
+                   }
+                    
+                    
+                }
+                if(!playerJump){
+                     player.setFalling(true);
+                    player.fall();
+                }
                 if(player.getCollidingYu()){
                     player.setFalling(false);
                     
                 }
                 if(!player.getCollidingYu() ){
-                    player.setFalling(true);
-                    player.fall();
-                    player.getGameObject().setFill(player_fall.getFrame());
+                   
+                    if(player.facingRight()){
+                        player.getGameObject().setFill(player_fall.getFrame());
+                    }else{
+                        player.getGameObject().setFill(player_fall_left.getFrame());
+                    }
+                    
                 }
             } 
-            
+            }
         };
         animator.start();  
     }
@@ -384,9 +427,11 @@ public class Xgame extends Application{
                 stage.setScene(scenemenu);
                 stage.show();
             }
+            if (e.getCode() == KeyCode.F8) {
+                playerJump = true;
+            }
             if (e.getCode() == KeyCode.RIGHT) {
                 player.setMovingRight(true); 
-                System.out.println("start");
                 
             }
             if (e.getCode() == KeyCode.UP) {
@@ -448,7 +493,7 @@ public class Xgame extends Application{
         stage.getScene().setOnKeyReleased(e -> {
        player.setMovingRight(false);
         player.setMovingLeft(false);
-       
+        
            if (e.getCode() == KeyCode.LEFT) {
                     player.setMovingLeft(false);
            }
@@ -460,14 +505,29 @@ public class Xgame extends Application{
     }
     public void levelCheck(){
         if(player.getLevel() == 1){
+            level = level1;
             leveltiles = leveltiles1;
             player = player1;
         }
         if(player.getLevel() == 2){
+            level = level2;
             leveltiles = leveltiles2;
             player = player2;
         }else{
             //animator.stop();
+        }
+    }
+    public void changeLevel(){
+        if(player.getLevel() == 1){
+            level = level2;
+            leveltiles = leveltiles2;
+            player = player2;
+            pane1.getChildren().removeAll(player.getGameObject(),player1.getGameObject(), player2.getGameObject());
+            pane2.getChildren().removeAll(player.getGameObject(),player1.getGameObject(), player2.getGameObject());
+            level_menu = false; level_1 = false; level_2 = true;
+            stage.setScene(scene2);
+            stage.show();
+            pane2.getChildren().add(player.getGameObject());
         }
     }
     public VBox menuCreator(){
@@ -476,6 +536,7 @@ public class Xgame extends Application{
         save=new Button("Save Game");
         highscore=new Button("Highscore");
         exit = new Button("Exit");
+        
         start.setOnAction(e-> menuLogic(e));
         load.setOnAction(e-> menuLogic(e));
         highscore.setOnAction(e-> menuLogic(e));
@@ -483,26 +544,31 @@ public class Xgame extends Application{
         exit.setOnAction(e-> menuLogic(e));
         VBox box = new VBox();
         box.getChildren().addAll(start,load,save,highscore,exit);
+        box.setTranslateX(400);
+        box.setTranslateY(600);
         return box;
     }
     public void menuLogic(ActionEvent e){
         
         if (e.getSource()==start){
             player = player1;
+            level.createLevel(level1.level_1());
             pane1.getChildren().removeAll(player.getGameObject(),player1.getGameObject(), player2.getGameObject());
             pane2.getChildren().removeAll(player.getGameObject(),player1.getGameObject(), player2.getGameObject());
-            pane1.getChildren().add(player.getGameObject());
+            level_menu = false;
+            
             stage.setScene(scene1);
             stage.show();
+            pane1.getChildren().add(player.getGameObject());
         }
         if (e.getSource()==load){
-            System.out.println("load");
+            //System.out.println("load");
         }
         if (e.getSource()==save){
-            System.out.println("save");
+            //System.out.println("save");
         }
         if (e.getSource()==highscore){
-            System.out.println("highscore");
+            //System.out.println("highscore");
         }
         if (e.getSource()==exit){
             System.exit(0);

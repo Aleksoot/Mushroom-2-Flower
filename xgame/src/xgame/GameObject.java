@@ -5,6 +5,7 @@
  */
 package xgame;
 
+import java.util.List;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
@@ -61,5 +62,8 @@ public class GameObject {
         this.tile.setX(x - this.tilesize );
         this.tile.setY(y - this.tilesize );
         root.getChildren().add( this.tile );
+    }
+    public boolean colliding(Rectangle first, Rectangle second ){
+        return first.getBoundsInParent().intersects(second.getBoundsInParent());
     }
 }
