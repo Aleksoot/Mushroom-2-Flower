@@ -14,6 +14,8 @@ import com.sun.javafx.tk.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import static java.lang.Math.abs;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,8 +91,8 @@ public class Xgame extends Application{
    List<Tile> leveltiles, leveltiles1, leveltiles2;
    Player player, player1, player2;
    String src_slash;
-   Rectangle rect1;
-   TranslateTransition ft;
+   Rectangle rect1, rect2, fball;
+   TranslateTransition ft, ft2, ftfb;
    Pane panemenu, pane1, pane2, pane3;
    Button btnscene1, btnscene2;
    Button start, load, save, highscore, exit;
@@ -98,7 +100,7 @@ public class Xgame extends Application{
     Scene scenemenu, scene1, scene2, scene3;
     Stage stage;
    int frameCount=0;
-   SpriteAnimation player_right,player_left,player_fall,player_fall_left,player_idle,player_idle_left,skeleton_right,skeleton_left;
+   SpriteAnimation player_right,player_left,player_fall,player_fall_left,player_idle,player_idle_left,skeleton_right,skeleton_left,dragon_right,dragon_left,fireball_left,fireball_right;
    AnimationTimer animator;
    boolean animating = true;
    public boolean frameChanged=false;
@@ -106,7 +108,35 @@ public class Xgame extends Application{
    public long playerY;
    public boolean playerJump;
    public int jumpTick;
-    @Override
+    
+   public void spawnpoints (){
+        try {
+            File spawns = new File(resourcesDirectory.getAbsolutePath()+"spawning.txt");
+            FileReader spawner = new FileReader(spawns);
+            BufferedReader bufferedspawner = new BufferedReader(spawner);
+            StringBuffer stringspawn = new StringBuffer();
+            String line;
+            while ((line = bufferedspawner.readLine()) != null) {
+                String[] array1 = line.split(":");
+                String[] array2 = array1[1].split(",");
+                String[] array3 = array1[2].split(".");
+                String[] array4 = array1[3].split("'");
+                for (int i = 0; i < array4.length; i++)
+                    //spawn(array1[i], array2[i], array3[i], array4[i]);
+                stringspawn.append(line);
+                stringspawn.append("\n");
+            }
+            spawner.close();
+            System.out.println("Contents of file:");
+            System.out.println(stringspawn.toString());
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void spawn(int xenemypos, int yenemypos, int enemytype, int level){
+    }
+   @Override
     public void start(Stage primaryStage) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
         
         stage = primaryStage;
@@ -167,12 +197,16 @@ public class Xgame extends Application{
         player_idle_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"idle_left") ) );
         skeleton_right = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"skeleton"+src_slash+"walk_right") ) );
         skeleton_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"skeleton"+src_slash+"walk") ) );
+        dragon_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"dragon_left") ) );
+        dragon_right = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"dragon_right") ) ); 
+        fireball_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"fireball_left") ) );
+        fireball_right = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"fireball_right") ) );       
        
         animator = new AnimationTimer(){
            
             long before = System.nanoTime();
             long before2 = before;
-            double pos_last;
+            double pos_last,pos_last2;
             @Override
             public void handle(long now) {
                 if(!level_menu){
@@ -193,11 +227,16 @@ public class Xgame extends Application{
                          player_idle_left.changeFrame(frameChanged);
                          skeleton_right.changeFrame(frameChanged);
                          skeleton_left.changeFrame(frameChanged);
+                         dragon_right.changeFrame(frameChanged);
+                         dragon_left.changeFrame(frameChanged);
+                         fireball_left.changeFrame(frameChanged);
+                         fireball_right.changeFrame(frameChanged);
                          if(playerJump){
                             jumpTick++;
                         }
                          player.checkAlive();
                          pos_last = rect1.getTranslateX();
+                         pos_last2 = rect2.getTranslateX();
                             frameChanged = false;
                      }else{
                          //another frame
@@ -243,16 +282,33 @@ public class Xgame extends Application{
                         pane1.getChildren().add(t);
                     }
                     ft.stop();
+                    ft2.stop();
                     this.stop();
                 }
                 double pos_now = rect1.getTranslateX();
+                double pos_now2 = rect2.getTranslateX();
                 if(pos_now > pos_last){
                     rect1.setFill(skeleton_right.getFrame());
                 }else if(pos_now < pos_last ){
                     rect1.setFill(skeleton_left.getFrame());
                 }
-                
-                
+                if(pos_now2 > pos_last2){
+                    rect1.setFill(dragon_right.getFrame());
+                }else if(pos_now2 < pos_last2 ){
+                    rect1.setFill(dragon_left.getFrame());
+                }
+                /** 
+                 * Trying to get fireball conditions working
+                 */
+                /* if(posy >= 300){
+                    System.out.println("Fire!");
+                    fball.setVisible(true);
+                    fball.setFill(fireball_right.getFrame());
+                }
+                else{
+                    //System.out.println("Y axis: " + posy);
+                    fball.setVisible(false);
+                }*/
                 if(player.movingRight()){ 
                     player.moveRight();
                     player.getGameObject().setFill(player_right.getFrame());
@@ -362,16 +418,32 @@ public class Xgame extends Application{
 
         
         rect1 = new Rectangle(160,360,60,60);
-
+        rect2 = new Rectangle(400,200,80,80);
+        fball = new Rectangle(250,450,50,50);
+        fball.setVisible(false);
+        fball.setFill(Color.ORANGE);
         rect1.setFill(Color.RED);
+        rect2.setFill(Color.YELLOW);
 
         ft = new TranslateTransition(Duration.millis(2000), rect1);
         ft.setFromX(0f);
         ft.setByX(90);
         ft.setCycleCount(Timeline.INDEFINITE);
         ft.setAutoReverse(true);
-        s.getChildren().addAll(rect1);
+        ft2 = new TranslateTransition(Duration.millis(2000), rect2);
+        ft2.setFromX(0f);
+        ft2.setByX(90);
+        ft2.setCycleCount(Timeline.INDEFINITE);
+        ft2.setAutoReverse(true);
+        ftfb = new TranslateTransition(Duration.millis(1000), fball);
+        ftfb.setFromX(0f);
+        ftfb.setByX(400);
+        ftfb.setCycleCount(Timeline.INDEFINITE);
+        ftfb.setAutoReverse(false);
+        s.getChildren().addAll(rect1,rect2,fball);
         ft.play();
+        ft2.play();
+        ftfb.play();
         return s;
         
     }
