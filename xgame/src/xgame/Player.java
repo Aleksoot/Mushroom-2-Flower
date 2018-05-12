@@ -50,6 +50,7 @@ String os = System.getProperty("os.name").toLowerCase();
     boolean jumping;
     int controll = 0;
     public int level = 0;
+    public int score = 0;
     public int playerHealth = 100;
     public boolean jumpingTick=false;
     private boolean alive = true;
@@ -76,6 +77,12 @@ String os = System.getProperty("os.name").toLowerCase();
       
        System.out.println("Player has spawned");
        id = 1; 
+    }
+    public int getScore(){
+        return this.score;
+    }
+    public void addScore(int increment){
+        this.score += increment;
     }
     public void setLevel(int i){
         this.level = i;
@@ -265,18 +272,15 @@ String os = System.getProperty("os.name").toLowerCase();
             }
         }
 }
-    public void collideObject(List<Tile> leveltiles, Type type){
-        for (Tile tile : leveltiles) {
-            
-            if( tile.getType() == type){
-                if(this.getGameObject().getBoundsInParent().intersects(tile.getGameObject().getBoundsInParent())){
-                System.out.println("end");
-                }else{}
+    public boolean collideObject(List<Rectangle> rectangles){
+        for (Rectangle object : rectangles) {
+            if(this.getGameObject().getBoundsInParent().intersects(object.getBoundsInParent())){
+                return true;
             }
-            
-        
         }
+        return false;
     }
+    
     public void checkAlive(){
         if(this.playerHealth > 0){
             this.alive = true;
@@ -285,7 +289,12 @@ String os = System.getProperty("os.name").toLowerCase();
         }
         
     }
-
+    public int getHealth(){
+        return this.playerHealth;
+    }
+    public void changeHealth(double increment){
+        this.playerHealth += increment;
+    }
      
     
     public void reset(){

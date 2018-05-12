@@ -87,9 +87,11 @@ public class Xgame extends Application{
    boolean level_menu=true, level_1=false, level_2=false;
    Level level, level1, level2;
    List<Tile> leveltiles, leveltiles1, leveltiles2;
+   List<Rectangle> enemies, enemies1, enemies2;
    Player player, player1, player2;
    String src_slash;
-   Rectangle rect1;
+   Text points;
+   Rectangle rect1,health,health1,health2;
    TranslateTransition ft;
    Pane panemenu, pane1, pane2, pane3;
    Button btnscene1, btnscene2;
@@ -110,7 +112,11 @@ public class Xgame extends Application{
     public void start(Stage primaryStage) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
         
         stage = primaryStage;
+        
         stage.setResizable(false);
+        enemies=new ArrayList();
+        enemies1=new ArrayList();
+        enemies2=new ArrayList();
         level = new Level();
         level1 = new Level();
         level2 = new Level();
@@ -125,7 +131,7 @@ public class Xgame extends Application{
         player2.getGameObject().setX(60);
         player2.getGameObject().setY(810);
         player2.setLevel(2);
-        
+     
         btnscene1=new Button("next level");
         btnscene2=new Button("previous level");
         btnscene1.setOnAction(e-> testClicked(e));
@@ -136,10 +142,12 @@ public class Xgame extends Application{
         level2.createLevel(level2.level_2());
         leveltiles1 = level1.getLevelTiles();
         leveltiles2 = level2.getLevelTiles();
-        pane1 = drawLevel(level1);
-        pane2 = drawLevel(level2);
-//        pane1.getChildren().addAll(btnscene1);
-//        pane2.getChildren().addAll(btnscene2);
+        pane1 = drawLevel1(level1);
+        pane2 = drawLevel2(level2);
+        health = new Rectangle(200,20);
+        health.setFill(Color.GREEN);
+        health.setX(30); health.setY(5);
+       pane1.getChildren().add(health);
         Rectangle logo = new Rectangle(300,300);
         logo.setX(300); logo.setY(200);
         File logofile = new File(resourcesDirectory.getAbsolutePath()+src_slash+"logo.png");
@@ -180,6 +188,7 @@ public class Xgame extends Application{
                 levelCheck();
                 controls();
                 player.colliding(leveltiles, Type.solid);
+                health.setWidth( player.getHealth()*2);
 
                  if (now > before + 0.02e+9) {
                      //changes frame every 0.02e+9ns
@@ -196,6 +205,16 @@ public class Xgame extends Application{
                          if(playerJump){
                             jumpTick++;
                         }
+                         if(player.collideObject(enemies1)){
+                            player.changeHealth(-0.1);
+                            if(player.getHealth()>60){
+                                health.setFill(Color.GREEN);
+                            }else if(player.getHealth()>30 && player.getHealth()<60){
+                                health.setFill(Color.ORANGE);
+                            }else{
+                                health.setFill(Color.RED);
+                            }
+                        }else{System.out.println("im good");}
                          player.checkAlive();
                          pos_last = rect1.getTranslateX();
                             frameChanged = false;
@@ -212,7 +231,7 @@ public class Xgame extends Application{
                 if(player.getGameObject().getBoundsInLocal().intersects(level.getEnd().getBoundsInLocal())){
                     changeLevel();
                 }
-                 
+                
                   
                  if(playerJump ){
                         
@@ -220,31 +239,31 @@ public class Xgame extends Application{
                         
                      
                  }
-                if(!player.isAlive()){
-                    try {
-                        playAudio(resourcesDirectory.getAbsolutePath()+src_slash+"music"+src_slash+"sad.wav");
-                    } catch (UnsupportedAudioFileException ex) {
-                        Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-                    } catch (IOException ex) {
-                        Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-                    } catch (LineUnavailableException ex) {
-                        Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-                    }
-                    Text t = new Text (300, 450, "You are DEAD!");
-                    t.setFont(Font.font ("Verdana", 60));
-                    t.setFill(Color.RED);
-                    if(player.getLevel() == 1){
-                        pane1.getChildren().add(t);
-                    }
-                    if(player.getLevel() == 2){
-                        pane1.getChildren().add(t);
-                    }
-                    if(player.getLevel() == 3){
-                        pane1.getChildren().add(t);
-                    }
-                    ft.stop();
-                    this.stop();
-                }
+//                if(!player.isAlive()){
+//                    try {
+//                        playAudio(resourcesDirectory.getAbsolutePath()+src_slash+"music"+src_slash+"sad.wav");
+//                    } catch (UnsupportedAudioFileException ex) {
+//                        Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//                    } catch (IOException ex) {
+//                        Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//                    } catch (LineUnavailableException ex) {
+//                        Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//                    }
+//                    Text t = new Text (300, 450, "You are DEAD!");
+//                    t.setFont(Font.font ("Verdana", 60));
+//                    t.setFill(Color.RED);
+//                    if(player.getLevel() == 1){
+//                        pane1.getChildren().add(t);
+//                    }
+//                    if(player.getLevel() == 2){
+//                        pane1.getChildren().add(t);
+//                    }
+//                    if(player.getLevel() == 3){
+//                        pane1.getChildren().add(t);
+//                    }
+//                    ft.stop();
+//                    this.stop();
+//                }
                 double pos_now = rect1.getTranslateX();
                 if(pos_now > pos_last){
                     rect1.setFill(skeleton_right.getFrame());
@@ -275,6 +294,7 @@ public class Xgame extends Application{
                      player.setFalling(true);
                     player.fall();
                 }
+                
                 if(player.getCollidingYu()){
                     player.setFalling(false);
                     
@@ -350,7 +370,7 @@ public class Xgame extends Application{
         audio.start();
 	}
 
-    private Pane drawLevel(Level level) throws IOException {
+    private Pane drawLevel1(Level level) throws IOException {
         //Level is created
         Pane s = new Pane();
         src_slash = src();
@@ -359,21 +379,46 @@ public class Xgame extends Application{
         //startMusic(); 
 
         s.getChildren().addAll(level.getRoot(), player.getGameObject());
-
+        points = new Text (500, 20, "Score: "+player.getScore());
+        points.setFont(Font.font ("Verdana", 20));
         
-        rect1 = new Rectangle(160,360,60,60);
+        rect1 = new Rectangle(160,810,60,60);
 
         rect1.setFill(Color.RED);
-
+        enemies1.add(rect1);
         ft = new TranslateTransition(Duration.millis(2000), rect1);
         ft.setFromX(0f);
         ft.setByX(90);
         ft.setCycleCount(Timeline.INDEFINITE);
         ft.setAutoReverse(true);
-        s.getChildren().addAll(rect1);
+        s.getChildren().addAll(rect1,points);
         ft.play();
         return s;
+    }
+    private Pane drawLevel2(Level level) throws IOException {
+        //Level is created
+        Pane s = new Pane();
+        src_slash = src();
+        leveltiles = level.getLevelTiles();
+
+        //startMusic(); 
+
+        s.getChildren().addAll(level.getRoot(), player.getGameObject());
+        points = new Text (500, 20, "Score: "+player.getScore());
+        points.setFont(Font.font ("Verdana", 20));
         
+        rect1 = new Rectangle(160,810,60,60);
+
+        rect1.setFill(Color.RED);
+        enemies2.add(rect1);
+        ft = new TranslateTransition(Duration.millis(2000), rect1);
+        ft.setFromX(0f);
+        ft.setByX(90);
+        ft.setCycleCount(Timeline.INDEFINITE);
+        ft.setAutoReverse(true);
+        s.getChildren().addAll(rect1,points);
+        ft.play();
+        return s;
     }
 
     public String src(){
@@ -552,6 +597,7 @@ public class Xgame extends Application{
         
         if (e.getSource()==start){
             player = player1;
+            
             level.createLevel(level1.level_1());
             pane1.getChildren().removeAll(player.getGameObject(),player1.getGameObject(), player2.getGameObject());
             pane2.getChildren().removeAll(player.getGameObject(),player1.getGameObject(), player2.getGameObject());
