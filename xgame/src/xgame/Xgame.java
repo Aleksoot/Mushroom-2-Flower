@@ -134,7 +134,7 @@ public class Xgame extends Application{
             e.printStackTrace();
         }
     }
-    public void spawn(int xenemypos, int yenemypos, int enemytype, int level){
+    public void spawn(int xenemypos, int yenemypos, char enemytype, int level){
     }
    @Override
     public void start(Stage primaryStage) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
