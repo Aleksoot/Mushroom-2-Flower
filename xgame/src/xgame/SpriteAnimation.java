@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package xgame;
 
 import java.awt.image.BufferedImage;
@@ -20,20 +15,47 @@ import javax.swing.ImageIcon;
  *
  * @author faete
  */
+/** Class: public class SpriteAnimation
+ * This class allows the searching, creating & implementation of images/gifs
+ * By routing to a directory, identifying images/gifs, storing them into an array
+ * and finally using them upon the creation of an object with methods and the updating of frames.
+ *
+ * "String os" retrieving os name and converting to lower case for easier reading and identifying
+ * "int sprites" starts at 0 but increases as new objects add new images or folders containing images
+ * "public BufferedImage visible" as long as no object or image is created/retrieved, nothing will be visible
+ * "public List<BufferedImage> images" no images are retrieved until an object calls
+ *                                    "SpriteAnimation" which will then add images to the list.
+ * "controll" is an integer that keeps track of the number of sprites for change/modification. 
+*/
 public class SpriteAnimation {
     String os = System.getProperty("os.name").toLowerCase();
     int sprites = 0;
     public BufferedImage visible = null;
     public List<BufferedImage> images = null;
     int controll = 0;
-    
+    /* Method: public SpriteAnimation(List<BufferedImage> images)
+     * A method that adds images (or a folder of images) to a list for the specified created object.
+     * As the method get these images from the source directory,
+     * It retrieves its dimensions and image identity.
+     * Images are only visible when an object is called via a changeFrame or getFrame method.
+    */
     public SpriteAnimation(List<BufferedImage> images) {
         
         this.sprites = images.size();
         this.images = images;
         this.visible = images.get(0);
     }
-   
+        /** Method: public void changeFrame(boolean framechange)
+        * boolean framechange this is to check when a framechange is true for a created SpriteAnimation object
+        *This method allows the framechanger to work in conjunction with the animation timer
+        *which updates the current image object's frame. 
+        *If any changes are made via a called method,
+        *then a frame change tied to the method will then take effect on the next frame.
+        *The "if" statement is controll keeping track of the sprites.
+        *When the sprites must be updated for the next frame, controll is then added on so it knows how many
+        *sprite updates will occur for the next frame.
+        *It resets itself to zero once the frame change requires no new sprites or changes. 
+        */
     public void changeFrame(boolean framechange){
         
         if(framechange && controll < sprites){
@@ -45,10 +67,21 @@ public class SpriteAnimation {
             visible = images.get(controll);
         }
     }
+    /** Method: public ImagePattern getFrame()
+    * This method uses a created SpriteAnimation object (image or gif)
+    * Calling this method with a created object will use the image (or images in a specific folder)
+    * will then get the selected "frame" based on the image's path.
+    * @return this returns the current frame for an object 
+    */
     public ImagePattern getFrame(){
             return new ImagePattern(SwingFXUtils.toFXImage(visible, null ));
     }
-    
+    /** Method: public String src()
+    * Splitting the different pathing.
+    * Windows amd Mac use different symbols to split each level of a directory
+    * If statement detects Windows or Mac and will use the appropriate directory splitter
+    * @return returns src_slash as a standard sting to indentify for directing to a path.
+    */
     public String src(){
         
         String src_slash;

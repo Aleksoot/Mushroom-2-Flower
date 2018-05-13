@@ -63,6 +63,7 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import java.util.BitSet;
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -106,7 +107,7 @@ public class Xgame extends Application{
    public boolean frameChanged=false;
    public boolean frameChanged2=false;
    public long playerY;
-   public boolean playerJump;
+   public boolean playerJump, s1, s2;
    public int jumpTick;
     @Override
     public void start(Stage primaryStage) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
@@ -191,6 +192,7 @@ public class Xgame extends Application{
                 long now2 = now;
                 levelCheck();
                 controls();
+                //controls2();
                 player.colliding(leveltiles, Type.solid);
                 health.setWidth( player.getHealth()*2);
 
@@ -464,27 +466,30 @@ public class Xgame extends Application{
             stage.show();
         }
     }
+    public void controls2(){
+        stage.getScene().setOnKeyPressed(e ->  {
+            
+        }
+        );}
     public void controls(){
         stage.getScene().setOnKeyPressed(e -> {
             
             if (e.getCode() == KeyCode.LEFT) {
                 player.setMovingLeft(true);
-                
+                s1 = true;
             }
             if (e.getCode() == KeyCode.F9) {
                 
                 stage.setScene(scenemenu);
                 stage.show();
             }
-            if (e.getCode() == KeyCode.F8) {
-                playerJump = true;
-            }
+            
             if (e.getCode() == KeyCode.RIGHT) {
                 player.setMovingRight(true); 
                 
             }
             if (e.getCode() == KeyCode.UP) {
-                
+                s2 = true;
                 player.setFacingLeft(false);
                 player.setFacingRight(false);
                 
@@ -542,6 +547,10 @@ public class Xgame extends Application{
         stage.getScene().setOnKeyReleased(e -> {
        player.setMovingRight(false);
         player.setMovingLeft(false);
+        
+           if (e.getCode() == KeyCode.F8) {
+                playerJump = true;
+           }
         
            if (e.getCode() == KeyCode.LEFT) {
                     player.setMovingLeft(false);
