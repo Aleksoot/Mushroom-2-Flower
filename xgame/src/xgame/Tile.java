@@ -14,7 +14,7 @@ import javafx.scene.shape.Rectangle;
 /** Class: public class Tile extends GameObject
  *  Tile is another GameObject that has its own properties outside of the GameObject class
  *  A tile is a "sqaure" on the gameboard.
- *  These squares are divided into 32x32 pixel areas.
+ *  These squares are divided into 30x30 pixel areas.
  *  Each of these areas has an property based on the type of tile that is set on the x and y pixel values.
  */
 public class Tile extends GameObject{

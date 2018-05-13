@@ -27,31 +27,54 @@ import xgame.Tile.Type;
 
 /**
  *
- * @author faete
+ * @author faete Josef
+ */
+/** Class: level
+ * This class creates levels inside the gameboard.
+ * It does this by creating a new pane for the gameboard.
+ * It also creates a leveltiles list that stores an array 
+ * containing the tile ids for every 30 x 30 tile (tilesize = 30)
+ * level1 uses the array of tile ids to create a level based on where the ids are inside the array (from left to right)
+ * each tile is defined as a rectangle with the given x and y sizes of the tilesize integer.
  */
 public class Level {
     
     public Pane root = new Pane();
     private List<Tile> leveltiles = new ArrayList<>();
-   
-    
     private int[] level1;
     private int tilesize = 30;
+    
     public Rectangle end = new Rectangle(tilesize,tilesize);
     Rectangle[][] test = new Rectangle[tilesize][tilesize];
-   
+/**
+ * the board are the borders for the level hence tilesize-1
+ * on board creation, no images are assigned to it
+ */   
     public GameObject[][] board = new GameObject[tilesize-1][tilesize-1];
-    TilePane grid = new TilePane();
+    TilePane grid = new TilePane(); //this isnt used for anything
     BufferedImage testbilde = null;
     Image image = null;
     
     
-
-
+    /**
+     * @return returns the root where anything can be placed on this specific pane
+     * can be used to apply the pane to a specific created level
+     */
     public Pane getRoot() {
         return root;
     }
-    
+    /** Method: public Pane createLevel(int[] level)
+     * @param level , this is the level value that when called, will initiate a level given the correct 
+     * level value (eg. 1 or 2)
+     * This method creates the level.
+     * the level is created based on the size of the pane "root" 
+     * (which is then given the correct tilesize so the whole pane's dimensions can be calculated)
+     * gbValue is the level id value
+     * Image[] bilder retrieves and image and is given the total possible ids for the tiles
+     * bilder gets those specific tile ids
+     * count starts at 0 since no level int has been given yet
+     * @return returns the root pane that the level is created in
+     */
     public Pane createLevel(int[] level){
         
         root.setPrefSize(tilesize*tilesize, tilesize*tilesize);
@@ -73,7 +96,11 @@ public class Level {
                 image = SwingFXUtils.toFXImage(testbilde, null);
                
                 Tile tile = new Tile();
-                
+                /**
+                 * This means that all tile ids defined in the gameboard that meet the if statement 
+                 * will be defined as solid objects 
+                 * ids 0,65 & 567 are reserved
+                 */
                 tile.setId( gbValue );
                 int co = 0;
                 if(gbValue > 0 && gbValue != 65 && gbValue != 567){ 
@@ -85,7 +112,10 @@ public class Level {
                 tile.fillGameObject(image);
                 }
                 else{tile.getGameObject().setFill(Color.TRANSPARENT);}
-                
+                /**
+                 * Once the ids are all read (up to 565) a message confirming this will display.
+                 * Afterwards, its get the end values for the x and y positions
+                 */
                 tile.getGameObject().setX(j*tilesize);
                 tile.getGameObject().setY(i*tilesize);
                 if( gbValue == 565){
@@ -93,6 +123,11 @@ public class Level {
                     end.setX(tile.getGameObject().getX());
                     end.setY(tile.getGameObject().getY());
                 }
+                /**
+                 * Here, it adds the tiles to the level
+                 * It also inherits the tile properties from GameObject class 
+                 * for every tile added, the counter counts up.
+                 */
                 leveltiles.add(tile);
                 root.getChildren().add(tile.getGameObject());
                 count++;  
@@ -117,7 +152,12 @@ public class Level {
     public int[] level_2(){
         return this.gameboard_2;
     }
-  
+    /** Method: public Image[] getSprites(int antall)
+     * This method is able to retrieve the image file needed to display certain sprites (images)
+     * Based on the id that they were read from.
+     * @param antall , the number of sprites that will be read from the image
+     * @return returns the read and split image file into their own sprites to be used for the level
+     */
     public Image[] getSprites(int antall) {
         BufferedImage source = null;
         File resourcesDirectory = new File("src/xgame");
@@ -130,13 +170,20 @@ public class Level {
         }else{
             src_slash = "/";
         }
+        /**
+         * This is the image where the sprites come from
+         * The .png file is read using an ImageIO (input/output) object that is able to read from a directory
+         */
         try {
             source= (ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"level.png")));
                 
         } catch (IOException ex) {
             
         }
-       
+        /**
+         * Having read the image file. It will now be seperating the squares 
+         * by 32 pixels in the x direction and 32 pixels in the y direction
+         */
         Image[] sprites = new Image[antall];
         Image sprite;
         int z = 0;
@@ -152,7 +199,14 @@ public class Level {
         }
         return sprites;
     }
-
+/**
+ * This is level 1
+ * This is where the level is created from the ids inside the Image[] array
+ * each id corresponds the a 32x32 rectangle of the read .png image
+ * For example, ID 217 represents a solid well (the if statement approved id 217 as a solid object)
+ * ID 217 also corresponds to a rectangle of dirt from the .png image
+ * IDs that are 0 are empty spaces with no collision
+ */
   int[] gameboard_1 = new int[]{
         217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,
 217,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,217,
@@ -185,7 +239,10 @@ public class Level {
 217,567,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,217,
 217,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,217
 };
- 
+ /**
+  * This level works the same way as the 1st level does
+  * IDs representing each solid and empty space inside the pane
+  */
 int[] gameboard_2 = new int[]{
     217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,
 217,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,217,
