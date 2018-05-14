@@ -87,7 +87,7 @@ public class Xgame extends Application{
    SpriteAnimation player_fall;
    public boolean frameChanged=false;
    int score = 0;
-   File file = new File(resourcesDirectory.getAbsolutePath()+src_slash+"scores"+src_slash+"score");
+   File file = new File(resourcesDirectory.getAbsolutePath()+src_slash+"scores"+src_slash+"score.txt");
    
     @Override
     public void start(Stage primaryStage) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
@@ -119,7 +119,7 @@ public class Xgame extends Application{
                 if(!player.isFalling() ){
                     player.setMovingRight(true);
                     player.jump();
-                    score += 1;
+                    score += 2;
                     try{
             PrintWriter output = new PrintWriter(file);
             output.println(score);
