@@ -11,6 +11,8 @@ import com.sun.javafx.jmx.MXNodeAlgorithm;
 import com.sun.javafx.jmx.MXNodeAlgorithmContext;
 import com.sun.javafx.sg.prism.NGNode;
 import com.sun.javafx.tk.Toolkit;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -109,58 +111,55 @@ public class Xgame extends Application{
    public long playerY;
    public boolean playerJump, s1, s2;
    public int jumpTick;
+   GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+   int screenHeight = gd.getDisplayMode().getHeight();
+   double tilesize = 30; double scale=1;
+    
     @Override
     public void start(Stage primaryStage) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
         
         stage = primaryStage;
-        
+        if(screenHeight < 1080){
+            scale = 0.666;
+            tilesize = 30*scale;
+           
+        }
+        System.out.println("screenheight: "+screenHeight);
         stage.setResizable(false);
-        enemies=new ArrayList();
-        enemies1=new ArrayList();
-        enemies2=new ArrayList();
-        level = new Level();
-        level1 = new Level();
-        level2 = new Level();
-        player = new Player();
+        enemies=new ArrayList(); enemies1=new ArrayList(); enemies2=new ArrayList();
         
-        player1 = new Player(); 
-        player1.getGameObject().setX(60);
-        player1.getGameObject().setY(810);
-        player1.setLevel(1);
+        level = new Level(); level1 = new Level(); level2 = new Level();
+        player = new Player(); player1 = new Player();  player2 = new Player(); 
         
-        player2 = new Player(); 
-        player2.getGameObject().setX(60);
-        player2.getGameObject().setY(810);
-        player2.setLevel(2);
+        player1.getGameObject().setX(2*20); player1.getGameObject().setY(27*10); player1.setLevel(1);
+        player2.getGameObject().setX(60); player2.getGameObject().setY(810); player2.setLevel(2);
      
-        btnscene1=new Button("next level");
-        btnscene2=new Button("previous level");
-        btnscene1.setOnAction(e-> testClicked(e));
-        btnscene2.setOnAction(e-> testClicked(e));
+        btnscene1=new Button("next level"); btnscene2=new Button("previous level");
+        btnscene1.setOnAction(e-> testClicked(e)); btnscene2.setOnAction(e-> testClicked(e));
         lblscene1=new Label("Scene 1");
         
-        level1.createLevel(level1.level_1());
-        level2.createLevel(level2.level_2());
-        leveltiles1 = level1.getLevelTiles();
-        leveltiles2 = level2.getLevelTiles();
-        pane1 = drawLevel1(level1);
-        pane2 = drawLevel2(level2);
-        health = new Rectangle(200,20);
+        level1.createLevel(level1.level_1()); leveltiles1 = level1.getLevelTiles();
+        level2.createLevel(level2.level_2()); leveltiles2 = level2.getLevelTiles();
+        
+        
+        pane1 = drawLevel1(level1); pane2 = drawLevel2(level2);
+        
+        health = new Rectangle(scale*tilesize, (scale*tilesize)-(scale*tilesize*0.3));
         health.setFill(Color.GREEN);
-        health.setX(30); health.setY(5);
-       pane1.getChildren().add(health);
-        Rectangle logo = new Rectangle(300,300);
-        logo.setX(300); logo.setY(200);
+        health.setX( 30*scale ); health.setY( 5*scale);
+        pane1.getChildren().addAll(health,player1.hitTop(),player1.hitDown(),player1.hitLeft(),player1.hitRight,player1.playerBox());
+        Rectangle logo = new Rectangle(tilesize*10,tilesize*10);
+        logo.setX(tilesize*10); logo.setY(200);
         File logofile = new File(resourcesDirectory.getAbsolutePath()+src_slash+"logo.png");
         Image logoimg = new Image(logofile.toURI().toString());
         logo.setFill(new ImagePattern(logoimg));
         panemenu = new Pane();
         File fil = new File(resourcesDirectory.getAbsolutePath()+src_slash+"sky.jpg");
-        ImageView background = new ImageView(new Image(fil.toURI().toString(), 930, 930, false, false));
+        ImageView background = new ImageView(new Image(fil.toURI().toString(), (tilesize*30)+30,(tilesize*30)+30, false, false));
         panemenu.getChildren().addAll(background, logo, menuCreator() );
-        scenemenu = new Scene(panemenu,900,900);
-        scene1 = new Scene(pane1,900,900);
-        scene2 = new Scene(pane2,900,900);
+        scenemenu = new Scene(panemenu,tilesize*30,tilesize*30);
+        scene1 = new Scene(pane1,tilesize*30,tilesize*30);
+        scene2 = new Scene(pane2,tilesize*30,tilesize*30);
         
         stage.setScene(scenemenu);
         stage.setTitle("Hello World!");
@@ -192,10 +191,10 @@ public class Xgame extends Application{
                 long now2 = now;
                 levelCheck();
                 controls();
-                //controls2();
+                if(player.isFalling()) player.fall(); player.stopY = false;
                 player.colliding(leveltiles, Type.solid);
-                health.setWidth( player.getHealth()*2);
-
+                health.setWidth( player.getHealth()*2*scale);
+               
                  if (now > before + 0.02e+9) {
                      //changes frame every 0.02e+9ns
                      if(frameChanged){
@@ -220,7 +219,7 @@ public class Xgame extends Application{
                             }else{
                                 health.setFill(Color.RED);
                             }
-                        }else{System.out.println("im good");}
+                        }else{}
                          player.checkAlive();
                          pos_last = rect1.getTranslateX();
                             frameChanged = false;
@@ -296,15 +295,21 @@ public class Xgame extends Application{
                     
                     
                 }
-                if(!playerJump){
-                     player.setFalling(true);
-                    player.fall();
-                }
+                
+//                System.out.println("Yu: "+player.getCollidingYu());
                 
                 if(player.getCollidingYu()){
                     player.setFalling(false);
+                    player.stopY = true;
                     
+                }else{
+                    player.setFalling(true);
+                    player.stopY = false;
                 }
+                if(player.isJumping()){
+                    player.stopY = false;
+                }
+             
                 if(!player.getCollidingYu() ){
                    
                     if(player.facingRight()){
@@ -488,13 +493,13 @@ public class Xgame extends Application{
                 player.setMovingRight(true); 
                 
             }
-            if (e.getCode() == KeyCode.UP) {
+            if (e.getCode() == KeyCode.UP && !player.collisionYo) {
                 s2 = true;
                 player.setFacingLeft(false);
                 player.setFacingRight(false);
                 
             }
-            if (e.getCode() == KeyCode.SPACE && player.facingRight()) {
+            if (e.getCode() == KeyCode.SPACE && player.facingRight() && !player.collisionYo) {
                 
                 if(!player.isFalling() ){
                     player.setMovingRight(true);
@@ -510,7 +515,7 @@ public class Xgame extends Application{
                 }
                 }
             } 
-            if (e.getCode() == KeyCode.SPACE && player.facingLeft()) {
+            if (e.getCode() == KeyCode.SPACE && player.facingLeft() && !player.collisionYo) {
                 
                 if(!player.isFalling() ){
                     player.setMovingLeft(true);
@@ -602,8 +607,8 @@ public class Xgame extends Application{
         exit.setOnAction(e-> menuLogic(e));
         VBox box = new VBox();
         box.getChildren().addAll(start,load,save,highscore,exit);
-        box.setTranslateX(400);
-        box.setTranslateY(600);
+        box.setTranslateX((400/30)*tilesize);
+        box.setTranslateY((600/30)*tilesize);
         return box;
     }
     public void menuLogic(ActionEvent e){

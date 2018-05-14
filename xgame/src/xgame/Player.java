@@ -24,6 +24,7 @@ import javafx.animation.TranslateTransition;
 import javafx.animation.Transition;
 import static javafx.application.Platform.exit;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.geometry.Bounds;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -48,23 +49,30 @@ public class Player extends GameObject{
 String os = System.getProperty("os.name").toLowerCase();
     
     boolean jumping;
-    int controll = 0;
+    
     public int level = 0;
     public int score = 0;
     public int playerHealth = 100;
     public boolean jumpingTick=false;
     private boolean alive = true;
-    boolean collisionXr = false;
-    boolean collisionXl = false;
-    boolean collisionYo;
-    boolean collisionYu;
-    boolean movingRight = false;
-    boolean movingLeft = false;
-    boolean facingRight = false;
-    boolean facingLeft = false;
+    boolean collisionXr, collisionXl, collisionYo, collisionYu;
+    boolean stopY=false;
+    
+    boolean movingRight, movingLeft, facingRight=true, facingLeft;
     boolean falling = true;
     public ImageView sprite;
-    public Animation animation;
+    
+    
+    double tilesize = this.getTilesize();
+    //Outer hitbox
+    public Rectangle hitTop = new Rectangle();
+    public Rectangle hitRight = new Rectangle();
+    public Rectangle hitDown = new Rectangle();
+    public Rectangle hitLeft = new Rectangle();
+    //Inner hitbox
+    public Rectangle playerBox = new Rectangle();
+    public double scale = this.getScale();
+    public double playerBoxSize = 0.666*tilesize;
     /**
      * Inheriting the necessary parameters from GameObject (specifically setX/setY)
      * Defining the x and y Positions at the start of movement.
@@ -73,10 +81,27 @@ String os = System.getProperty("os.name").toLowerCase();
      */
     
     public Player() {
+        
        super();
       
        System.out.println("Player has spawned");
        id = 1; 
+    }
+   
+    public Rectangle playerBox(){
+        return this.playerBox;
+    }
+    public Rectangle hitTop(){
+        return this.hitTop;
+    }
+    public Rectangle hitDown(){
+        return this.hitDown;
+    }
+    public Rectangle hitLeft(){
+        return this.hitLeft;
+    }
+    public Rectangle hitRight(){
+        return this.hitRight;
     }
     public int getScore(){
         return this.score;
@@ -166,10 +191,8 @@ String os = System.getProperty("os.name").toLowerCase();
         return this.collisionYu;
     }
     public void fall(){
-        if(!collisionYu && falling){
-            this.getGameObject().setY(this.getGameObject().getY()+3);
-        }else if(jumping){
-            this.getGameObject().setY(this.getGameObject().getY()-10);
+        if(!this.collisionYu ){
+            this.getGameObject().setY(this.getGameObject().getY()+(3*scale));
         }
     }
 
@@ -186,7 +209,7 @@ String os = System.getProperty("os.name").toLowerCase();
         }else{
             this.facingLeft = true;
             this.facingRight = false;
-            this.getGameObject().setX(this.getGameObject().getX()-3);
+            this.getGameObject().setX(this.getGameObject().getX()-(3*scale));
         }
     }
     public void moveRight(){
@@ -196,22 +219,49 @@ String os = System.getProperty("os.name").toLowerCase();
         }else{
           this.facingLeft = false;
             this.facingRight = true;
-            this.getGameObject().setX(this.getGameObject().getX()+3);
+            this.getGameObject().setX(this.getGameObject().getX()+(3*scale));
         }
     }
  
     public void jump(){
         if(!falling){
-            this.getGameObject().setY(this.getGameObject().getY()-90);
+            this.getGameObject().setY(this.getGameObject().getY()-(90*scale));
         } 
         
     }
     
-    public void stopY(){
-        this.getGameObject().setY(this.getGameObject().getY());
-    }
+
 
     public void colliding(List<Tile> leveltiles, Type type ){
+        
+        this.hitTop.setX(this.getGameObject().getX()+2);
+        this.hitTop.setY(this.getGameObject().getY()-2);
+        this.hitTop.setWidth(tilesize-4);
+        this.hitTop.setHeight(1);
+        
+        this.hitDown.setX(this.getGameObject().getX()+2);
+        this.hitDown.setY(this.getGameObject().getY()+tilesize);
+        this.hitDown.setWidth(tilesize-4);
+        this.hitDown.setHeight(1);
+        
+        this.hitLeft.setX(this.getGameObject().getX());
+        this.hitLeft.setY(this.getGameObject().getY()+2);
+        this.hitLeft.setWidth(1);
+        this.hitLeft.setHeight(tilesize-4);
+        
+        this.hitRight.setX(this.getGameObject().getX()+tilesize);
+        this.hitRight.setY(this.getGameObject().getY()+2);
+        this.hitRight.setWidth(1);
+        this.hitRight.setHeight(tilesize-4);
+        
+        this.playerBox.setX(this.getGameObject().getX() + (playerBoxSize / 4));
+        
+        this.playerBox.setY(this.getGameObject().getY() + (playerBoxSize / 4));
+        this.playerBox.setWidth(playerBoxSize);
+        this.playerBox.setHeight(playerBoxSize);
+        playerBox.setFill(Color.RED);
+        
+        
         
         double playerSize = this.getTilesize();
         double xPos = this.getGameObject().getX();
@@ -221,53 +271,100 @@ String os = System.getProperty("os.name").toLowerCase();
         
         for (Tile tile : leveltiles) {
             
+            if(colliding( tile.getGameObject(), hitDown() ) && colliding( tile.getGameObject(), hitTop() ) && this.jumping){
+                this.fall();
+            }
             if( tile.getType() == type){
+                
                 double tileY = tile.getGameObject().getY();
                 double tileYmin = tileY - playerSize;
                 double tileX = tile.getGameObject().getX();
                 double tileXmin = tileX - playerSize;
                
-       
-                //Collision right of player
-                if( yPos-1 >= tileYmin && yPosMin+1 <= tileY && xPos == tileXmin){
+                
+                //Under
+                if( !colliding( tile.getGameObject(), hitDown() )  && !stopY ){
+                    this.collisionYu = false;
                     
-                    //tile.getGameObject().setFill(Color.RED);
-                    this.collisionXr = true;
-                    this.movingRight = false; 
                 }else{
-                    this.collisionXr = false;
-                } 
-                //Collision left of player
-                if( yPos-1 >= tileYmin && yPosMin+1 <= tileY && xPosMin == tileX){
-                    //tile.getGameObject().setFill(Color.GREEN);
-                    this.collisionXl = true;
-                    this.movingLeft = false;
-               }else{
-                    this.collisionXl = false;
+                    
+                    this.stopY = true;
+                    this.collisionYu = true;
+                    
                 }
+                //over
+                if( !colliding( tile.getGameObject(), hitTop() ) ){
+                    
+                   this.collisionYo = false;
+                }else{
+                   
+                    
+                    this.collisionYo = true;
+                   
+                    
+                }
+                if( colliding( tile.getGameObject(), playerBox() ) ){
+                    this.stopY = false;
+                    this.fall();
+                }
+                //right
+                if( !colliding( tile.getGameObject(), hitRight() ) ){
+                    
+                   this.collisionXr = false;
+                   
+                }else{
+                    this.movingRight = false; 
+                    this.collisionXr = true;
+                }
+                 //left
+                if( !colliding( tile.getGameObject(), hitLeft() ) ){
+                    
+                   this.collisionXl = false;
+                   
+                }else{
+                    this.movingLeft = false; 
+                    this.collisionXl = true;
+                }
+//                //Collision right of player
+//                if( yPos-1 >= tileYmin && yPosMin+1 <= tileY && xPos == tileXmin){
+//                    
+//                    //tile.getGameObject().setFill(Color.RED);
+//                    this.collisionXr = true;
+//                    this.movingRight = false; 
+//                }else{
+//                    this.collisionXr = false;
+//                } 
+                //Collision left of player
+//                if( yPos-1 >= tileYmin && yPosMin+1 <= tileY && xPosMin == tileX){
+//                    //tile.getGameObject().setFill(Color.GREEN);
+//                    this.collisionXl = true;
+//                    this.movingLeft = false;
+//               }else{
+//                    this.collisionXl = false;
+//                }
 //                System.out.println("tileY: "+yPos);
 //                System.out.println("tileYmin: "+yPosMin);
                 //Collision under player 
-                if(  xPos >= tileXmin+1 && xPosMin <= tileX-1 ){  
-                    if(yPos == tileYmin){
-//                    tile.getGameObject().setFill(Color.RED);
-                    this.falling = false;
-                    this.collisionYu = true;
-                    }
-                    if(yPos > tileYmin ){this.collisionYu = false;}
-                }
-                //Collision over player 
-                if( xPos >= tileXmin+1 && xPosMin <= tileX-1 ){  
-                    if(yPosMin != tileY){
-                        this.collisionYo = false;
-                    }
-                    else{
-                    //tile.getGameObject().setFill(Color.YELLOWGREEN);
-                    this.collisionYo = true;
-                    this.falling = true;
-//                    this.jumping = false;
-                    }
-                }
+//                if(  xPos >= tileXmin+1 && xPosMin <= tileX-1 ){  
+//                    if(yPos == tileYmin){
+////                    tile.getGameObject().setFill(Color.RED);
+//                    this.falling = false;
+//                    this.collisionYu = true;
+//                    }
+//                    if(yPos > tileYmin ){this.collisionYu = false;}
+//                }
+//                //Collision over player 
+//                if( xPos >= tileXmin+1 && xPosMin <= tileX-1 ){  
+//                    if(yPosMin != tileY){
+//                        this.collisionYo = false;
+//                    }
+//                    else{
+//                    //tile.getGameObject().setFill(Color.YELLOWGREEN);
+//                    this.collisionYo = true;
+//                    this.falling = true;
+////                    this.jumping = false;
+//                    }
+//                }
                     
             }
         }
@@ -280,7 +377,12 @@ String os = System.getProperty("os.name").toLowerCase();
         }
         return false;
     }
-    
+    public boolean colliding(Rectangle rect1, Rectangle rect2){
+        if(rect1.getBoundsInParent().intersects(rect2.getBoundsInParent())){
+                return true;
+            }
+        return false;
+    }
     public void checkAlive(){
         if(this.playerHealth > 0){
             this.alive = true;
@@ -289,6 +391,7 @@ String os = System.getProperty("os.name").toLowerCase();
         }
         
     }
+    
     public int getHealth(){
         return this.playerHealth;
     }

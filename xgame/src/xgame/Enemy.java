@@ -29,7 +29,6 @@ import javafx.util.Duration;
 import javax.imageio.ImageIO;
 import javax.swing.Timer;
 import xgame.Tile.Type;
-
 /** enemy
  *
  * @author josef

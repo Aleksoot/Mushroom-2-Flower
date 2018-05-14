@@ -5,6 +5,8 @@
  */
 package xgame;
 
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.util.List;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -21,13 +23,20 @@ import static javax.swing.Spring.height;
 public class GameObject {
     public Rectangle tile = new Rectangle();
     public int id;
-    public int tilesize=30;
+    public int tiles=30;
+    public double tilesize=0;
+    public double scale;
     public Image bg;
     public Node node;
+    
+    GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+   int screenHeight=0;
     public GameObject(){
+        setScale();
+        setTileSize();
         tile.setHeight(tilesize);
         tile.setWidth(tilesize);
- 
+        
         //System.out.println("new gameobject");
     }
     public Rectangle getGameObject(){
@@ -38,16 +47,36 @@ public class GameObject {
         this.tile.setFill(new ImagePattern(x));
      
     }
+    public void setTileSize(){
+        screenHeight = gd.getDisplayMode().getHeight();
+        if(screenHeight < 1080){
+            this.tilesize = 30*scale;
+        }else{
+            this.tilesize = 30;
+        }
+    }
     public boolean isColliding(GameObject other) {
         return getGameObject().getBoundsInParent().intersects(other.getGameObject().getBoundsInParent());
     }
-
-    public int getTilesize() {
-        return tilesize;
+    public void setScale(){
+        if(this.tilesize < 30){
+            this.scale = 0.666;
+        }else{
+            this.scale=1;
+        }
+        
     }
-
-    public void setTilesize(int tilesize) {
-        this.tilesize = tilesize;
+    public double getScale(){
+        return this.scale;
+    }
+    public int getTiles() {
+        return tiles;
+    }
+    public double getTilesize() {
+        return this.tilesize;
+    }
+    public void setTilesize(int tiles) {
+        this.tilesize = tiles;
     }
 
      public int getId() {

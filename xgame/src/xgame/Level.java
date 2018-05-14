@@ -5,6 +5,8 @@
  */
 package xgame;
 
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
 import java.io.File;
@@ -42,19 +44,29 @@ public class Level {
     public Pane root = new Pane();
     private List<Tile> leveltiles = new ArrayList<>();
     private int[] level1;
-    private int tilesize = 30;
-    
-    public Rectangle end = new Rectangle(tilesize,tilesize);
-    Rectangle[][] test = new Rectangle[tilesize][tilesize];
+    private double tilesize = 0;
+    private int tiles = 30;
+    GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+    int screenHeight=0;
+    public Rectangle end = new Rectangle(tiles,tiles);
 /**
  * the board are the borders for the level hence tilesize-1
  * on board creation, no images are assigned to it
  */   
-    public GameObject[][] board = new GameObject[tilesize-1][tilesize-1];
-    TilePane grid = new TilePane(); //this isnt used for anything
+    public GameObject[][] board = new GameObject[tiles-1][tiles-1];
+    
     BufferedImage testbilde = null;
     Image image = null;
     
+    public void setTileSize(){
+        screenHeight = gd.getDisplayMode().getHeight();
+        if(screenHeight < 1080){
+            this.tilesize = 30*0.666;
+        }else{
+            this.tilesize = 30.0;
+        }
+       
+    }
     
     /**
      * @return returns the root where anything can be placed on this specific pane
@@ -76,16 +88,16 @@ public class Level {
      * @return returns the root pane that the level is created in
      */
     public Pane createLevel(int[] level){
-        
-        root.setPrefSize(tilesize*tilesize, tilesize*tilesize);
+         setTileSize();
+        root.setPrefSize(tilesize*tiles, tiles*tilesize);
         int gbValue = 0;
         Image[] bilder = new Image[768];
         bilder = getSprites(768);
         int count = 0; 
 
-        for(int i=0; i < tilesize; i++){
+        for(int i=0; i < tiles; i++){
             
-           for(int j=0; j < tilesize; j++ ){
+           for(int j=0; j < tiles; j++ ){
                 
                 if(level[count]>0){
               
@@ -116,6 +128,7 @@ public class Level {
                  * Once the ids are all read (up to 565) a message confirming this will display.
                  * Afterwards, its get the end values for the x and y positions
                  */
+                System.out.println("tilesize: "+tilesize+"screenheight: "+screenHeight);
                 tile.getGameObject().setX(j*tilesize);
                 tile.getGameObject().setY(i*tilesize);
                 if( gbValue == 565){
