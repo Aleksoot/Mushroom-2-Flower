@@ -30,8 +30,8 @@ import javax.swing.ImageIcon;
 public class SpriteAnimation {
     String os = System.getProperty("os.name").toLowerCase();
     int sprites = 0;
-    public BufferedImage visible = null;
-    public List<BufferedImage> images = null;
+    public BufferedImage visible;
+    public List<BufferedImage> images;
     int controll = 0;
     /* Method: public SpriteAnimation(List<BufferedImage> images)
      * A method that adds images (or a folder of images) to a list for the specified created object.

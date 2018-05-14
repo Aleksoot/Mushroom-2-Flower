@@ -5,12 +5,7 @@
  */
 package xgame;
 
-import com.sun.javafx.geom.BaseBounds;
-import com.sun.javafx.geom.transform.BaseTransform;
-import com.sun.javafx.jmx.MXNodeAlgorithm;
-import com.sun.javafx.jmx.MXNodeAlgorithmContext;
-import com.sun.javafx.sg.prism.NGNode;
-import com.sun.javafx.tk.Toolkit;
+
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
@@ -21,63 +16,33 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import static java.lang.Math.abs;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 import javafx.animation.AnimationTimer;
+import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
 import javafx.application.Application;
-import static javafx.application.Application.launch;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.AudioClip;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
-import java.util.Collections;
-import javafx.animation.FadeTransition;
-import javafx.animation.Timeline;
-import javafx.animation.TranslateTransition;
-import javafx.geometry.Insets;
-import javafx.geometry.Point3D;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.transform.Rotate;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import java.util.BitSet;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
-import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -85,7 +50,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.ImageIcon;
+
 import xgame.Tile.Type;
 
 /**
@@ -119,17 +84,19 @@ public class Xgame extends Application{
    AnimationTimer animator;
    boolean animating = true;
    public boolean frameChanged=false;
-   public boolean frameChanged2=false;
+   
    public long playerY;
-   public boolean playerJump, s1, s2;
+   public boolean playerJump, disableJumping, s1, s2;
    public int jumpTick;
+   
    GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
    int screenHeight = gd.getDisplayMode().getHeight();
    double tilesize = 30; double scale=1;
-    
+//    Image bg1, bg2;
     @Override
-    public void start(Stage primaryStage) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
+    public void start(Stage primaryStage) throws Exception {
         
+        src_slash=src();
         stage = primaryStage;
         if(screenHeight < 1080){
             scale = 0.666;
@@ -150,22 +117,29 @@ public class Xgame extends Application{
         btnscene1.setOnAction(e-> testClicked(e)); btnscene2.setOnAction(e-> testClicked(e));
         lblscene1=new Label("Scene 1");
         
+//        File bg_1 = new File(resourcesDirectory.getAbsolutePath()+src_slash+"forest.jpg");
+//        File bg_2 = new File(resourcesDirectory.getAbsolutePath()+src_slash+"BG.png");
+//       
+//        try{
+//            BufferedImage buff1 = ImageIO.read(bg_1); bg1 = SwingFXUtils.toFXImage(buff1, null  );
+//            BufferedImage buff2 = ImageIO.read(bg_2); bg2 = SwingFXUtils.toFXImage(buff2, null );
+//        }catch(Exception e){
+//            e.printStackTrace();
+//        }
         level1.createLevel(level1.level_1()); leveltiles1 = level1.getLevelTiles();
         level2.createLevel(level2.level_2()); leveltiles2 = level2.getLevelTiles();
         
-        File forest = new File(resourcesDirectory.getAbsolutePath()+src_slash+"logo.png");
-        Image f2 = new Image(forest.toURI().toString());
-        Rectangle bg1 = new Rectangle(900,900);
        
         
       
         pane1 = drawLevel1(level1); pane2 = drawLevel2(level2); panemenu = new Pane(); paneHighscore = new Pane();
        
-        pane1.getChildren().add(bg1);
+       
         health = new Rectangle(scale*tilesize, (scale*tilesize)-(scale*tilesize*0.3));
         health.setFill(Color.GREEN);
         health.setX( 30*scale ); health.setY( 5*scale);
         pane1.getChildren().addAll(health,player1.hitTop(),player1.hitDown(),player1.hitLeft(),player1.hitRight,player1.playerBox());
+        
         Rectangle logo = new Rectangle(tilesize*10,tilesize*10);
         logo.setX(tilesize*10); logo.setY(200);
         File logofile = new File(resourcesDirectory.getAbsolutePath()+src_slash+"logo.png");
@@ -237,6 +211,11 @@ public class Xgame extends Application{
                          skeleton_left.changeFrame(frameChanged);
                          if(playerJump){
                             jumpTick++;
+                            for(int i=0;i<3;i++){
+                                playerJump = true;
+                                disableJumping = true;
+                                player.setFalling(false);
+                            }
                         }
                          if(player.collideObject(enemies1)){
                             player.changeHealth(-0.1);
@@ -253,7 +232,7 @@ public class Xgame extends Application{
                             frameChanged = false;
                      }else{
                          //another frame
-                         if(jumpTick>3){jumpTick=0; playerJump=false; player.setFalling(true);}
+                         if(jumpTick>3){jumpTick=0; playerJump=false; disableJumping=false;}
                          frameChanged = true;
                      }
                      
@@ -267,10 +246,8 @@ public class Xgame extends Application{
                 
                   
                  if(playerJump ){
-                        
-                        player.getGameObject().setY(player.getGameObject().getY()-6);
-                        
                      
+                        player.getGameObject().setY(player.getGameObject().getY()-8);
                  }
 //                if(!player.isAlive()){
 //                    try {
@@ -332,10 +309,10 @@ public class Xgame extends Application{
                     
                 }else{
                     player.setFalling(true);
-                    player.stopY = false;
+                    disableJumping=true;
                 }
                 if(player.isJumping()){
-                    player.stopY = false;
+                    
                 }
              
                 if(!player.getCollidingYu() ){
@@ -412,7 +389,6 @@ public class Xgame extends Application{
     private Pane drawLevel1(Level level) throws IOException {
         //Level is created
         Pane s = new Pane();
-        src_slash = src();
         leveltiles = level.getLevelTiles();
 
         //startMusic(); 
@@ -437,7 +413,6 @@ public class Xgame extends Application{
     private Pane drawLevel2(Level level) throws IOException {
         //Level is created
         Pane s = new Pane();
-        src_slash = src();
         leveltiles = level.getLevelTiles();
 
         //startMusic(); 
@@ -477,7 +452,7 @@ public class Xgame extends Application{
   
         for (final File fileEntry : folder.listFiles()) {
            
-           list.add(ImageIO.read(new File(folder+src()+fileEntry.getName())));
+           list.add(ImageIO.read(new File(folder+src_slash+fileEntry.getName())));
         }
         return list;
     
@@ -506,7 +481,9 @@ public class Xgame extends Application{
         );}
     public void controls(){
         stage.getScene().setOnKeyPressed(e -> {
-            
+            if (e.getCode() == KeyCode.F8) {
+                playerJump = true;
+            }
             if (e.getCode() == KeyCode.LEFT) {
                 player.setMovingLeft(true);
                 s1 = true;
@@ -582,7 +559,7 @@ public class Xgame extends Application{
         player.setMovingLeft(false);
         
            if (e.getCode() == KeyCode.F8) {
-                playerJump = true;
+                disableJumping = true;
            }
         
            if (e.getCode() == KeyCode.LEFT) {
@@ -833,5 +810,7 @@ public void saveGame() throws UnsupportedEncodingException, FileNotFoundExceptio
         }
         
     }
+
+    
     
 }

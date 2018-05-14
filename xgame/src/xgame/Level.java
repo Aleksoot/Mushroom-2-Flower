@@ -18,11 +18,13 @@ import static javafx.application.Platform.exit;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
+import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 import xgame.Tile.Type;
 
@@ -46,6 +48,7 @@ public class Level {
     private int[] level1;
     private double tilesize = 0;
     private int tiles = 30;
+    public double scale;
     GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
     int screenHeight=0;
     public Rectangle end = new Rectangle(tiles,tiles);
@@ -55,14 +58,17 @@ public class Level {
  */   
     public GameObject[][] board = new GameObject[tiles-1][tiles-1];
     
-    BufferedImage testbilde = null;
-    Image image = null;
+    BufferedImage testbilde = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_GRAY);
+    Image image;
     
     public void setTileSize(){
         screenHeight = gd.getDisplayMode().getHeight();
         if(screenHeight < 1080){
-            this.tilesize = 30*0.666;
+            this.scale = 0.666;
+            this.tilesize = 30*scale;
+            
         }else{
+            this.scale = 1;
             this.tilesize = 30.0;
         }
        
@@ -87,12 +93,23 @@ public class Level {
      * count starts at 0 since no level int has been given yet
      * @return returns the root pane that the level is created in
      */
-    public Pane createLevel(int[] level){
+    public Pane createLevel(int[] level) throws IIOException{
          setTileSize();
+        
+         
+         
+//         Rectangle big = new Rectangle(900*scale,900*scale);
+//         big.setFill(new ImagePattern(bg));
+         
         root.setPrefSize(tilesize*tiles, tiles*tilesize);
+//        root.getChildren().add(big);
         int gbValue = 0;
         Image[] bilder = new Image[768];
-        bilder = getSprites(768);
+        try{
+            bilder = getSprites(768);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         int count = 0; 
 
         for(int i=0; i < tiles; i++){
@@ -104,9 +121,10 @@ public class Level {
                     gbValue = level[count]-1;
                 }else{ gbValue=65;}
                 
-                testbilde = SwingFXUtils.fromFXImage(bilder[gbValue], null);
-                image = SwingFXUtils.toFXImage(testbilde, null);
                
+                    testbilde = SwingFXUtils.fromFXImage(bilder[gbValue], null);
+                    image = SwingFXUtils.toFXImage(testbilde, null);
+              
                 Tile tile = new Tile();
                 /**
                  * This means that all tile ids defined in the gameboard that meet the if statement 
@@ -172,28 +190,16 @@ public class Level {
      * @param antall , the number of sprites that will be read from the image
      * @return returns the read and split image file into their own sprites to be used for the level
      */
-    public Image[] getSprites(int antall) {
-        BufferedImage source = null;
-        File resourcesDirectory = new File("src/xgame");
-        String src_slash;
-        String os = System.getProperty("os.name").toLowerCase();
-        if (os.indexOf("win") >= 0) {
-            //if windows
-            src_slash = "\\";
+    public Image[] getSprites(int antall) throws IIOException, IOException {
         
-        }else{
-            src_slash = "/";
-        }
+        
+        BufferedImage source = ImageIO.read(this.getClass().getResource("level.png"));
+  
         /**
          * This is the image where the sprites come from
          * The .png file is read using an ImageIO (input/output) object that is able to read from a directory
          */
-        try {
-            source= (ImageIO.read(new File(resourcesDirectory.getAbsolutePath()+src_slash+"level.png")));
-                
-        } catch (IOException ex) {
-            
-        }
+        
         /**
          * Having read the image file. It will now be seperating the squares 
          * by 32 pixels in the x direction and 32 pixels in the y direction
@@ -224,9 +230,9 @@ public class Level {
   int[] gameboard_1 = new int[]{
         217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,
 217,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,217,
+217,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,217,
 217,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,566,217,
 217,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,183,185,217,
-217,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,217,
 217,0,0,0,0,0,0,183,185,185,188,0,183,185,185,185,185,188,0,183,185,185,185,185,185,188,0,0,0,217,
 217,0,183,185,185,188,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,217,
 217,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,217,

@@ -260,48 +260,30 @@ String os = System.getProperty("os.name").toLowerCase();
         this.playerBox.setWidth(playerBoxSize);
         this.playerBox.setHeight(playerBoxSize);
         playerBox.setFill(Color.RED);
-        
-        
-        
-        double playerSize = this.getTilesize();
-        double xPos = this.getGameObject().getX();
-        double xPosMin = xPos - playerSize;
-        double yPos = this.getGameObject().getY();
-        double yPosMin = yPos - playerSize;
-        
+
         for (Tile tile : leveltiles) {
             
-            if(colliding( tile.getGameObject(), hitDown() ) && colliding( tile.getGameObject(), hitTop() ) && this.jumping){
-                this.fall();
-            }
+//            if(colliding( tile.getGameObject(), hitDown() ) && colliding( tile.getGameObject(), hitTop() ) && this.jumping){
+//                this.fall();
+//            }
             if( tile.getType() == type){
                 
-                double tileY = tile.getGameObject().getY();
-                double tileYmin = tileY - playerSize;
-                double tileX = tile.getGameObject().getX();
-                double tileXmin = tileX - playerSize;
+               
                
                 
                 //Under
                 if( !colliding( tile.getGameObject(), hitDown() )  && !stopY ){
                     this.collisionYu = false;
-                    
                 }else{
-                    
                     this.stopY = true;
                     this.collisionYu = true;
-                    
                 }
                 //over
                 if( !colliding( tile.getGameObject(), hitTop() ) ){
                     
                    this.collisionYo = false;
                 }else{
-                   
-                    
                     this.collisionYo = true;
-                   
-                    
                 }
                 if( colliding( tile.getGameObject(), playerBox() ) ){
                     this.stopY = false;
@@ -309,63 +291,19 @@ String os = System.getProperty("os.name").toLowerCase();
                 }
                 //right
                 if( !colliding( tile.getGameObject(), hitRight() ) ){
-                    
                    this.collisionXr = false;
-                   
                 }else{
                     this.movingRight = false; 
                     this.collisionXr = true;
                 }
                  //left
                 if( !colliding( tile.getGameObject(), hitLeft() ) ){
-                    
                    this.collisionXl = false;
-                   
                 }else{
                     this.movingLeft = false; 
                     this.collisionXl = true;
                 }
-//                //Collision right of player
-//                if( yPos-1 >= tileYmin && yPosMin+1 <= tileY && xPos == tileXmin){
-//                    
-//                    //tile.getGameObject().setFill(Color.RED);
-//                    this.collisionXr = true;
-//                    this.movingRight = false; 
-//                }else{
-//                    this.collisionXr = false;
-//                } 
-                //Collision left of player
-//                if( yPos-1 >= tileYmin && yPosMin+1 <= tileY && xPosMin == tileX){
-//                    //tile.getGameObject().setFill(Color.GREEN);
-//                    this.collisionXl = true;
-//                    this.movingLeft = false;
-//               }else{
-//                    this.collisionXl = false;
-//                }
-//                System.out.println("tileY: "+yPos);
-//                System.out.println("tileYmin: "+yPosMin);
-                //Collision under player 
-//                if(  xPos >= tileXmin+1 && xPosMin <= tileX-1 ){  
-//                    if(yPos == tileYmin){
-////                    tile.getGameObject().setFill(Color.RED);
-//                    this.falling = false;
-//                    this.collisionYu = true;
-//                    }
-//                    if(yPos > tileYmin ){this.collisionYu = false;}
-//                }
-//                //Collision over player 
-//                if( xPos >= tileXmin+1 && xPosMin <= tileX-1 ){  
-//                    if(yPosMin != tileY){
-//                        this.collisionYo = false;
-//                    }
-//                    else{
-//                    //tile.getGameObject().setFill(Color.YELLOWGREEN);
-//                    this.collisionYo = true;
-//                    this.falling = true;
-////                    this.jumping = false;
-//                    }
-//                }
-                    
+  
             }
         }
 }
