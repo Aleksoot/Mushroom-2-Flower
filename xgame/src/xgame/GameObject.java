@@ -25,7 +25,7 @@ public class GameObject {
     public int id;
     public int tiles=30;
     public double tilesize=0;
-    public double scale;
+    public double scale=1;
     public Image bg;
     public Node node;
     
@@ -37,7 +37,7 @@ public class GameObject {
         tile.setHeight(tilesize);
         tile.setWidth(tilesize);
         
-        //System.out.println("new gameobject");
+       
     }
     public Rectangle getGameObject(){
         return this.tile;
@@ -50,8 +50,10 @@ public class GameObject {
     public void setTileSize(){
         screenHeight = gd.getDisplayMode().getHeight();
         if(screenHeight < 1080){
-            this.tilesize = 30*scale;
+            this.scale = 0.666;
+            this.tilesize = 30*this.scale;
         }else{
+            this.scale = 1;
             this.tilesize = 30;
         }
     }

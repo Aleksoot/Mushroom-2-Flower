@@ -128,7 +128,7 @@ public class Level {
                  * Once the ids are all read (up to 565) a message confirming this will display.
                  * Afterwards, its get the end values for the x and y positions
                  */
-                System.out.println("tilesize: "+tilesize+"screenheight: "+screenHeight);
+               
                 tile.getGameObject().setX(j*tilesize);
                 tile.getGameObject().setY(i*tilesize);
                 if( gbValue == 565){
