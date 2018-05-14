@@ -1,0 +1,4 @@
+lvl:1
+playerX:40.0
+playerY:689.580000000003
+score:0
