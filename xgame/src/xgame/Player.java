@@ -233,7 +233,7 @@ String os = System.getProperty("os.name").toLowerCase();
 
 
     public void colliding(List<Tile> leveltiles, Type type ){
-        System.out.println("scale: "+scale);
+       
         this.hitTop.setX(this.getGameObject().getX()+2);
         this.hitTop.setY(this.getGameObject().getY()-2);
         this.hitTop.setWidth(tilesize-4);

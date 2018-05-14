@@ -57,7 +57,6 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.VBox;
@@ -73,6 +72,11 @@ import javafx.util.Duration;
 import java.util.BitSet;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
@@ -149,9 +153,15 @@ public class Xgame extends Application{
         level1.createLevel(level1.level_1()); leveltiles1 = level1.getLevelTiles();
         level2.createLevel(level2.level_2()); leveltiles2 = level2.getLevelTiles();
         
+        File forest = new File(resourcesDirectory.getAbsolutePath()+src_slash+"logo.png");
+        Image f2 = new Image(forest.toURI().toString());
+        Rectangle bg1 = new Rectangle(900,900);
+       
         
+      
         pane1 = drawLevel1(level1); pane2 = drawLevel2(level2); panemenu = new Pane(); paneHighscore = new Pane();
-        
+       
+        pane1.getChildren().add(bg1);
         health = new Rectangle(scale*tilesize, (scale*tilesize)-(scale*tilesize*0.3));
         health.setFill(Color.GREEN);
         health.setX( 30*scale ); health.setY( 5*scale);
@@ -163,13 +173,19 @@ public class Xgame extends Application{
         logo.setFill(new ImagePattern(logoimg));
         
         File fil = new File(resourcesDirectory.getAbsolutePath()+src_slash+"sky.jpg");
+        
         ImageView background = new ImageView(new Image(fil.toURI().toString(), (tilesize*30)+30,(tilesize*30)+30, false, false));
+        ImageView lvl1 = new ImageView(new Image(fil.toURI().toString(), (tilesize*30)+30,(tilesize*30)+30, false, false));
         ImageView bgcp = new ImageView(new Image(fil.toURI().toString(), (tilesize*30)+30,(tilesize*30)+30, false, false));
         panemenu.getChildren().addAll(background, logo, menuCreator() );
         paneHighscore.getChildren().addAll(bgcp, highScores());
         
         scenemenu = new Scene(panemenu,tilesize*30,tilesize*30);
         sceneHighscore = new Scene(paneHighscore,tilesize*30,tilesize*30);
+        
+        
+     
+        
         scene1 = new Scene(pane1,tilesize*30,tilesize*30);
         scene2 = new Scene(pane2,tilesize*30,tilesize*30);
         
@@ -766,33 +782,56 @@ public void saveGame() throws UnsupportedEncodingException, FileNotFoundExceptio
         fileChooser.setInitialDirectory(new File(resourcesDirectory.getAbsolutePath()+src_slash+"saves"));
         
         File file = fileChooser.showOpenDialog(stage);
-        
+        int lvl=0;
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
+            
             while ((line = br.readLine()) != null) {
+                String[] part;
                 if(line.startsWith("lvl:")){
-                   String[] part= line.split(":");  System.out.println(part[1]);
+                   part= line.split(":");  lvl=Integer.parseInt(part[1]);
                 }
                 if(line.startsWith("playerX:")){
-                   String[] part= line.split(":");  System.out.println(part[1]);
+                   part= line.split(":");
+                   if(lvl==1){
+                        player1.getGameObject().setX(Double.parseDouble(part[1]));
+                   }
+                   if(lvl==2){
+                        player2.getGameObject().setX(Double.parseDouble(part[1]));
+                   }
                 }
                 if(line.startsWith("playerY:")){
-                   String[] part= line.split(":");  System.out.println(part[1]);
+                   part= line.split(":");  
+                   if(lvl==1){
+                        player1.getGameObject().setY(Double.parseDouble(part[1]));
+                        player = player1;
+                   }
+                   if(lvl==2){
+                        player2.getGameObject().setY(Double.parseDouble(part[1]));
+                        player = player2;
+                   }
+                   
                 }
                 if(line.startsWith("score:")){
-                   String[] part= line.split(":");  System.out.println(part[1]);
+                    if(lvl==1){
+                        part= line.split(":");  System.out.println(part[1]);
+                    }
                 }
             }
-}
-    }
-    private void saveTextToFile(String content, File file) {
-        try {
-            PrintWriter writer;
-            writer = new PrintWriter(file);
-            writer.println(content);
-            writer.close();
-        } catch (IOException ex) {
             
+        }catch(IOException ex){ 
+            
+        }finally {
+            level.createLevel(level1.level_1());
+            pane1.getChildren().removeAll(player.getGameObject(),player1.getGameObject(), player2.getGameObject());
+            pane2.getChildren().removeAll(player.getGameObject(),player1.getGameObject(), player2.getGameObject());
+            level_menu = false;
+            
+            stage.setScene(scene1);
+            stage.show();
+            pane1.getChildren().add(player1.getGameObject());
         }
+        
     }
+    
 }

@@ -143,6 +143,7 @@ public class Level {
                  */
                 leveltiles.add(tile);
                 root.getChildren().add(tile.getGameObject());
+                
                 count++;  
                 
            }     
