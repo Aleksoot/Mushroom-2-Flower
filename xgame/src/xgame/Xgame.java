@@ -104,11 +104,11 @@ public class Xgame extends Application{
    Text points;
    Rectangle rect1,health,health1,health2;
    TranslateTransition ft;
-   Pane panemenu, pane1, pane2, pane3;
-   Button btnscene1, btnscene2;
+   Pane panemenu, paneHighscore, pane1, pane2, pane3;
+   Button back, btnscene1, btnscene2;
    Button start, load, save, highscore, exit;
     Label lblscene1, lblscene2;
-    Scene scenemenu, scene1, scene2, scene3;
+    Scene scenemenu, sceneHighscore, scene1, scene2, scene3;
     Stage stage;
    int frameCount=0;
    SpriteAnimation player_right,player_left,player_fall,player_fall_left,player_idle,player_idle_left,skeleton_right,skeleton_left,dragon_right,dragon_left,fireball_left,fireball_right;
@@ -150,7 +150,7 @@ public class Xgame extends Application{
         level2.createLevel(level2.level_2()); leveltiles2 = level2.getLevelTiles();
         
         
-        pane1 = drawLevel1(level1); pane2 = drawLevel2(level2);
+        pane1 = drawLevel1(level1); pane2 = drawLevel2(level2); panemenu = new Pane(); paneHighscore = new Pane();
         
         health = new Rectangle(scale*tilesize, (scale*tilesize)-(scale*tilesize*0.3));
         health.setFill(Color.GREEN);
@@ -161,16 +161,20 @@ public class Xgame extends Application{
         File logofile = new File(resourcesDirectory.getAbsolutePath()+src_slash+"logo.png");
         Image logoimg = new Image(logofile.toURI().toString());
         logo.setFill(new ImagePattern(logoimg));
-        panemenu = new Pane();
+        
         File fil = new File(resourcesDirectory.getAbsolutePath()+src_slash+"sky.jpg");
         ImageView background = new ImageView(new Image(fil.toURI().toString(), (tilesize*30)+30,(tilesize*30)+30, false, false));
+        ImageView bgcp = new ImageView(new Image(fil.toURI().toString(), (tilesize*30)+30,(tilesize*30)+30, false, false));
         panemenu.getChildren().addAll(background, logo, menuCreator() );
+        paneHighscore.getChildren().addAll(bgcp, highScores());
+        
         scenemenu = new Scene(panemenu,tilesize*30,tilesize*30);
+        sceneHighscore = new Scene(paneHighscore,tilesize*30,tilesize*30);
         scene1 = new Scene(pane1,tilesize*30,tilesize*30);
         scene2 = new Scene(pane2,tilesize*30,tilesize*30);
         
         stage.setScene(scenemenu);
-        stage.setTitle("Hello World!");
+        stage.setTitle("Mushroom 2 flower");
         
         stage.show();
         
@@ -665,9 +669,34 @@ public class Xgame extends Application{
         });
         VBox box = new VBox();
         box.getChildren().addAll(start,load,save,highscore,exit);
-        box.setTranslateX(400);
-        box.setTranslateY(600);
+        box.setTranslateX(400*scale);
+        box.setTranslateY(600*scale);
         return box;
+    }
+    public Pane highScores(){
+        
+        Pane pane = new Pane();
+        
+        Button back = new Button("Back"); back.setOnAction(e-> {
+            stage.setScene(scenemenu);
+            stage.show();
+        });
+        
+        VBox box = new VBox();
+        
+        Text headline = new Text (500*scale, 20*scale, "The hall of FAME");
+        headline.setFill(Color.BLACK);
+        headline.setFont(Font.font ("Verdana", 30*scale));
+        
+        Text h1 = new Text (500*scale, 20*scale, "1. josef333: 666");
+        h1.setFont(Font.font ("Verdana", 20*scale));
+        h1.setFill(Color.WHITE);
+        box.getChildren().addAll(headline,h1);
+        box.setTranslateX(250*scale);
+        box.setTranslateY(200*scale);
+        pane.getChildren().addAll(back, box);
+        return pane;
+    
     }
     public void menuLogic(ActionEvent e) throws UnsupportedEncodingException, FileNotFoundException, IOException{
         
@@ -699,11 +728,13 @@ public class Xgame extends Application{
             }
         }
         if (e.getSource()==highscore){
-            //System.out.println("highscore");
+            stage.setScene(sceneHighscore);
+            stage.show();
         }
         if (e.getSource()==exit){
             System.exit(0);
         }
+       
     }
 public void saveGame() throws UnsupportedEncodingException, FileNotFoundException{
         
