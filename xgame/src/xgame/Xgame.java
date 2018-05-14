@@ -12,8 +12,14 @@ import com.sun.javafx.jmx.MXNodeAlgorithmContext;
 import com.sun.javafx.sg.prism.NGNode;
 import com.sun.javafx.tk.Toolkit;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import static java.lang.Math.abs;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +70,9 @@ import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.util.BitSet;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -595,18 +604,68 @@ public class Xgame extends Application{
         highscore=new Button("Highscore");
         exit = new Button("Exit");
         
-        start.setOnAction(e-> menuLogic(e));
-        load.setOnAction(e-> menuLogic(e));
-        highscore.setOnAction(e-> menuLogic(e));
-        save.setOnAction(e-> menuLogic(e));
-        exit.setOnAction(e-> menuLogic(e));
+        start.setOnAction(e-> {
+            try {
+                menuLogic(e);
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
+        });
+        load.setOnAction(e-> {
+            try {
+                menuLogic(e);
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
+        });
+        highscore.setOnAction(e-> {
+            try {
+                menuLogic(e);
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
+        });
+        save.setOnAction(e-> {
+            try {
+                menuLogic(e);
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
+        });
+        exit.setOnAction(e-> {
+            try {
+                menuLogic(e);
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
+        });
         VBox box = new VBox();
         box.getChildren().addAll(start,load,save,highscore,exit);
         box.setTranslateX(400);
         box.setTranslateY(600);
         return box;
     }
-    public void menuLogic(ActionEvent e){
+    public void menuLogic(ActionEvent e) throws UnsupportedEncodingException, FileNotFoundException, IOException{
         
         if (e.getSource()==start){
             player = player1;
@@ -621,16 +680,84 @@ public class Xgame extends Application{
             pane1.getChildren().add(player.getGameObject());
         }
         if (e.getSource()==load){
-            //System.out.println("load");
+            loadGame();
         }
         if (e.getSource()==save){
             //System.out.println("save");
+            if(player.getLevel() != 0){
+                saveGame();
+            }else{
+                Alert alert = new Alert(AlertType.INFORMATION);
+                alert.setTitle("whoops!");
+                alert.setHeaderText(null);
+                alert.setContentText("You need to start playing first!");
+                alert.showAndWait();
+            }
         }
         if (e.getSource()==highscore){
             //System.out.println("highscore");
         }
         if (e.getSource()==exit){
             System.exit(0);
+        }
+    }
+    public void saveGame() throws UnsupportedEncodingException, FileNotFoundException{
+        
+        int lvl = player.getLevel();
+        double playerX = player.getGameObject().getX();
+        double playerY = player.getGameObject().getY();
+        
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extFilter);
+        fileChooser.setTitle("Save game");
+        fileChooser.setInitialDirectory(new File(resourcesDirectory.getAbsolutePath()+src_slash+"saves"));
+        
+        File file = fileChooser.showSaveDialog(stage);
+        if (file != null) {
+                PrintWriter writer = new PrintWriter(file, "UTF-8");
+                writer.println( "lvl:"+player.getLevel() );
+                writer.println( "playerX:"+player.getGameObject().getX() );
+                writer.println( "playerY:"+player.getGameObject().getY() );
+                writer.println( "score:"+player.getScore() );
+                writer.close();
+            }
+    }
+    public void loadGame() throws FileNotFoundException, IOException{
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extFilter);
+        fileChooser.setTitle("Save game");
+        fileChooser.setInitialDirectory(new File(resourcesDirectory.getAbsolutePath()+src_slash+"saves"));
+        
+        File file = fileChooser.showOpenDialog(stage);
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if(line.startsWith("lvl:")){
+                   String[] part= line.split(":");  System.out.println(part[1]);
+                }
+                if(line.startsWith("playerX:")){
+                   String[] part= line.split(":");  System.out.println(part[1]);
+                }
+                if(line.startsWith("playerY:")){
+                   String[] part= line.split(":");  System.out.println(part[1]);
+                }
+                if(line.startsWith("score:")){
+                   String[] part= line.split(":");  System.out.println(part[1]);
+                }
+            }
+}
+    }
+    private void saveTextToFile(String content, File file) {
+        try {
+            PrintWriter writer;
+            writer = new PrintWriter(file);
+            writer.println(content);
+            writer.close();
+        } catch (IOException ex) {
+            
         }
     }
 }
