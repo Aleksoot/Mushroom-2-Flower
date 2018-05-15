@@ -43,6 +43,7 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -65,19 +66,17 @@ public class Xgame extends Application{
    String os = System.getProperty("os.name").toLowerCase();
    AudioClip mediaPlayer;
    boolean level_menu=true, level_1=false, level_2=false;
-   Level level, level1, level2;
-   List<Tile> leveltiles, leveltiles1, leveltiles2;
-   List<Rectangle> enemies, enemies1, enemies2;
-   Player player, player1, player2;
-   String src_slash;
-   Text points, points1, points2;
-   String currentScore;
-   Rectangle rect1,health,health1,health2;
-   TranslateTransition ft;
-   Pane panemenu, paneHighscore, pane1, pane2, pane3;
-   Button back, btnscene1, btnscene2;
-   Button start, load, save, highscore, exit;
-    Label lblscene1, lblscene2;
+   Level level=new Level(), level1=new Level(), level2=new Level();
+   List<Tile> leveltiles=new ArrayList(), leveltiles1=new ArrayList(), leveltiles2=new ArrayList();
+   List<Rectangle> enemies=new ArrayList(), enemies1=new ArrayList(), enemies2=new ArrayList();
+   Player player=new Player(), player1=new Player(), player2=new Player();
+   String src_slash=new String();String currentScore=new String();
+   Text points=new Text(), points1=new Text(), points2=new Text();
+   Rectangle rect1=new Rectangle(),health=new Rectangle(),health1=new Rectangle(),health2=new Rectangle();
+   TranslateTransition ft=new TranslateTransition();
+   Pane panemenu=new Pane(), paneHighscore=new Pane(), pane1=new Pane(), pane2=new Pane();
+   Button back=new Button(),start=new Button(), load=new Button(), save=new Button(), highscore=new Button(), exit=new Button();
+ 
     Scene scenemenu, sceneHighscore, scene1, scene2, scene3;
     Stage stage;
    int frameCount=0;
@@ -95,7 +94,7 @@ public class Xgame extends Application{
    double tilesize = 30; double scale=1;
 //    Image bg1, bg2;
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) throws IIOException, IOException {
         
         src_slash=src();
         stage = primaryStage;
@@ -106,10 +105,9 @@ public class Xgame extends Application{
         }
         System.out.println("screenheight: "+screenHeight);
         stage.setResizable(false);
-        enemies=new ArrayList(); enemies1=new ArrayList(); enemies2=new ArrayList();
         
-        level = new Level(); level1 = new Level(); level2 = new Level();
-        player = new Player(); player1 = new Player();  player2 = new Player(); 
+        
+        
         
         player1.getGameObject().setX(25*tilesize); player1.getGameObject().setY(3*tilesize); player1.setLevel(1);
         player2.getGameObject().setX(60); player2.getGameObject().setY(810); player2.setLevel(2);
@@ -145,23 +143,23 @@ public class Xgame extends Application{
         
         Rectangle logo = new Rectangle(tilesize*10,tilesize*10);
         logo.setX(tilesize*10); logo.setY(200);
-        File logofile = new File(resourcesDirectory.getAbsolutePath()+src_slash+"logo.png");
-        Image logoimg = new Image(logofile.toURI().toString());
-        logo.setFill(new ImagePattern(logoimg));
+//        File logofile = new File(resourcesDirectory.getAbsolutePath()+src_slash+"logo.png");
+//        Image logoimg = new Image(logofile.toURI().toString());
+//        logo.setFill(new ImagePattern(logoimg));
         
         File fil = new File(resourcesDirectory.getAbsolutePath()+src_slash+"sky.jpg");
         
-        ImageView background = new ImageView(new Image(fil.toURI().toString(), (tilesize*30)+30,(tilesize*30)+30, false, false));
-        ImageView lvl1 = new ImageView(new Image(fil.toURI().toString(), (tilesize*30)+30,(tilesize*30)+30, false, false));
-        ImageView bgcp = new ImageView(new Image(fil.toURI().toString(), (tilesize*30)+30,(tilesize*30)+30, false, false));
-        panemenu.getChildren().addAll(background, logo, menuCreator() );
-        paneHighscore.getChildren().addAll(bgcp, highScores());
+//        ImageView background = new ImageView(new Image(fil.toURI().toString(), (tilesize*30)+30,(tilesize*30)+30, false, false));
+//        ImageView lvl1 = new ImageView(new Image(fil.toURI().toString(), (tilesize*30)+30,(tilesize*30)+30, false, false));
+//        ImageView bgcp = new ImageView(new Image(fil.toURI().toString(), (tilesize*30)+30,(tilesize*30)+30, false, false));
+        panemenu.getChildren().addAll(menuCreator() );
+        paneHighscore.getChildren().addAll(highScores());
         
         scenemenu = new Scene(panemenu,tilesize*30,tilesize*30);
         sceneHighscore = new Scene(paneHighscore,tilesize*30,tilesize*30);
         
         
-     
+        
         
         scene1 = new Scene(pane1,tilesize*30,tilesize*30);
         scene2 = new Scene(pane2,tilesize*30,tilesize*30);
@@ -449,10 +447,12 @@ public class Xgame extends Application{
     
     public List<BufferedImage> addFolderSprites(final File folder) throws IOException {
         List<BufferedImage> list = new ArrayList<BufferedImage>();
-  
+        if (folder.exists()) {
         for (final File fileEntry : folder.listFiles()) {
+          
+           list.add(ImageIO.read(new File(folder+src()+fileEntry.getName())));
            
-           list.add(ImageIO.read(new File(folder+src_slash+fileEntry.getName())));
+        }
         }
         return list;
     

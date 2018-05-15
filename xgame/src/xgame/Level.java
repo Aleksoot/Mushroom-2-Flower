@@ -59,7 +59,7 @@ public class Level {
     public GameObject[][] board = new GameObject[tiles-1][tiles-1];
     
     BufferedImage testbilde = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_GRAY);
-    Image image;
+    Image image=null;
     
     public void setTileSize(){
         screenHeight = gd.getDisplayMode().getHeight();
