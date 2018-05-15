@@ -258,17 +258,12 @@ String os = System.getProperty("os.name").toLowerCase();
         this.hitRight.setHeight(tilesize-4);
         
         this.playerBox.setX(this.getGameObject().getX() + (playerBoxSize / 4));
-        
         this.playerBox.setY(this.getGameObject().getY() + (playerBoxSize / 4));
         this.playerBox.setWidth(playerBoxSize);
         this.playerBox.setHeight(playerBoxSize);
-        playerBox.setFill(Color.RED);
-//        System.out.println("health: "+playerHealth+" lvl: "+level);
+       
         for (Tile tile : leveltiles) {
-            
-//            if(colliding( tile.getGameObject(), hitDown() ) && colliding( tile.getGameObject(), hitTop() ) && this.jumping){
-//                this.fall();
-//            }
+
             if( tile.getType() == type){
 
                 //Under
