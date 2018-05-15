@@ -5,7 +5,9 @@
  */
 package xgame;
 
-
+import java.util.Random;    
+import java.util.Scanner;
+import java.io.*;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
@@ -56,7 +58,7 @@ import xgame.Tile.Type;
 
 /**
  *
- * @author faete
+ * @author faete josef aleksoot
  */
 ///////
 public class Xgame extends Application{
@@ -76,7 +78,7 @@ public class Xgame extends Application{
    TranslateTransition ft=new TranslateTransition();
    Pane panemenu=new Pane(), paneHighscore=new Pane(), pane1=new Pane(), pane2=new Pane();
    Button back=new Button(),start=new Button(), load=new Button(), save=new Button(), highscore=new Button(), exit=new Button();
- 
+   
     Scene scenemenu, sceneHighscore, scene1, scene2, scene3;
     Stage stage;
    int frameCount=0;
@@ -335,10 +337,60 @@ public class Xgame extends Application{
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
+    
+    int highScore = 0;      
+    File file = new File("score.txt"); 
+    // make an instance of the Player class
+    Player spiller = new Player();
         launch(args);
         //System.out.println("Number of active threads from the given thread: " + Thread.activeCount());
-        
+    
+    // determine the high score    
+
+    try {
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        String line = reader.readLine();
+        while (line != null)                 // read the score file line by line
+        {
+            try {
+                int poeng = Integer.parseInt(line.trim());   // parse each line as an int
+                if (poeng > highScore)                       // and keep track of the largest
+                { 
+                    highScore = poeng; 
+                }
+            } catch (NumberFormatException e1) {
+                // ignore invalid scores
+                // System.err.println("ignoring invalid score: " + line);
+            }
+            line = reader.readLine();
+        }
+        reader.close();
+
+    } catch (IOException ex) {
+        System.err.println("ERROR reading scores from file");    
+    }
+
+
+    // display the high score
+    if (spiller.getScore() != 0)
+    {    
+        System.out.println("You now have the new high score! The previous high score was " + highScore);
+    } else if (spiller.getScore() == highScore) {
+        System.out.println("You tied the high score!");
+    } else {
+        System.out.println("The all time high score was " + highScore);
+    } 
+  // append the last score to the end of the file
+    try {
+        BufferedWriter output = new BufferedWriter(new FileWriter(file, true));
+        output.newLine();
+        output.append("" + spiller.getScore());
+        output.close();
+
+    } catch (IOException ex1) {
+        System.out.printf("ERROR writing score to file: %s\n", ex1);
+    }       
+    
     }
 
     public void startMusic() throws UnsupportedAudioFileException, IOException, LineUnavailableException{
