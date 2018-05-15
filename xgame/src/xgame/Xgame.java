@@ -34,6 +34,7 @@ import javafx.animation.AnimationTimer;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -89,7 +90,7 @@ public class Xgame extends Application{
    TranslateTransition ft=new TranslateTransition();
    Pane panemenu=new Pane(), paneHighscore=new Pane(), pane1=new Pane(), pane2=new Pane();
    Button back=new Button(),start=new Button(), load=new Button(), save=new Button(), highscore=new Button(), exit=new Button();
- 
+   Image bg1,bg2;
     Scene scenemenu, sceneHighscore, scene1, scene2, scene3;
     Stage stage;
    int frameCount=0;
@@ -105,7 +106,7 @@ public class Xgame extends Application{
    GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
    int screenHeight = gd.getDisplayMode().getHeight();
    double tilesize = 30; double scale=1;
-//    Image bg1, bg2;
+
     @Override
     public void start(Stage primaryStage) throws IIOException, IOException, URISyntaxException {
         
@@ -128,15 +129,15 @@ public class Xgame extends Application{
         points = new Text (500, 20, "Score: "); points.setFont(Font.font ("Verdana", 20));
         points1 = new Text (500, 20, "Score: "); points1.setFont(Font.font ("Verdana", 20));
         points2 = new Text (500, 20, "Score: "); points2.setFont(Font.font ("Verdana", 20));
-//        File bg_1 = new File(resourcesDirectory.getAbsolutePath()+src_slash+"forest.jpg");
-//        File bg_2 = new File(resourcesDirectory.getAbsolutePath()+src_slash+"BG.png");
-//       
-//        try{
-//            BufferedImage buff1 = ImageIO.read(bg_1); bg1 = SwingFXUtils.toFXImage(buff1, null  );
-//            BufferedImage buff2 = ImageIO.read(bg_2); bg2 = SwingFXUtils.toFXImage(buff2, null );
-//        }catch(Exception e){
-//            e.printStackTrace();
-//        }
+        File bg_1 = new File(resourcesDirectory.getAbsolutePath()+src_slash+"forest.jpg");
+        File bg_2 = new File(resourcesDirectory.getAbsolutePath()+src_slash+"BG.png");
+       
+        try{
+            BufferedImage buff1 = ImageIO.read(bg_1); bg1 = SwingFXUtils.toFXImage(buff1, null  );
+            BufferedImage buff2 = ImageIO.read(bg_2); bg2 = SwingFXUtils.toFXImage(buff2, null );
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         pane1 = (Pane)level1.createLevel(level1.level_1()); leveltiles1 = level1.getLevelTiles();
         pane2 = level2.createLevel(level2.level_2()); leveltiles2 = level2.getLevelTiles();
         
@@ -162,7 +163,7 @@ public class Xgame extends Application{
         
         File fil = new File(resourcesDirectory.getAbsolutePath()+src_slash+"sky.jpg");
         
-//        ImageView background = new ImageView(new Image(fil.toURI().toString(), (tilesize*30)+30,(tilesize*30)+30, false, false));
+        ImageView background = new ImageView(new Image(fil.toURI().toString(), (tilesize*30)+30,(tilesize*30)+30, false, false));
 //        ImageView lvl1 = new ImageView(new Image(fil.toURI().toString(), (tilesize*30)+30,(tilesize*30)+30, false, false));
 //        ImageView bgcp = new ImageView(new Image(fil.toURI().toString(), (tilesize*30)+30,(tilesize*30)+30, false, false));
         panemenu.getChildren().addAll(menuCreator() );
