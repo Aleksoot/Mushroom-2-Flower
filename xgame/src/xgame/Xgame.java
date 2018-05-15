@@ -17,9 +17,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -66,6 +68,7 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javafx.fxml.FXMLLoader;
+import static javafx.scene.input.DataFormat.URL;
 import xgame.Tile.Type;
 
 /**
@@ -129,45 +132,46 @@ public class Xgame extends Application{
         points = new Text (500, 20, "Score: "); points.setFont(Font.font ("Verdana", 20));
         points1 = new Text (500, 20, "Score: "); points1.setFont(Font.font ("Verdana", 20));
         points2 = new Text (500, 20, "Score: "); points2.setFont(Font.font ("Verdana", 20));
-        File bg_1 = new File(resourcesDirectory.getAbsolutePath()+src_slash+"forest.jpg");
-        File bg_2 = new File(resourcesDirectory.getAbsolutePath()+src_slash+"BG.png");
        
-        try{
-            BufferedImage buff1 = ImageIO.read(bg_1); bg1 = SwingFXUtils.toFXImage(buff1, null  );
-            BufferedImage buff2 = ImageIO.read(bg_2); bg2 = SwingFXUtils.toFXImage(buff2, null );
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+       
         pane1 = (Pane)level1.createLevel(level1.level_1()); leveltiles1 = level1.getLevelTiles();
         pane2 = level2.createLevel(level2.level_2()); leveltiles2 = level2.getLevelTiles();
         
-       
-        
-      
         pane1 = (Pane)drawLevel1(level1); pane2 = (Pane)drawLevel2(level2); panemenu = new Pane(); paneHighscore = new Pane();
-       
-       
+   
         health = new Rectangle(scale*tilesize, (scale*tilesize)-(scale*tilesize*0.3));
         health.setFill(Color.GREEN); health.setX( 30*scale ); health.setY( 5*scale);
         health1 = new Rectangle(scale*tilesize, (scale*tilesize)-(scale*tilesize*0.3));
         health1.setFill(Color.GREEN); health1.setX( 30*scale ); health1.setY( 5*scale);
         health2 = new Rectangle(scale*tilesize, (scale*tilesize)-(scale*tilesize*0.3));
         health2.setFill(Color.GREEN); health2.setX( 30*scale ); health2.setY( 5*scale);
-        //pane1.getChildren().addAll(health,player1.hitTop(),player1.hitDown(),player1.hitLeft(),player1.hitRight,player1.playerBox());
         
+        
+        InputStream sky = this.getClass().getResourceAsStream("sky.jpg");
+        InputStream b1 = this.getClass().getResourceAsStream("forest.jpg");
+        InputStream b2 = this.getClass().getResourceAsStream("BG.png");
+        InputStream log = this.getClass().getResourceAsStream("logo.png");
         Rectangle logo = new Rectangle(tilesize*10,tilesize*10);
         logo.setX(tilesize*10); logo.setY(200);
-        File logofile = new File(resourcesDirectory.getAbsolutePath()+src_slash+"logo.png");
-        Image logoimg = new Image(logofile.toURI().toString());
-        logo.setFill(new ImagePattern(logoimg));
+
+        logo.setFill(new ImagePattern(new Image(log)));
+//        
+//        File filMenu = new File(resourcesDirectory.getAbsolutePath()+src_slash+"sky.jpg");
+       
+//        File fil2 = new File(resourcesDirectory.getAbsolutePath()+src_slash+"BG.png");
         
-        File fil = new File(resourcesDirectory.getAbsolutePath()+src_slash+"sky.jpg");
+//        ImageView backgroundmenu = new ImageView();
+//        backgroundmenu.setImage(imagetest);
+
+        ImageView backgroundmenu = new ImageView(new Image(sky, (tilesize*30)+30,(tilesize*30)+30, false, false));
+        ImageView backgroundlvl1 = new ImageView(new Image(b1, (tilesize*30)+30,(tilesize*30)+30, false, false));
+        ImageView backgroundlvl2 = new ImageView(new Image(b2, (tilesize*30)+30,(tilesize*30)+30, false, false));
         
-        ImageView background = new ImageView(new Image(fil.toURI().toString(), (tilesize*30)+30,(tilesize*30)+30, false, false));
-//        ImageView lvl1 = new ImageView(new Image(fil.toURI().toString(), (tilesize*30)+30,(tilesize*30)+30, false, false));
-//        ImageView bgcp = new ImageView(new Image(fil.toURI().toString(), (tilesize*30)+30,(tilesize*30)+30, false, false));
-        panemenu.getChildren().addAll(menuCreator() );
+        panemenu.getChildren().addAll(backgroundmenu, logo, menuCreator() );
         paneHighscore.getChildren().addAll(highScores());
+        
+        pane1.getChildren().addAll(backgroundlvl1); backgroundlvl1.toBack();
+        pane2.getChildren().addAll(backgroundlvl2); backgroundlvl2.toBack();
         
         scenemenu = new Scene(panemenu,tilesize*30,tilesize*30);
         sceneHighscore = new Scene(paneHighscore,tilesize*30,tilesize*30);
@@ -477,8 +481,7 @@ public class Xgame extends Application{
         
         
         while ((entry = stream.getNextEntry()) != null ) {
-          if(entry.getName().contains(file)){
-              System.out.println(entry.getName());  
+          if(entry.getName().contains(file)){  
               InputStream inputStream = zipFile.getInputStream(entry);
               imgs.add( ImageIO.read( inputStream ));
           }
