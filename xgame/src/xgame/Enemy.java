@@ -140,7 +140,9 @@ public class Enemy extends GameObject{
      * X direction for horizontal movement (tied with "A" and "D")
      * Jump for temporarily moving in the vertical direction (using "SPACE")
      */
-    
+    public void move(){
+        this.getGameObject().setX(this.getGameObject().getX()+2);
+    }
     public void moveLeft(){
         if(collisionXl){
             this.getGameObject().setX(this.getGameObject().getX());

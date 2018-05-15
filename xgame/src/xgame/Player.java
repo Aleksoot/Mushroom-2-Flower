@@ -270,10 +270,7 @@ String os = System.getProperty("os.name").toLowerCase();
 //                this.fall();
 //            }
             if( tile.getType() == type){
-                
-               
-               
-                
+
                 //Under
                 if( !colliding( tile.getGameObject(), hitDown() )  && !stopY ){
                     this.collisionYu = false;

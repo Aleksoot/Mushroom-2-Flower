@@ -9,21 +9,34 @@ package xgame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 import javafx.animation.AnimationTimer;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -51,7 +64,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-
+import javafx.fxml.FXMLLoader;
 import xgame.Tile.Type;
 
 /**
@@ -94,7 +107,7 @@ public class Xgame extends Application{
    double tilesize = 30; double scale=1;
 //    Image bg1, bg2;
     @Override
-    public void start(Stage primaryStage) throws IIOException, IOException {
+    public void start(Stage primaryStage) throws IIOException, IOException, URISyntaxException {
         
         src_slash=src();
         stage = primaryStage;
@@ -106,9 +119,9 @@ public class Xgame extends Application{
         System.out.println("screenheight: "+screenHeight);
         stage.setResizable(false);
         
-        
-        
-        
+//        Parent root= FXMLLoader.load(getClass().getResource("FXML.fxml"));
+//       
+//        System.out.println(getClass().getResource("FXML.fxml"));
         player1.getGameObject().setX(25*tilesize); player1.getGameObject().setY(3*tilesize); player1.setLevel(1);
         player2.getGameObject().setX(60); player2.getGameObject().setY(810); player2.setLevel(2);
      
@@ -124,13 +137,13 @@ public class Xgame extends Application{
 //        }catch(Exception e){
 //            e.printStackTrace();
 //        }
-        level1.createLevel(level1.level_1()); leveltiles1 = level1.getLevelTiles();
-        level2.createLevel(level2.level_2()); leveltiles2 = level2.getLevelTiles();
+        pane1 = (Pane)level1.createLevel(level1.level_1()); leveltiles1 = level1.getLevelTiles();
+        pane2 = level2.createLevel(level2.level_2()); leveltiles2 = level2.getLevelTiles();
         
        
         
       
-        pane1 = drawLevel1(level1); pane2 = drawLevel2(level2); panemenu = new Pane(); paneHighscore = new Pane();
+        pane1 = (Pane)drawLevel1(level1); pane2 = (Pane)drawLevel2(level2); panemenu = new Pane(); paneHighscore = new Pane();
        
        
         health = new Rectangle(scale*tilesize, (scale*tilesize)-(scale*tilesize*0.3));
@@ -143,9 +156,9 @@ public class Xgame extends Application{
         
         Rectangle logo = new Rectangle(tilesize*10,tilesize*10);
         logo.setX(tilesize*10); logo.setY(200);
-//        File logofile = new File(resourcesDirectory.getAbsolutePath()+src_slash+"logo.png");
-//        Image logoimg = new Image(logofile.toURI().toString());
-//        logo.setFill(new ImagePattern(logoimg));
+        File logofile = new File(resourcesDirectory.getAbsolutePath()+src_slash+"logo.png");
+        Image logoimg = new Image(logofile.toURI().toString());
+        logo.setFill(new ImagePattern(logoimg));
         
         File fil = new File(resourcesDirectory.getAbsolutePath()+src_slash+"sky.jpg");
         
@@ -159,7 +172,7 @@ public class Xgame extends Application{
         sceneHighscore = new Scene(paneHighscore,tilesize*30,tilesize*30);
         
         
-        
+      
         
         scene1 = new Scene(pane1,tilesize*30,tilesize*30);
         scene2 = new Scene(pane2,tilesize*30,tilesize*30);
@@ -168,20 +181,28 @@ public class Xgame extends Application{
         stage.setTitle("Mushroom 2 flower");
         
         stage.show();
-        
+        player_left = new SpriteAnimation(addFolderSprites( "runner_left_1" ) );
+        player_right = new SpriteAnimation(addFolderSprites( "runner_right_1" ) );
+        player_fall_left = new SpriteAnimation(addFolderSprites( "mid_air-left" ) );
+        player_fall = new SpriteAnimation(addFolderSprites( "mid_air-right" ) );
+        player_idle = new SpriteAnimation(addFolderSprites( "idle_rights" ) );
+        player_idle_left = new SpriteAnimation(addFolderSprites( "idle_00" ) );
+        skeleton_left = new SpriteAnimation(addFolderSprites( "go_sr" ) );
+        skeleton_right = new SpriteAnimation(addFolderSprites( "go_rrr" ) );
+        //addFolderSprites("sdas");
         //Animations
-        player_right = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner") ) );
-        player_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner_left") ) );
-        player_fall = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"mid_air") ) );
-        player_fall_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"mid_air_left") ) );
-        player_idle = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"idle_right") ) );
-        player_idle_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"idle_left") ) );
-        skeleton_right = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"skeleton"+src_slash+"walk_right") ) );
-        skeleton_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"skeleton"+src_slash+"walk") ) );
-        dragon_right = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"dragon_right") ) );
-        dragon_left = new  SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"dragon_right") ) );
-        fireball_right = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"fireball_right") ) );
-        fireball_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"fireball_left") ) );
+//          player_right = new SpriteAnimation(addFolderSprites( "player"+src_slash+"runner" ) );
+//        player_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"runner_left") ) );
+//        player_fall = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"mid_air") ) );
+//        player_fall_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"mid_air_left") ) );
+//        player_idle = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"idle_right") ) );
+//        player_idle_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"player"+src_slash+"idle_left") ) );
+//        skeleton_right = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"skeleton"+src_slash+"walk_right") ) );
+//        skeleton_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"skeleton"+src_slash+"walk") ) );
+//        dragon_right = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"dragon_right") ) );
+//        dragon_left = new  SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"dragon_right") ) );
+//        fireball_right = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"fireball_right") ) );
+//        fireball_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"fireball_left") ) );
                 
         animator = new AnimationTimer(){
            
@@ -397,7 +418,9 @@ public class Xgame extends Application{
         s.getChildren().addAll(level.getRoot());
         
         rect1 = new Rectangle(160,810,60,60);
-
+        Enemy bad = new Enemy();
+        bad.getGameObject().setX(40); bad.getGameObject().setY(60);
+        pane1.getChildren().add(bad.getGameObject());
         rect1.setFill(Color.RED);
         enemies1.add(rect1);
         ft = new TranslateTransition(Duration.millis(2000), rect1);
@@ -444,16 +467,55 @@ public class Xgame extends Application{
         }
         return src_slash;
     }
-    
-    public List<BufferedImage> addFolderSprites(final File folder) throws IOException {
-        List<BufferedImage> list = new ArrayList<BufferedImage>();
-        if (folder.exists()) {
-        for (final File fileEntry : folder.listFiles()) {
+     public List<BufferedImage> addFolderSprites(String file) throws URISyntaxException, IOException{
+         String jar = new File(Xgame.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
+         List<BufferedImage> imgs = new ArrayList();
+         ZipFile zipFile = new ZipFile(jar);
+        ZipInputStream stream = new ZipInputStream(new BufferedInputStream(new FileInputStream(jar)));
+        ZipEntry entry = null;
+        
+        
+        while ((entry = stream.getNextEntry()) != null ) {
+          if(entry.getName().contains(file)){
+              System.out.println(entry.getName());  
+              InputStream inputStream = zipFile.getInputStream(entry);
+              imgs.add( ImageIO.read( inputStream ));
+          }
+        
           
-           list.add(ImageIO.read(new File(folder+src()+fileEntry.getName())));
-           
         }
-        }
+       return imgs;
+     }
+     public List<BufferedImage> addFolderSprites2(File folder) throws URISyntaxException, IOException {
+         
+         Path path = Paths.get( folder.getPath() );
+         System.out.println(path.toString());
+         List<BufferedImage> list = new ArrayList<BufferedImage>();
+         
+//        try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
+//            System.out.println("trying");
+//            int i = 0;
+//            for (Path entry : stream) {
+//                System.out.println(entry.toString());
+//                
+//                list.add(i, ImageIO.read( new File( entry.toString() )));
+//                i++;
+//            }
+//        } catch (IOException ex) {
+//            System.out.println("***oooops****");
+//        }
+//        List<BufferedImage> list = new ArrayList<BufferedImage>();
+//        File[] files =null;
+//        try{
+//            files = folder.listFiles();
+//        }catch(Exception e){e.printStackTrace();}
+//        if(files !=null){
+//            for (File fileEntry : files) {
+//                System.out.println(fileEntry.getName());
+//               list.add(ImageIO.read(new File(folder+src()+fileEntry.getName())));
+//
+//            }
+//        }else{return null;}
         return list;
     
     }
