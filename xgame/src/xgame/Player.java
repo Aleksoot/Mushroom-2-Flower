@@ -109,6 +109,9 @@ String os = System.getProperty("os.name").toLowerCase();
     public void addScore(int increment){
         this.score += increment;
     }
+    public void setScore(int s){
+        this.score = s;
+    }
     public void setLevel(int i){
         this.level = i;
     }
@@ -260,7 +263,7 @@ String os = System.getProperty("os.name").toLowerCase();
         this.playerBox.setWidth(playerBoxSize);
         this.playerBox.setHeight(playerBoxSize);
         playerBox.setFill(Color.RED);
-
+//        System.out.println("health: "+playerHealth+" lvl: "+level);
         for (Tile tile : leveltiles) {
             
 //            if(colliding( tile.getGameObject(), hitDown() ) && colliding( tile.getGameObject(), hitTop() ) && this.jumping){
@@ -332,6 +335,9 @@ String os = System.getProperty("os.name").toLowerCase();
     
     public int getHealth(){
         return this.playerHealth;
+    }
+    public void setHealth(int s){
+        this.playerHealth = s;
     }
     public void changeHealth(double increment){
         this.playerHealth += increment;

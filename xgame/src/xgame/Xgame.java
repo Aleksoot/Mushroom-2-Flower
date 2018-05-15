@@ -70,7 +70,8 @@ public class Xgame extends Application{
    List<Rectangle> enemies, enemies1, enemies2;
    Player player, player1, player2;
    String src_slash;
-   Text points;
+   Text points, points1, points2;
+   String currentScore;
    Rectangle rect1,health,health1,health2;
    TranslateTransition ft;
    Pane panemenu, paneHighscore, pane1, pane2, pane3;
@@ -110,13 +111,12 @@ public class Xgame extends Application{
         level = new Level(); level1 = new Level(); level2 = new Level();
         player = new Player(); player1 = new Player();  player2 = new Player(); 
         
-        player1.getGameObject().setX(2*20); player1.getGameObject().setY(27*10); player1.setLevel(1);
+        player1.getGameObject().setX(25*tilesize); player1.getGameObject().setY(3*tilesize); player1.setLevel(1);
         player2.getGameObject().setX(60); player2.getGameObject().setY(810); player2.setLevel(2);
      
-        btnscene1=new Button("next level"); btnscene2=new Button("previous level");
-        btnscene1.setOnAction(e-> testClicked(e)); btnscene2.setOnAction(e-> testClicked(e));
-        lblscene1=new Label("Scene 1");
-        
+        points = new Text (500, 20, "Score: "); points.setFont(Font.font ("Verdana", 20));
+        points1 = new Text (500, 20, "Score: "); points1.setFont(Font.font ("Verdana", 20));
+        points2 = new Text (500, 20, "Score: "); points2.setFont(Font.font ("Verdana", 20));
 //        File bg_1 = new File(resourcesDirectory.getAbsolutePath()+src_slash+"forest.jpg");
 //        File bg_2 = new File(resourcesDirectory.getAbsolutePath()+src_slash+"BG.png");
 //       
@@ -136,9 +136,12 @@ public class Xgame extends Application{
        
        
         health = new Rectangle(scale*tilesize, (scale*tilesize)-(scale*tilesize*0.3));
-        health.setFill(Color.GREEN);
-        health.setX( 30*scale ); health.setY( 5*scale);
-        pane1.getChildren().addAll(health,player1.hitTop(),player1.hitDown(),player1.hitLeft(),player1.hitRight,player1.playerBox());
+        health.setFill(Color.GREEN); health.setX( 30*scale ); health.setY( 5*scale);
+        health1 = new Rectangle(scale*tilesize, (scale*tilesize)-(scale*tilesize*0.3));
+        health1.setFill(Color.GREEN); health1.setX( 30*scale ); health1.setY( 5*scale);
+        health2 = new Rectangle(scale*tilesize, (scale*tilesize)-(scale*tilesize*0.3));
+        health2.setFill(Color.GREEN); health2.setX( 30*scale ); health2.setY( 5*scale);
+        //pane1.getChildren().addAll(health,player1.hitTop(),player1.hitDown(),player1.hitLeft(),player1.hitRight,player1.playerBox());
         
         Rectangle logo = new Rectangle(tilesize*10,tilesize*10);
         logo.setX(tilesize*10); logo.setY(200);
@@ -193,6 +196,8 @@ public class Xgame extends Application{
                 long now2 = now;
                 levelCheck();
                 controls();
+                currentScore = Integer.toString( player.getScore() );
+                points.setText("Score: "+currentScore);
                 if(player.isFalling()) player.fall(); player.stopY = false;
                 player.colliding(leveltiles, Type.solid);
                 health.setWidth( player.getHealth()*2*scale);
@@ -241,7 +246,7 @@ public class Xgame extends Application{
                  
                 
                 if(player.getGameObject().getBoundsInLocal().intersects(level.getEnd().getBoundsInLocal())){
-                    changeLevel();
+                    changeLevel(player.getLevel()+1);
                 }
                 
                   
@@ -300,8 +305,6 @@ public class Xgame extends Application{
                     
                     
                 }
-                
-//                System.out.println("Yu: "+player.getCollidingYu());
                 
                 if(player.getCollidingYu()){
                     player.setFalling(false);
@@ -393,9 +396,7 @@ public class Xgame extends Application{
 
         //startMusic(); 
 
-        s.getChildren().addAll(level.getRoot(), player.getGameObject());
-        points = new Text (500, 20, "Score: "+player.getScore());
-        points.setFont(Font.font ("Verdana", 20));
+        s.getChildren().addAll(level.getRoot());
         
         rect1 = new Rectangle(160,810,60,60);
 
@@ -406,7 +407,7 @@ public class Xgame extends Application{
         ft.setByX(90);
         ft.setCycleCount(Timeline.INDEFINITE);
         ft.setAutoReverse(true);
-        s.getChildren().addAll(rect1,points);
+        s.getChildren().addAll(rect1);
         ft.play();
         return s;
     }
@@ -417,9 +418,8 @@ public class Xgame extends Application{
 
         //startMusic(); 
 
-        s.getChildren().addAll(level.getRoot(), player.getGameObject());
-        points = new Text (500, 20, "Score: "+player.getScore());
-        points.setFont(Font.font ("Verdana", 20));
+        s.getChildren().addAll(level.getRoot());
+        
         
         rect1 = new Rectangle(160,810,60,60);
 
@@ -430,7 +430,7 @@ public class Xgame extends Application{
         ft.setByX(90);
         ft.setCycleCount(Timeline.INDEFINITE);
         ft.setAutoReverse(true);
-        s.getChildren().addAll(rect1,points);
+        s.getChildren().addAll(rect1);
         ft.play();
         return s;
     }
@@ -457,23 +457,7 @@ public class Xgame extends Application{
         return list;
     
     }
-    public void testClicked(ActionEvent e){
-        if (e.getSource()==btnscene1){
-            player = player2;
-            pane1.getChildren().removeAll(player.getGameObject(),player1.getGameObject(), player2.getGameObject());
-            pane2.getChildren().removeAll(player.getGameObject(),player1.getGameObject(), player2.getGameObject());
-            stage.setScene(scene2);
-            stage.show();
-        }
-        else{
-            player = player1;
-            pane1.getChildren().removeAll(player.getGameObject(),player1.getGameObject(), player2.getGameObject());
-            pane2.getChildren().removeAll(player.getGameObject(),player1.getGameObject(), player2.getGameObject());
-            pane1.getChildren().add(player.getGameObject());
-            stage.setScene(scene1);
-            stage.show();
-        }
-    }
+
     public void controls2(){
         stage.getScene().setOnKeyPressed(e ->  {
             
@@ -483,6 +467,7 @@ public class Xgame extends Application{
         stage.getScene().setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.F8) {
                 playerJump = true;
+                player.addScore(10);
             }
             if (e.getCode() == KeyCode.LEFT) {
                 player.setMovingLeft(true);
@@ -585,17 +570,27 @@ public class Xgame extends Application{
             //animator.stop();
         }
     }
-    public void changeLevel(){
-        if(player.getLevel() == 1){
-            level = level2;
-            leveltiles = leveltiles2;
-            player = player2;
-            pane1.getChildren().removeAll(player.getGameObject(),player1.getGameObject(), player2.getGameObject());
-            pane2.getChildren().removeAll(player.getGameObject(),player1.getGameObject(), player2.getGameObject());
+    public void changeLevel(int lvl){
+        if(lvl < 2){
+            level = level1; leveltiles = leveltiles1;
+            player = player1; health = health1; points = points1;
+            pane1.getChildren().removeAll(player.getGameObject(),player1.getGameObject(), player2.getGameObject(),health,points);
+            pane2.getChildren().removeAll(player.getGameObject(),player1.getGameObject(), player2.getGameObject(),health,points);
+            level_menu = false; level_1 = true; level_2 = false;
+            stage.setScene(scene1);
+            stage.show();
+            pane1.getChildren().addAll(player.getGameObject(),health,points);
+        }
+        if(lvl == 2){
+            level = level2; leveltiles = leveltiles2;
+            player2.setHealth( player1.getHealth() ); player2.setScore( player1.getScore() );
+            player = player2; health = health2; points = points2;
+            pane1.getChildren().removeAll(player.getGameObject(),player1.getGameObject(), player2.getGameObject(),health,points);
+            pane2.getChildren().removeAll(player.getGameObject(),player1.getGameObject(), player2.getGameObject(),health,points);
             level_menu = false; level_1 = false; level_2 = true;
             stage.setScene(scene2);
             stage.show();
-            pane2.getChildren().add(player.getGameObject());
+            pane2.getChildren().addAll(player.getGameObject(),health,points);
         }
     }
     public VBox menuCreator(){
@@ -694,16 +689,12 @@ public class Xgame extends Application{
     public void menuLogic(ActionEvent e) throws UnsupportedEncodingException, FileNotFoundException, IOException{
         
         if (e.getSource()==start){
-            player = player1;
+            if(player.getLevel() < 2){
+                changeLevel(1);
+            }else{
+                changeLevel(2);
+            }
             
-            level.createLevel(level1.level_1());
-            pane1.getChildren().removeAll(player.getGameObject(),player1.getGameObject(), player2.getGameObject());
-            pane2.getChildren().removeAll(player.getGameObject(),player1.getGameObject(), player2.getGameObject());
-            level_menu = false;
-            
-            stage.setScene(scene1);
-            stage.show();
-            pane1.getChildren().add(player.getGameObject());
         }
         if (e.getSource()==load){
             loadGame();
@@ -767,6 +758,7 @@ public void saveGame() throws UnsupportedEncodingException, FileNotFoundExceptio
                 String[] part;
                 if(line.startsWith("lvl:")){
                    part= line.split(":");  lvl=Integer.parseInt(part[1]);
+                   
                 }
                 if(line.startsWith("playerX:")){
                    part= line.split(":");
@@ -780,11 +772,12 @@ public void saveGame() throws UnsupportedEncodingException, FileNotFoundExceptio
                 if(line.startsWith("playerY:")){
                    part= line.split(":");  
                    if(lvl==1){
-                        player1.getGameObject().setY(Double.parseDouble(part[1]));
+                        player1.getGameObject().setY(Double.parseDouble(part[1])-5);
                         player = player1;
                    }
                    if(lvl==2){
-                        player2.getGameObject().setY(Double.parseDouble(part[1]));
+                       pane2.getChildren().remove(player2);
+                        player2.getGameObject().setY(Double.parseDouble(part[1])-5);
                         player = player2;
                    }
                    
@@ -792,6 +785,7 @@ public void saveGame() throws UnsupportedEncodingException, FileNotFoundExceptio
                 if(line.startsWith("score:")){
                     if(lvl==1){
                         part= line.split(":");  System.out.println(part[1]);
+                        player1.setScore(Integer.parseInt(part[1]));
                     }
                 }
             }
@@ -799,14 +793,8 @@ public void saveGame() throws UnsupportedEncodingException, FileNotFoundExceptio
         }catch(IOException ex){ 
             
         }finally {
-            level.createLevel(level1.level_1());
-            pane1.getChildren().removeAll(player.getGameObject(),player1.getGameObject(), player2.getGameObject());
-            pane2.getChildren().removeAll(player.getGameObject(),player1.getGameObject(), player2.getGameObject());
+            changeLevel(lvl);
             level_menu = false;
-            
-            stage.setScene(scene1);
-            stage.show();
-            pane1.getChildren().add(player1.getGameObject());
         }
         
     }
