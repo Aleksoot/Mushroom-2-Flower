@@ -23,8 +23,8 @@ import javax.swing.ImageIcon;
  * "String os" retrieving os name and converting to lower case for easier reading and identifying
  * "int sprites" starts at 0 but increases as new objects add new images or folders containing images
  * "public BufferedImage visible" as long as no object or image is created/retrieved, nothing will be visible
- * "public List<BufferedImage> images" no images are retrieved until an object calls
- *                                    "SpriteAnimation" which will then add images to the list.
+ * "public List<BufferedImage> images" This is the list of images from a certain path/name of file where 
+ * the entire image set will be retrieved from, then animated using frame changing and an animation time
  * "controll" is an integer that keeps track of the number of sprites for change/modification. 
 */
 public class SpriteAnimation {
@@ -37,7 +37,7 @@ public class SpriteAnimation {
      * A method that adds images (or a folder of images) to a list for the specified created object.
      * As the method get these images from the source directory,
      * It retrieves its dimensions and image identity.
-     * Images are only visible when an object is called via a changeFrame or getFrame method.
+     * Images are only visible when an object calles a getFrame method with the specified object with a valid path to the images.
     */
     public SpriteAnimation(List<BufferedImage> images) {
         
@@ -46,7 +46,7 @@ public class SpriteAnimation {
         this.visible = images.get(0);
     }
         /** Method: public void changeFrame(boolean framechange)
-        * boolean framechange this is to check when a framechange is true for a created SpriteAnimation object
+        * boolean framechange this is to check when a framechange is true for a created SpriteAnimation object.
         *This method allows the framechanger to work in conjunction with the animation timer
         *which updates the current image object's frame. 
         *If any changes are made via a called method,

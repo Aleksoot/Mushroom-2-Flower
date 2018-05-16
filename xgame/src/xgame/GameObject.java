@@ -17,7 +17,6 @@ import javafx.scene.shape.Rectangle;
 import static javax.swing.Spring.height;
 
 /**
- *
  * @author josef
  */
 public class GameObject {
