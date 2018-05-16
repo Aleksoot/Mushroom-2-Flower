@@ -91,12 +91,16 @@ public class Xgame extends Application{
    List<Tile> leveltiles=new ArrayList(), leveltiles1=new ArrayList(), leveltiles2=new ArrayList();
    List<Rectangle> enemies=new ArrayList(), enemies1=new ArrayList(), enemies2=new ArrayList();
    Player player=new Player(), player1=new Player(), player2=new Player();
+   Enemy enemy, enemy11, enemy12, enemy13, enemy21, enemy22, enemy23, enemyfb, enemyfb2;
    String src_slash=new String();String currentScore=new String();
    Text points=new Text(), points1=new Text(), points2=new Text(), loading=new Text();
    Rectangle rect1=new Rectangle(),health=new Rectangle(),health1=new Rectangle(),health2=new Rectangle();
-   TranslateTransition ft=new TranslateTransition();
+
+   TranslateTransition ft=new TranslateTransition(); TranslateTransition ft21=new TranslateTransition(); TranslateTransition ft22=new TranslateTransition(); TranslateTransition ft23=new TranslateTransition();; TranslateTransition ft2=new TranslateTransition(); TranslateTransition ft13=new TranslateTransition(); TranslateTransition ftfb=new TranslateTransition(); TranslateTransition ftfb2=new TranslateTransition();
+   
    Pane panemenu=new Pane(), paneHighscore=new Pane(), pane1=new Pane(), pane2=new Pane(), paneEnd=new Pane();
    Button back=new Button(),start=new Button(), load=new Button(), save=new Button(), highscore=new Button(), exit=new Button(), exit2=new Button(), musicB = new Button();
+
    Image bg1,bg2;
     Scene scenemenu, sceneHighscore, scene1, scene2, scene3, sceneEnd;
     Stage stage;
@@ -128,6 +132,8 @@ public class Xgame extends Application{
         player1.getGameObject().setX(25*tilesize); player1.getGameObject().setY(3*tilesize); player1.setLevel(1);
         player2.getGameObject().setX(60); player2.getGameObject().setY(810); player2.setLevel(2);
      
+        enemy = new Enemy(); enemy11 = new Enemy(); enemy12 = new Enemy(); enemy13 = new Enemy(); enemy21 = new Enemy(); enemy22 = new Enemy(); enemy23 = new Enemy(); enemyfb = new Enemy(); enemyfb2 = new Enemy();
+        
         points = new Text (500, 20, "Score: "); points.setFont(Font.font ("Verdana", 20));
         points1 = new Text (500, 20, "Score: "); points1.setFont(Font.font ("Verdana", 20));
         points2 = new Text (500, 20, "Score: "); points2.setFont(Font.font ("Verdana", 20));
@@ -187,7 +193,10 @@ public class Xgame extends Application{
                     player_idle_left = new SpriteAnimation(addFolderSprites( "idle_00" ) );
                     skeleton_left = new SpriteAnimation(addFolderSprites( "go_sr" ) );
                     skeleton_right = new SpriteAnimation(addFolderSprites( "go_rrr" ) );
-                    
+                    dragon_left = new SpriteAnimation(addFolderSprites( "dleft" ) );
+                    dragon_right = new SpriteAnimation(addFolderSprites( "dright" ) );
+                    fireball_left = new SpriteAnimation(addFolderSprites( "f_left" ) );
+                    fireball_right = new SpriteAnimation(addFolderSprites( "f_right" ) );
                 } catch (URISyntaxException ex) {
                     Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
                 } catch (IOException ex) {
@@ -210,6 +219,9 @@ public class Xgame extends Application{
             long before = System.nanoTime();
             long before2 = before;
             double pos_last;
+            double pos_last2;
+            double pos_last3;
+            double pos_lastfb;
             @Override
             public void handle(long now) {
                 if(!level_menu){
@@ -234,7 +246,18 @@ public class Xgame extends Application{
                          player_idle_left.changeFrame(frameChanged);
                          skeleton_right.changeFrame(frameChanged);
                          skeleton_left.changeFrame(frameChanged);
+<<<<<<< HEAD
                          player.addScore(-1);
+=======
+
+                         dragon_left.changeFrame(frameChanged);
+                         dragon_right.changeFrame(frameChanged);
+                         fireball_left.changeFrame(frameChanged);
+                         fireball_right.changeFrame(frameChanged);
+
+                         player.addScore(1);
+
+>>>>>>> c3a908d4ee55467b252a3796cb91430a2959e4be
                          if(playerJump){
                             jumpTick++;
                             for(int i=0;i<3;i++){
@@ -245,7 +268,13 @@ public class Xgame extends Application{
                         }
                          if(player.collideObject(enemies1)){
                             player.changeHealth(-0.1);
+
+                            enemyfb.getGameObject().setVisible(false);
+                            enemies.remove(enemyfb.getGameObject());
+                            ftfb.stop();
+
                             player.addScore(-5);
+
                             if(player.getHealth()>60){
                                 health.setFill(Color.GREEN);
                             }else if(player.getHealth()>30 && player.getHealth()<60){
@@ -255,7 +284,10 @@ public class Xgame extends Application{
                             }
                         }else{}
                          player.checkAlive();
-                         pos_last = rect1.getTranslateX();
+                         pos_last = enemy11.getGameObject().getTranslateX();
+                         pos_last2 = enemy12.getGameObject().getTranslateX();
+                         pos_last3 = enemy13.getGameObject().getTranslateX();
+                         pos_lastfb = enemyfb.getGameObject().getTranslateX();
                             frameChanged = false;
                      }else{
                          //another frame
@@ -297,13 +329,58 @@ public class Xgame extends Application{
 //                    ft.stop();
 //                    this.stop();
 //                }
-                double pos_now = rect1.getTranslateX();
-                if(pos_now > pos_last){
-                    //rect1.setFill(skeleton_right.getFrame());
-                }else if(pos_now < pos_last ){
-                    //rect1.setFill(skeleton_left.getFrame());
+                double pos_now = enemy11.getGameObject().getTranslateX();
+                double pos_now2 = enemy12.getGameObject().getTranslateX();
+                double pos_now3 = enemy13.getGameObject().getTranslateX();
+                double pos_nowfb = enemyfb.getGameObject().getTranslateX();
+                if(pos_now > pos_last){   
+                    enemy11.getGameObject().setFill(dragon_right.getFrame());
+                    enemy21.getGameObject().setFill(dragon_right.getFrame());
+                }else if(pos_now < pos_last){
+                    
+                    enemy11.getGameObject().setFill(dragon_left.getFrame());
+                    enemy21.getGameObject().setFill(dragon_left.getFrame());
                 }
-                
+                if(pos_now2 > pos_last2){
+                    enemy12.getGameObject().setFill(skeleton_right.getFrame()); 
+                    enemy22.getGameObject().setFill(skeleton_right.getFrame());
+                }
+                else if(pos_now2 < pos_last2){
+                    enemy12.getGameObject().setFill(skeleton_left.getFrame());
+                    enemy22.getGameObject().setFill(skeleton_left.getFrame());
+                }
+                if(pos_now3 > pos_last3){
+                    enemy13.getGameObject().setFill(skeleton_right.getFrame());
+                    enemy23.getGameObject().setFill(skeleton_right.getFrame());
+                }
+                if(pos_now3 < pos_last3){
+                    enemy13.getGameObject().setFill(skeleton_left.getFrame());
+                    enemy23.getGameObject().setFill(skeleton_left.getFrame());
+                }
+                if(player.getGameObject().getY() > 300 && player.getGameObject().getY() < 350){
+                    ftfb.play();
+                    if(pos_now > pos_last && pos_nowfb > pos_now){
+                        enemyfb.getGameObject().setVisible(true);
+                        ftfb.play();
+                        ftfb.setCycleCount(1);
+                        enemyfb.getGameObject().setFill(fireball_right.getFrame());
+                        System.out.println(enemyfb.getGameObject().getTranslateX());
+                    }
+                    else if(pos_now < pos_last){
+                        ftfb.stop();
+                        enemyfb.getGameObject().setVisible(false);
+                    }
+                    else{
+                   
+                    }
+                    //Maybe add a sound effect
+                }
+                else{
+                    enemyfb.getGameObject().setVisible(false);
+                    enemyfb.getGameObject().setFill(fireball_right.getFrame());
+                    ftfb.stop();
+                }
+                    
                 if(player.movingRight()){ 
                     player.moveRight();
                     player.getGameObject().setFill(player_right.getFrame());
@@ -406,18 +483,65 @@ public class Xgame extends Application{
         s.getChildren().addAll(level.getRoot());
         
         rect1 = new Rectangle(160,810,60,60);
-        Enemy bad = new Enemy();
-//        bad.getGameObject().setX(40); bad.getGameObject().setY(60);
-//        pane1.getChildren().add(bad.getGameObject());
         rect1.setFill(Color.RED);
-        enemies1.add(rect1);
-        ft = new TranslateTransition(Duration.millis(2000), rect1);
+        
+        enemy11 = new Enemy();
+        enemy11.getGameObject().setX(100 * scale);
+        enemy11.getGameObject().setY(440 * scale);
+        enemy11.getGameObject().setHeight(160 * scale);
+        enemy11.getGameObject().setWidth(160 * scale);
+        enemies1.add(enemy11.getGameObject());
+
+        enemy12 = new Enemy();
+        enemy12.getGameObject().setX(200 * scale);
+        enemy12.getGameObject().setY(610 * scale);
+        enemy12.getGameObject().setHeight(80 * scale);
+        enemy12.getGameObject().setWidth(80 * scale);
+        enemies1.add(enemy12.getGameObject());
+        
+        enemy13 = new Enemy();
+        enemy13.getGameObject().setX(312 * scale);
+        enemy13.getGameObject().setY(290 * scale);
+        enemy13.getGameObject().setHeight(70 * scale);
+        enemy13.getGameObject().setWidth(70 * scale);
+        enemies1.add(enemy13.getGameObject());
+        
+        enemyfb = new Enemy();
+        enemyfb.getGameObject().setFill(Color.RED);
+        enemyfb.getGameObject().setX(enemy11.getGameObject().getX());
+        enemyfb.getGameObject().setY(enemy11.getGameObject().getY() + 20);
+        enemyfb.getGameObject().setHeight(80 * scale);
+        enemyfb.getGameObject().setWidth(80 * scale);
+        enemies1.add(enemyfb.getGameObject());
+        
+        ft = new TranslateTransition(Duration.millis(2000), enemy11.getGameObject());
         ft.setFromX(0f);
-        ft.setByX(90);
+        ft.setByX(150);
         ft.setCycleCount(Timeline.INDEFINITE);
         ft.setAutoReverse(true);
-        s.getChildren().addAll(rect1);
+        
+        ft13 = new TranslateTransition(Duration.millis(2000), enemy13.getGameObject());
+        ft13.setFromX(0f);
+        ft13.setByX(50);
+        ft13.setCycleCount(Timeline.INDEFINITE);
+        ft13.setAutoReverse(true);
+        
+        ft2 = new TranslateTransition(Duration.millis(2500), enemy12.getGameObject());
+        ft2.setFromX(0f);
+        ft2.setByX(100);
+        ft2.setCycleCount(Timeline.INDEFINITE);
+        ft2.setAutoReverse(true);
+        
+        ftfb = new TranslateTransition(Duration.millis(2000), enemyfb.getGameObject());
+        ftfb.setFromX(0f);
+        ftfb.setByX(600);
+        ftfb.setAutoReverse(false);
+        
+        s.getChildren().addAll(points,enemy11.getGameObject(),enemy12.getGameObject(),enemy13.getGameObject(),enemyfb.getGameObject());
         ft.play();
+        ft2.play();
+        ft13.play();
+        ftfb.play();
         return s;
     }
     private Pane drawLevel2(Level level) throws IOException {
@@ -433,14 +557,63 @@ public class Xgame extends Application{
         rect1 = new Rectangle(160,810,60,60);
 
         rect1.setFill(Color.RED);
-        enemies2.add(rect1);
-        ft = new TranslateTransition(Duration.millis(2000), rect1);
-        ft.setFromX(0f);
-        ft.setByX(90);
-        ft.setCycleCount(Timeline.INDEFINITE);
-        ft.setAutoReverse(true);
-        s.getChildren().addAll(rect1);
-        ft.play();
+        enemy21 = new Enemy();
+        enemy21.getGameObject().setX(100 * scale);
+        enemy21.getGameObject().setY(440 * scale);
+        enemy21.getGameObject().setHeight(160 * scale);
+        enemy21.getGameObject().setWidth(160 * scale);
+        enemies2.add(enemy21.getGameObject());
+
+        enemy22 = new Enemy();
+        enemy22.getGameObject().setX(200 * scale);
+        enemy22.getGameObject().setY(610 * scale);
+        enemy22.getGameObject().setHeight(80 * scale);
+        enemy22.getGameObject().setWidth(80 * scale);
+        enemies2.add(enemy22.getGameObject());
+        
+        enemy23 = new Enemy();
+        enemy23.getGameObject().setX(312 * scale);
+        enemy23.getGameObject().setY(290 * scale);
+        enemy23.getGameObject().setHeight(70 * scale);
+        enemy23.getGameObject().setWidth(70 * scale);
+        enemies2.add(enemy23.getGameObject());
+        
+        enemyfb2 = new Enemy();
+        enemyfb2.getGameObject().setFill(Color.RED);
+        enemyfb2.getGameObject().setX(enemy11.getGameObject().getX());
+        enemyfb2.getGameObject().setY(enemy11.getGameObject().getY() + 20);
+        enemyfb2.getGameObject().setHeight(80 * scale);
+        enemyfb2.getGameObject().setWidth(80 * scale);
+        enemies2.add(enemyfb2.getGameObject());
+        
+        ft21 = new TranslateTransition(Duration.millis(2000), enemy21.getGameObject());
+        ft21.setFromX(0f);
+        ft21.setByX(150);
+        ft21.setCycleCount(Timeline.INDEFINITE);
+        ft21.setAutoReverse(true);
+        
+        ft23 = new TranslateTransition(Duration.millis(2000), enemy23.getGameObject());
+        ft23.setFromX(0f);
+        ft23.setByX(50);
+        ft23.setCycleCount(Timeline.INDEFINITE);
+        ft23.setAutoReverse(true);
+        
+        ft22 = new TranslateTransition(Duration.millis(2500), enemy22.getGameObject());
+        ft22.setFromX(0f);
+        ft22.setByX(100);
+        ft22.setCycleCount(Timeline.INDEFINITE);
+        ft22.setAutoReverse(true);
+        
+        ftfb2 = new TranslateTransition(Duration.millis(2000), enemyfb2.getGameObject());
+        ftfb2.setFromX(0f);
+        ftfb2.setByX(600);
+        ftfb2.setAutoReverse(false);
+        
+        s.getChildren().addAll(points,enemy21.getGameObject(),enemy22.getGameObject(),enemy23.getGameObject(),enemyfb2.getGameObject());
+        ft21.play();
+        ft22.play();
+        ft23.play();
+        ftfb2.play();
         return s;
     }
 
@@ -579,13 +752,20 @@ public class Xgame extends Application{
             level = level1;
             leveltiles = leveltiles1;
             player = player1;
-             
+            enemy = enemy11;
+            enemy = enemy12;
+            enemy = enemy13;
+            enemy = enemyfb; 
    
         }
         if(player.getLevel() == 2){
             level = level2;
             leveltiles = leveltiles2;
             player = player2;
+            enemy = enemy21;
+            enemy = enemy22;
+            enemy = enemy23;
+            enemy = enemyfb2;
         }else{
             //animator.stop();
         }
