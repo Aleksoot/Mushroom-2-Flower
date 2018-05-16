@@ -246,31 +246,19 @@ public class Xgame extends Application{
                          player_idle_left.changeFrame(frameChanged);
                          skeleton_right.changeFrame(frameChanged);
                          skeleton_left.changeFrame(frameChanged);
-<<<<<<< HEAD
+
                          player.addScore(-1);
-=======
+
 
                          dragon_left.changeFrame(frameChanged);
                          dragon_right.changeFrame(frameChanged);
                          fireball_left.changeFrame(frameChanged);
                          fireball_right.changeFrame(frameChanged);
 
-                         player.addScore(1);
-
->>>>>>> c3a908d4ee55467b252a3796cb91430a2959e4be
-                         if(playerJump){
-                            jumpTick++;
-                            for(int i=0;i<3;i++){
-                                playerJump = true;
-                                disableJumping = true;
-                                player.setFalling(false);
-                            }
-                        }
-                         if(player.collideObject(enemies1)){
-                            player.changeHealth(-0.1);
-
+                         if(player.collideObject(enemies)){
+                            player.changeHealth(-20);
                             enemyfb.getGameObject().setVisible(false);
-                            enemies.remove(enemyfb.getGameObject());
+                            
                             ftfb.stop();
 
                             player.addScore(-5);
@@ -357,23 +345,24 @@ public class Xgame extends Application{
                     enemy13.getGameObject().setFill(skeleton_left.getFrame());
                     enemy23.getGameObject().setFill(skeleton_left.getFrame());
                 }
-                if(player.getGameObject().getY() > 300 && player.getGameObject().getY() < 350){
+                double dragonY =  enemy11.getGameObject().getY();
+                double playerY = player.getGameObject().getY();
+                if( playerY >= dragonY-15 || playerY-15 >= dragonY ){
                     ftfb.play();
+                   
                     if(pos_now > pos_last && pos_nowfb > pos_now){
+                        
                         enemyfb.getGameObject().setVisible(true);
                         ftfb.play();
                         ftfb.setCycleCount(1);
                         enemyfb.getGameObject().setFill(fireball_right.getFrame());
-                        System.out.println(enemyfb.getGameObject().getTranslateX());
+                       
                     }
                     else if(pos_now < pos_last){
                         ftfb.stop();
                         enemyfb.getGameObject().setVisible(false);
                     }
-                    else{
-                   
-                    }
-                    //Maybe add a sound effect
+                    
                 }
                 else{
                     enemyfb.getGameObject().setVisible(false);
@@ -418,7 +407,7 @@ public class Xgame extends Application{
             }
         };
         animator.start();  
-        System.out.println(level_menu);
+        
     }
 
     
@@ -752,6 +741,7 @@ public class Xgame extends Application{
             level = level1;
             leveltiles = leveltiles1;
             player = player1;
+            enemies = enemies1;
             enemy = enemy11;
             enemy = enemy12;
             enemy = enemy13;
@@ -762,12 +752,11 @@ public class Xgame extends Application{
             level = level2;
             leveltiles = leveltiles2;
             player = player2;
+            enemies = enemies2;
             enemy = enemy21;
             enemy = enemy22;
             enemy = enemy23;
             enemy = enemyfb2;
-        }else{
-            //animator.stop();
         }
     }
     
@@ -1030,7 +1019,7 @@ public void saveGame() throws UnsupportedEncodingException, FileNotFoundExceptio
                 }
                 if(line.startsWith("score:")){
                     if(lvl==1){
-                        part= line.split(":");  System.out.println(part[1]);
+                        part= line.split(":");  
                         player1.setScore(Integer.parseInt(part[1]));
                     }
                 }
