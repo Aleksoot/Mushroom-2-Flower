@@ -229,8 +229,8 @@ public class Xgame extends Application{
                          player_fall_left.changeFrame(frameChanged);
                          player_idle.changeFrame(frameChanged);
                          player_idle_left.changeFrame(frameChanged);
-                         skeleton_right.changeFrame(frameChanged);
-                         skeleton_left.changeFrame(frameChanged);
+//                         skeleton_right.changeFrame(frameChanged);
+//                         skeleton_left.changeFrame(frameChanged);
                          if(playerJump){
                             jumpTick++;
                             for(int i=0;i<3;i++){
@@ -298,9 +298,9 @@ public class Xgame extends Application{
 //                }
                 double pos_now = rect1.getTranslateX();
                 if(pos_now > pos_last){
-                    rect1.setFill(skeleton_right.getFrame());
+                    //rect1.setFill(skeleton_right.getFrame());
                 }else if(pos_now < pos_last ){
-                    rect1.setFill(skeleton_left.getFrame());
+                    //rect1.setFill(skeleton_left.getFrame());
                 }
                 
                 if(player.movingRight()){ 
