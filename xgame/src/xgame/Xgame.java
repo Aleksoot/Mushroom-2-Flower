@@ -234,7 +234,7 @@ public class Xgame extends Application{
                          player_idle_left.changeFrame(frameChanged);
                          skeleton_right.changeFrame(frameChanged);
                          skeleton_left.changeFrame(frameChanged);
-                         player.addScore(1);
+                         player.addScore(-1);
                          if(playerJump){
                             jumpTick++;
                             for(int i=0;i<3;i++){
