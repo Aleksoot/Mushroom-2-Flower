@@ -94,15 +94,9 @@ public class Level {
      * @return returns the root pane that the level is created in
      */
     public Pane createLevel(int[] level) throws IIOException{
-         setTileSize();
         
-         
-         
-//         Rectangle big = new Rectangle(900*scale,900*scale);
-//         big.setFill(new ImagePattern(bg));
-         
+         setTileSize();
         root.setPrefSize(tilesize*tiles, tiles*tilesize);
-//        root.getChildren().add(big);
         int gbValue = 0;
         Image[] bilder = new Image[768];
         try{
@@ -120,8 +114,6 @@ public class Level {
               
                     gbValue = level[count]-1;
                 }else{ gbValue=65;}
-                
-               
                     testbilde = SwingFXUtils.fromFXImage(bilder[gbValue], null);
                     image = SwingFXUtils.toFXImage(testbilde, null);
               
@@ -136,17 +128,15 @@ public class Level {
                 if(gbValue > 0 && gbValue != 65 && gbValue != 567){ 
                     tile.setType(Type.solid);
                 }
-                
-                
+            
                 if(gbValue != 65){
-                tile.fillGameObject(image);
+                    tile.fillGameObject(image);
                 }
                 else{tile.getGameObject().setFill(Color.TRANSPARENT);}
                 /**
                  * Once the ids are all read (up to 565) a message confirming this will display.
                  * Afterwards, its get the end values for the x and y positions
                  */
-               
                 tile.getGameObject().setX(j*tilesize);
                 tile.getGameObject().setY(i*tilesize);
                 if( gbValue == 565){

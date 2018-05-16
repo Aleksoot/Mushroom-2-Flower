@@ -303,7 +303,6 @@ public class Xgame extends Application{
                     rect1.setFill(skeleton_left.getFrame());
                 }
                 
-                
                 if(player.movingRight()){ 
                     player.moveRight();
                     player.getGameObject().setFill(player_right.getFrame());
@@ -319,10 +318,7 @@ public class Xgame extends Application{
                    }else{
                        player.getGameObject().setFill(player_idle_left.getFrame());
                    }
-                    
-                    
                 }
-                
                 if(player.getCollidingYu()){
                     player.setFalling(false);
                     player.stopY = true;
@@ -342,7 +338,6 @@ public class Xgame extends Application{
                     }else{
                         player.getGameObject().setFill(player_fall_left.getFrame());
                     }
-                    
                 }
             } 
             }
@@ -374,28 +369,28 @@ public class Xgame extends Application{
         if(level_1){
             musikk.start();
         }
-	}
-        public void playAudio(InputStream is) throws UnsupportedAudioFileException, IOException, LineUnavailableException{
-            
-            InputStream buffer = new BufferedInputStream(is);  
-            AudioInputStream stream = AudioSystem.getAudioInputStream(buffer);
-            Clip background = AudioSystem.getClip();
-            background.open(stream);
-            FloatControl volume= (FloatControl) background.getControl(FloatControl.Type.MASTER_GAIN);
-            volume.setValue(-20.4f); 
+    }
+    public void playAudio(InputStream is) throws UnsupportedAudioFileException, IOException, LineUnavailableException{
 
-            Thread audio = new Thread(){
-                @Override
-                public void run() {
-                    try{
-                        background.start();
-                    }catch(Exception e){
-                        System.out.println(e);
-                    }  
-                }
-            };
-            audio.start();
-	}
+        InputStream buffer = new BufferedInputStream(is);  
+        AudioInputStream stream = AudioSystem.getAudioInputStream(buffer);
+        Clip background = AudioSystem.getClip();
+        background.open(stream);
+        FloatControl volume= (FloatControl) background.getControl(FloatControl.Type.MASTER_GAIN);
+        volume.setValue(-20.4f); 
+
+        Thread audio = new Thread(){
+            @Override
+            public void run() {
+                try{
+                    background.start();
+                }catch(Exception e){
+                    System.out.println(e);
+                }  
+            }
+        };
+        audio.start();
+    }
 
     private Pane drawLevel1(Level level) throws IOException {
         //Level is created
@@ -474,45 +469,8 @@ public class Xgame extends Application{
         }
        return imgs;
      }
-     public List<BufferedImage> addFolderSprites2(File folder) throws URISyntaxException, IOException {
-         
-         Path path = Paths.get( folder.getPath() );
-         System.out.println(path.toString());
-         List<BufferedImage> list = new ArrayList<BufferedImage>();
-         
-//        try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
-//            System.out.println("trying");
-//            int i = 0;
-//            for (Path entry : stream) {
-//                System.out.println(entry.toString());
-//                
-//                list.add(i, ImageIO.read( new File( entry.toString() )));
-//                i++;
-//            }
-//        } catch (IOException ex) {
-//            System.out.println("***oooops****");
-//        }
-//        List<BufferedImage> list = new ArrayList<BufferedImage>();
-//        File[] files =null;
-//        try{
-//            files = folder.listFiles();
-//        }catch(Exception e){e.printStackTrace();}
-//        if(files !=null){
-//            for (File fileEntry : files) {
-//                System.out.println(fileEntry.getName());
-//               list.add(ImageIO.read(new File(folder+src()+fileEntry.getName())));
-//
-//            }
-//        }else{return null;}
-        return list;
-    
-    }
+     
 
-    public void controls2(){
-        stage.getScene().setOnKeyPressed(e ->  {
-            
-        }
-        );}
     public void controls(){
         stage.getScene().setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.F8) {
@@ -758,7 +716,6 @@ public class Xgame extends Application{
             loadGame();
         }
         if (e.getSource()==save){
-            //System.out.println("save");
             if(player.getLevel() != 0){
                 saveGame();
             }else{

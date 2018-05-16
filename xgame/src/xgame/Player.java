@@ -77,15 +77,11 @@ String os = System.getProperty("os.name").toLowerCase();
      * Inheriting the necessary parameters from GameObject (specifically setX/setY)
      * Defining the x and y Positions at the start of movement.
      * Text confirming the player object's existence
-     * Gave the player an Id of 1
+     * 
      */
     
     public Player() {
-        
        super();
-      
-       System.out.println("Player has spawned");
-       id = 1; 
     }
    
     public Rectangle playerBox(){

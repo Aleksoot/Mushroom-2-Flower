@@ -59,14 +59,11 @@ public class Enemy extends GameObject{
      * Inheriting the necessary parameters from GameObject (specifically setX/setY)
      * Defining the x and y Positions at the start of movement.
      * Text confirming the enemy object's existence
-     * Gave the enemy an Id of 2
+     * 
      */
     
     public Enemy() {
        super();
-      
-       System.out.println("Enemy has spawned");
-       id = 2; 
     }
     
     public boolean facingRight(){
@@ -124,7 +121,6 @@ public class Enemy extends GameObject{
     public void setCollidingY(boolean collision){
         this.collisiony = collision;
     }
-    
     public boolean getCollidingY(){
         return this.collisiony;
     }
@@ -134,7 +130,6 @@ public class Enemy extends GameObject{
         }
     }
 
-    
     /**
      * movement methods that allow the enemy object to move (automatic input) 
      * X direction for horizontal movement (tied with "A" and "D")

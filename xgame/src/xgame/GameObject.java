@@ -43,9 +43,7 @@ public class GameObject {
         return this.tile;
     }
     public void fillGameObject(Image x){
-        
         this.tile.setFill(new ImagePattern(x));
-     
     }
     public void setTileSize(){
         screenHeight = gd.getDisplayMode().getHeight();
