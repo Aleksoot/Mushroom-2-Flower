@@ -91,11 +91,11 @@ public class Xgame extends Application{
    List<Rectangle> enemies=new ArrayList(), enemies1=new ArrayList(), enemies2=new ArrayList();
    Player player=new Player(), player1=new Player(), player2=new Player();
    String src_slash=new String();String currentScore=new String();
-   Text points=new Text(), points1=new Text(), points2=new Text();
+   Text points=new Text(), points1=new Text(), points2=new Text(), loading=new Text();
    Rectangle rect1=new Rectangle(),health=new Rectangle(),health1=new Rectangle(),health2=new Rectangle();
    TranslateTransition ft=new TranslateTransition();
    Pane panemenu=new Pane(), paneHighscore=new Pane(), pane1=new Pane(), pane2=new Pane();
-   Button back=new Button(),start=new Button(), load=new Button(), save=new Button(), highscore=new Button(), exit=new Button();
+   Button back=new Button(),start=new Button(), load=new Button(), save=new Button(), highscore=new Button(), exit=new Button(), musicB = new Button();
    Image bg1,bg2;
     Scene scenemenu, sceneHighscore, scene1, scene2, scene3;
     Stage stage;
@@ -106,9 +106,8 @@ public class Xgame extends Application{
    public boolean frameChanged=false;
    public boolean musicPlaying = false;
    public long playerY;
-   public boolean playerJump, disableJumping, s1, s2;
+   public boolean playerJump, disableJumping, s1, s2, levelChanged;
    public int jumpTick;
-   
    GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
    int screenHeight = gd.getDisplayMode().getHeight();
    double tilesize = 30; double scale=1;
@@ -131,8 +130,8 @@ public class Xgame extends Application{
         points = new Text (500, 20, "Score: "); points.setFont(Font.font ("Verdana", 20));
         points1 = new Text (500, 20, "Score: "); points1.setFont(Font.font ("Verdana", 20));
         points2 = new Text (500, 20, "Score: "); points2.setFont(Font.font ("Verdana", 20));
-       
-       
+       loading = new Text (500, 20, "Loading ..."); loading.setFont(Font.font ("Verdana", 20));
+       loading.setX(13*tilesize); loading.setY(19*tilesize);
         pane1 = (Pane)level1.createLevel(level1.level_1()); leveltiles1 = level1.getLevelTiles();
         pane2 = level2.createLevel(level2.level_2()); leveltiles2 = level2.getLevelTiles();
         
@@ -159,7 +158,7 @@ public class Xgame extends Application{
         ImageView backgroundlvl1 = new ImageView(new Image(b1, (tilesize*30)+30,(tilesize*30)+30, false, false));
         ImageView backgroundlvl2 = new ImageView(new Image(b2, (tilesize*30)+30,(tilesize*30)+30, false, false));
         
-        panemenu.getChildren().addAll(backgroundmenu, logo, menuCreator() );
+        panemenu.getChildren().addAll(backgroundmenu, logo, menuCreator(), loading );
         paneHighscore.getChildren().addAll(highScores());
         
         pane1.getChildren().addAll(backgroundlvl1); backgroundlvl1.toBack();
@@ -193,7 +192,9 @@ public class Xgame extends Application{
                 } catch (IOException ex) {
                     Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
                 }
-           start.setDisable(false);
+                start.setDisable(false);
+                loading.setText(null);
+                
         }
     }.start();
        
@@ -232,6 +233,7 @@ public class Xgame extends Application{
                          player_idle_left.changeFrame(frameChanged);
                          skeleton_right.changeFrame(frameChanged);
                          skeleton_left.changeFrame(frameChanged);
+                         player.addScore(1);
                          if(playerJump){
                             jumpTick++;
                             for(int i=0;i<3;i++){
@@ -344,11 +346,13 @@ public class Xgame extends Application{
             }
         };
         animator.start();  
+        System.out.println(level_menu);
     }
 
     
 
-    public void startMusic() throws UnsupportedAudioFileException, IOException, LineUnavailableException{
+    public void toggleMusic() throws UnsupportedAudioFileException, IOException, LineUnavailableException{
+        
         
         InputStream play1 = new BufferedInputStream(this.getClass().getResourceAsStream("menu.wav"));
         InputStream play2 = new BufferedInputStream(this.getClass().getResourceAsStream("main.wav"));
@@ -364,14 +368,16 @@ public class Xgame extends Application{
         Thread musikk = new Thread(){
             @Override
             public void run() {
-             
+                    
                     backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY);  
-               
+                    
             }
         };
         if(level_1){
             musikk.start();
-        }
+        }else{
+                    backgroundMusic.stop();
+                    }
     }
     public void playAudio(InputStream is) throws UnsupportedAudioFileException, IOException, LineUnavailableException{
 
@@ -589,6 +595,7 @@ public class Xgame extends Application{
             //animator.stop();
         }
     }
+    
     public void changeLevel(int lvl){
         if(lvl < 2){
             
@@ -600,6 +607,17 @@ public class Xgame extends Application{
             stage.setScene(scene1);
             stage.show();
             pane1.getChildren().addAll(player.getGameObject(),health,points);
+           
+            try {
+                    toggleMusic();
+                } catch (UnsupportedAudioFileException ex) {
+                    Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                } catch (LineUnavailableException ex) {
+                    Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                }
+            
         }
         if(lvl == 2){
             level = level2; leveltiles = leveltiles2;
@@ -611,7 +629,7 @@ public class Xgame extends Application{
             stage.setScene(scene2);
             stage.show();
             pane2.getChildren().addAll(player.getGameObject(),health,points);
-        }
+        } 
     }
     public VBox menuCreator(){
         start=new Button("Start");
@@ -631,6 +649,7 @@ public class Xgame extends Application{
                 Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
         });
+        
         load.setOnAction(e-> {
             try {
                 menuLogic(e);
@@ -675,6 +694,7 @@ public class Xgame extends Application{
                 Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
         });
+        
         VBox box = new VBox();
         box.getChildren().addAll(start,load,save,highscore,exit);
         box.setTranslateX(400*scale);
@@ -707,7 +727,6 @@ public class Xgame extends Application{
     
     }
     public void menuLogic(ActionEvent e) throws UnsupportedEncodingException, FileNotFoundException, IOException{
-        
         
         if (e.getSource()==start){
            
