@@ -108,7 +108,7 @@ public class Xgame extends Application{
    public long playerY;
    public boolean playerJump, disableJumping, s1, s2;
    public int jumpTick;
-   Clip backgroundMusic;
+   
    GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
    int screenHeight = gd.getDisplayMode().getHeight();
    double tilesize = 30; double scale=1;
@@ -178,6 +178,7 @@ public class Xgame extends Application{
             public void run() {
         
                 try {
+                    
                     player_left = new SpriteAnimation(addFolderSprites( "runner_left_1" ) );
                     player_right = new SpriteAnimation(addFolderSprites( "runner_right_1" ) );
                     player_fall_left = new SpriteAnimation(addFolderSprites( "mid_air-left" ) );
@@ -186,6 +187,7 @@ public class Xgame extends Application{
                     player_idle_left = new SpriteAnimation(addFolderSprites( "idle_00" ) );
                     skeleton_left = new SpriteAnimation(addFolderSprites( "go_sr" ) );
                     skeleton_right = new SpriteAnimation(addFolderSprites( "go_rrr" ) );
+                    
                 } catch (URISyntaxException ex) {
                     Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
                 } catch (IOException ex) {
@@ -194,8 +196,7 @@ public class Xgame extends Application{
            
         }
     }.start();
-        //addFolderSprites("sdas");
-        //Animations
+       
 
 //        dragon_right = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"dragon_right") ) );
 //        dragon_left = new  SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"dragon_right") ) );
@@ -229,8 +230,8 @@ public class Xgame extends Application{
                          player_fall_left.changeFrame(frameChanged);
                          player_idle.changeFrame(frameChanged);
                          player_idle_left.changeFrame(frameChanged);
-//                         skeleton_right.changeFrame(frameChanged);
-//                         skeleton_left.changeFrame(frameChanged);
+                         skeleton_right.changeFrame(frameChanged);
+                         skeleton_left.changeFrame(frameChanged);
                          if(playerJump){
                             jumpTick++;
                             for(int i=0;i<3;i++){
@@ -347,11 +348,15 @@ public class Xgame extends Application{
 
     
 
-    public void startMusic(InputStream is) throws UnsupportedAudioFileException, IOException, LineUnavailableException{
-
-        InputStream buffer = new BufferedInputStream(is);  
-        AudioInputStream stream = AudioSystem.getAudioInputStream(buffer);
-        backgroundMusic = AudioSystem.getClip();
+    public void startMusic() throws UnsupportedAudioFileException, IOException, LineUnavailableException{
+        
+        InputStream play1 = new BufferedInputStream(this.getClass().getResourceAsStream("menu.wav"));
+        InputStream play2 = new BufferedInputStream(this.getClass().getResourceAsStream("main.wav"));
+        InputStream play3 = new BufferedInputStream(this.getClass().getResourceAsStream("battle.wav"));
+       
+        
+        AudioInputStream stream = AudioSystem.getAudioInputStream(play1);
+        Clip backgroundMusic = AudioSystem.getClip();
         backgroundMusic.open(stream);
         FloatControl volume= (FloatControl) backgroundMusic.getControl(FloatControl.Type.MASTER_GAIN);
         volume.setValue(-20.4f); // Reduce volume by 10 decibels.
@@ -359,11 +364,9 @@ public class Xgame extends Application{
         Thread musikk = new Thread(){
             @Override
             public void run() {
-                try{          
+             
                     backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY);  
-                }catch(Exception e){
-                    System.out.println(e);
-                }  
+               
             }
         };
         if(level_1){
@@ -462,6 +465,7 @@ public class Xgame extends Application{
         while ((entry = stream.getNextEntry()) != null ) {
           if(entry.getName().contains(file)){  
               InputStream inputStream = zipFile.getInputStream(entry);
+              System.out.println(entry);
               imgs.add( ImageIO.read( inputStream ));
           }
         
@@ -574,7 +578,8 @@ public class Xgame extends Application{
             level = level1;
             leveltiles = leveltiles1;
             player = player1;
-            
+             
+   
         }
         if(player.getLevel() == 2){
             level = level2;
@@ -703,7 +708,9 @@ public class Xgame extends Application{
     }
     public void menuLogic(ActionEvent e) throws UnsupportedEncodingException, FileNotFoundException, IOException{
         
+        
         if (e.getSource()==start){
+           
             if(player.getLevel() < 2){
                 
                 changeLevel(1);
@@ -820,6 +827,7 @@ public void saveGame() throws UnsupportedEncodingException, FileNotFoundExceptio
     public static void main(String[] args) {
         
         launch(args);
+        
         //System.out.println("Number of active threads from the given thread: " + Thread.activeCount());
         
     }
