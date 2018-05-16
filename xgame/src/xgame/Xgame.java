@@ -178,7 +178,7 @@ public class Xgame extends Application{
             public void run() {
         
                 try {
-                    
+                    start.setDisable(true);
                     player_left = new SpriteAnimation(addFolderSprites( "runner_left_1" ) );
                     player_right = new SpriteAnimation(addFolderSprites( "runner_right_1" ) );
                     player_fall_left = new SpriteAnimation(addFolderSprites( "mid_air-left" ) );
@@ -193,7 +193,7 @@ public class Xgame extends Application{
                 } catch (IOException ex) {
                     Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
                 }
-           
+           start.setDisable(false);
         }
     }.start();
        
