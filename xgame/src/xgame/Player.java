@@ -51,7 +51,7 @@ String os = System.getProperty("os.name").toLowerCase();
     boolean jumping;
     
     public int level = 0;
-    public int score = 0;
+    public int score = 2000;
     public int playerHealth = 100;
     public boolean jumpingTick=false;
     private boolean alive = true;
