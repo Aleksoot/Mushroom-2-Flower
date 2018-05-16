@@ -93,7 +93,7 @@ public class Xgame extends Application{
    Player player=new Player(), player1=new Player(), player2=new Player();
    Enemy enemy, enemy11, enemy12, enemy13, enemy21, enemy22, enemy23, enemyfb, enemyfb2;
    String src_slash=new String();String currentScore=new String();
-   Text points=new Text(), points1=new Text(), points2=new Text(), loading=new Text();
+   Text points=new Text(), points1=new Text(), points2=new Text(), loading=new Text(), information=new Text(), information2=new Text();
    Rectangle rect1=new Rectangle(),health=new Rectangle(),health1=new Rectangle(),health2=new Rectangle();
 
    TranslateTransition ft=new TranslateTransition(); TranslateTransition ft21=new TranslateTransition(); TranslateTransition ft22=new TranslateTransition(); TranslateTransition ft23=new TranslateTransition();; TranslateTransition ft2=new TranslateTransition(); TranslateTransition ft13=new TranslateTransition(); TranslateTransition ftfb=new TranslateTransition(); TranslateTransition ftfb2=new TranslateTransition();
@@ -111,8 +111,7 @@ public class Xgame extends Application{
    public boolean frameChanged=false;
    public boolean musicPlaying = false;
    public long playerY;
-   public boolean playerJump, disableJumping, s1, s2, levelChanged;
-   public int jumpTick;
+   public boolean disableJumping, s1, s2, levelChanged;
    GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
    int screenHeight = gd.getDisplayMode().getHeight();
    double tilesize = 30; double scale=1;
@@ -125,11 +124,10 @@ public class Xgame extends Application{
         if(screenHeight < 1080){
             scale = 0.666;
             tilesize = 30*scale;
-           
         }
         stage.setResizable(false);
 
-        player1.getGameObject().setX(25*tilesize); player1.getGameObject().setY(3*tilesize); player1.setLevel(1);
+        player1.getGameObject().setX(2*tilesize); player1.getGameObject().setY(27*tilesize); player1.setLevel(1);
         player2.getGameObject().setX(60); player2.getGameObject().setY(810); player2.setLevel(2);
      
         enemy = new Enemy(); enemy11 = new Enemy(); enemy12 = new Enemy(); enemy13 = new Enemy(); enemy21 = new Enemy(); enemy22 = new Enemy(); enemy23 = new Enemy(); enemyfb = new Enemy(); enemyfb2 = new Enemy();
@@ -137,8 +135,12 @@ public class Xgame extends Application{
         points = new Text (500, 20, "Score: "); points.setFont(Font.font ("Verdana", 20));
         points1 = new Text (500, 20, "Score: "); points1.setFont(Font.font ("Verdana", 20));
         points2 = new Text (500, 20, "Score: "); points2.setFont(Font.font ("Verdana", 20));
-       loading = new Text (500, 20, "Loading ..."); loading.setFont(Font.font ("Verdana", 20));
-       loading.setX(13*tilesize); loading.setY(19*tilesize);
+        loading = new Text (500, 20, "Loading ..."); loading.setFont(Font.font ("Verdana", 20));
+        loading.setX(13*tilesize); loading.setY(19*tilesize);
+        information = new Text(500, 15, "Control with arrows and space. Press F9 for menu."); information.setFill(Color.WHITE);
+        information.setX(300*scale); information.setY(30*scale);
+        information2 = new Text(500, 15, "Music by Ole-Christian Apeland - ooapeland@haugnett.no"); 
+        information2.setX(300*scale); information2.setY(850*scale);
         pane1 = (Pane)level1.createLevel(level1.level_1()); leveltiles1 = level1.getLevelTiles();
         pane2 = level2.createLevel(level2.level_2()); leveltiles2 = level2.getLevelTiles();
         
@@ -165,7 +167,7 @@ public class Xgame extends Application{
         ImageView backgroundlvl1 = new ImageView(new Image(b1, (tilesize*30)+30,(tilesize*30)+30, false, false));
         ImageView backgroundlvl2 = new ImageView(new Image(b2, (tilesize*30)+30,(tilesize*30)+30, false, false));
         
-        panemenu.getChildren().addAll(backgroundmenu, logo, menuCreator(), loading );
+        panemenu.getChildren().addAll(backgroundmenu, logo, menuCreator(), loading, information, information2 );
         paneHighscore.getChildren().addAll(highScores());
         
         pane1.getChildren().addAll(backgroundlvl1); backgroundlvl1.toBack();
@@ -208,12 +210,6 @@ public class Xgame extends Application{
         }
     }.start();
        
-
-//        dragon_right = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"dragon_right") ) );
-//        dragon_left = new  SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"dragon_right") ) );
-//        fireball_right = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"fireball_right") ) );
-//        fireball_left = new SpriteAnimation(addFolderSprites( new File(resourcesDirectory.getAbsolutePath()+src_slash+"enemy"+src_slash+"fireball_left") ) );
-                
         animator = new AnimationTimer(){
            
             long before = System.nanoTime();
@@ -256,7 +252,8 @@ public class Xgame extends Application{
                          fireball_right.changeFrame(frameChanged);
 
                          if(player.collideObject(enemies)){
-                            player.changeHealth(-20);
+                            player.changeHealth(-0.2);
+                            
                             enemyfb.getGameObject().setVisible(false);
                             
                             ftfb.stop();
@@ -279,44 +276,37 @@ public class Xgame extends Application{
                             frameChanged = false;
                      }else{
                          //another frame
-                         if(jumpTick>3){jumpTick=0; playerJump=false; disableJumping=false;}
                          frameChanged = true;
                      }
                      
                      before = System.nanoTime();
                 }
                  
-                
+                if(!player.isAlive()){
+                    
+                    InputStream sad = this.getClass().getResourceAsStream("jump.wav");
+                    
+                    Text t = new Text (22*tilesize, 15*tilesize, "You are DEAD!");
+                    t.setFont(Font.font ("Verdana", 60));
+                    t.setFill(Color.RED);
+                    if(player.getLevel() == 1){
+                        pane1.getChildren().add(t);
+                    }
+                    if(player.getLevel() == 2){
+                        pane1.getChildren().add(t);
+                    }
+                    if(player.getLevel() == 3){
+                        pane1.getChildren().add(t);
+                    }
+                    
+                    this.stop();
+                    reStart();
+                    
+                }
                 if(player.getGameObject().getBoundsInLocal().intersects(level.getEnd().getBoundsInLocal())){
                         changeLevel(player.getLevel()+1);
                 }
                 
-              
-//                if(!player.isAlive()){
-//                    try {
-//                        playAudio(resourcesDirectory.getAbsolutePath()+src_slash+"music"+src_slash+"sad.wav");
-//                    } catch (UnsupportedAudioFileException ex) {
-//                        Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//                    } catch (IOException ex) {
-//                        Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//                    } catch (LineUnavailableException ex) {
-//                        Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//                    }
-//                    Text t = new Text (300, 450, "You are DEAD!");
-//                    t.setFont(Font.font ("Verdana", 60));
-//                    t.setFill(Color.RED);
-//                    if(player.getLevel() == 1){
-//                        pane1.getChildren().add(t);
-//                    }
-//                    if(player.getLevel() == 2){
-//                        pane1.getChildren().add(t);
-//                    }
-//                    if(player.getLevel() == 3){
-//                        pane1.getChildren().add(t);
-//                    }
-//                    ft.stop();
-//                    this.stop();
-//                }
                 double pos_now = enemy11.getGameObject().getTranslateX();
                 double pos_now2 = enemy12.getGameObject().getTranslateX();
                 double pos_now3 = enemy13.getGameObject().getTranslateX();
@@ -369,6 +359,7 @@ public class Xgame extends Application{
                     enemyfb.getGameObject().setFill(fireball_right.getFrame());
                     ftfb.stop();
                 }
+                
                     
                 if(player.movingRight()){ 
                     player.moveRight();
@@ -416,9 +407,6 @@ public class Xgame extends Application{
         
         
         InputStream play1 = new BufferedInputStream(this.getClass().getResourceAsStream("menu.wav"));
-        InputStream play2 = new BufferedInputStream(this.getClass().getResourceAsStream("main.wav"));
-        InputStream play3 = new BufferedInputStream(this.getClass().getResourceAsStream("battle.wav"));
-       
         
         AudioInputStream stream = AudioSystem.getAudioInputStream(play1);
         Clip backgroundMusic = AudioSystem.getClip();
@@ -466,9 +454,7 @@ public class Xgame extends Application{
         //Level is created
         Pane s = new Pane();
         leveltiles = level.getLevelTiles();
-
         
-
         s.getChildren().addAll(level.getRoot());
         
         rect1 = new Rectangle(160,810,60,60);
@@ -537,43 +523,28 @@ public class Xgame extends Application{
         //Level is created
         Pane s = new Pane();
         leveltiles = level.getLevelTiles();
-
-        
-
         s.getChildren().addAll(level.getRoot());
-        
-        
-        rect1 = new Rectangle(160,810,60,60);
-
-        rect1.setFill(Color.RED);
+     
         enemy21 = new Enemy();
-        enemy21.getGameObject().setX(100 * scale);
-        enemy21.getGameObject().setY(440 * scale);
+        enemy21.getGameObject().setX(7 * tilesize);
+        enemy21.getGameObject().setY(16 *tilesize);
         enemy21.getGameObject().setHeight(160 * scale);
         enemy21.getGameObject().setWidth(160 * scale);
         enemies2.add(enemy21.getGameObject());
 
         enemy22 = new Enemy();
-        enemy22.getGameObject().setX(200 * scale);
-        enemy22.getGameObject().setY(610 * scale);
-        enemy22.getGameObject().setHeight(80 * scale);
-        enemy22.getGameObject().setWidth(80 * scale);
+        enemy22.getGameObject().setX(11*tilesize);
+        enemy22.getGameObject().setY(23*tilesize);
+        enemy22.getGameObject().setHeight(90 * scale);
+        enemy22.getGameObject().setWidth(90 * scale);
         enemies2.add(enemy22.getGameObject());
         
         enemy23 = new Enemy();
-        enemy23.getGameObject().setX(312 * scale);
-        enemy23.getGameObject().setY(290 * scale);
+        enemy23.getGameObject().setX(10*tilesize);
+        enemy23.getGameObject().setY(9*tilesize-10);
         enemy23.getGameObject().setHeight(70 * scale);
         enemy23.getGameObject().setWidth(70 * scale);
         enemies2.add(enemy23.getGameObject());
-        
-        enemyfb2 = new Enemy();
-        enemyfb2.getGameObject().setFill(Color.RED);
-        enemyfb2.getGameObject().setX(enemy11.getGameObject().getX());
-        enemyfb2.getGameObject().setY(enemy11.getGameObject().getY() + 20);
-        enemyfb2.getGameObject().setHeight(80 * scale);
-        enemyfb2.getGameObject().setWidth(80 * scale);
-        enemies2.add(enemyfb2.getGameObject());
         
         ft21 = new TranslateTransition(Duration.millis(2000), enemy21.getGameObject());
         ft21.setFromX(0f);
@@ -593,19 +564,34 @@ public class Xgame extends Application{
         ft22.setCycleCount(Timeline.INDEFINITE);
         ft22.setAutoReverse(true);
         
-        ftfb2 = new TranslateTransition(Duration.millis(2000), enemyfb2.getGameObject());
-        ftfb2.setFromX(0f);
-        ftfb2.setByX(600);
-        ftfb2.setAutoReverse(false);
         
-        s.getChildren().addAll(points,enemy21.getGameObject(),enemy22.getGameObject(),enemy23.getGameObject(),enemyfb2.getGameObject());
+        s.getChildren().addAll(points,enemy21.getGameObject(),enemy22.getGameObject(),enemy23.getGameObject());
         ft21.play();
         ft22.play();
         ft23.play();
-        ftfb2.play();
         return s;
     }
+    public void reStart(){
+        final String javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
+        File currentJar = null;
+        try {
+            currentJar = new File(Xgame.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        final ArrayList<String> command = new ArrayList<String>();
+        command.add(javaBin);
+        command.add("-jar");
+        command.add(currentJar.getPath());
+        final ProcessBuilder builder = new ProcessBuilder(command);
+        try {
+            builder.start();
+        } catch (IOException ex) {
+            Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
 
+        System.exit(0);
+    }
     public String src(){
         String src_slash;
         if (os.indexOf("win") >= 0) {
@@ -617,21 +603,19 @@ public class Xgame extends Application{
         }
         return src_slash;
     }
-     public List<BufferedImage> addFolderSprites(String file) throws URISyntaxException, IOException{
-         String jar = new File(Xgame.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
+     public List<BufferedImage> addFolderSprites(String search) throws URISyntaxException, IOException{
+         String jarfil = new File(Xgame.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
          List<BufferedImage> imgs = new ArrayList();
-         ZipFile zipFile = new ZipFile(jar);
-        ZipInputStream stream = new ZipInputStream(new BufferedInputStream(new FileInputStream(jar)));
-        ZipEntry entry = null;
+         ZipFile zipFile = new ZipFile(jarfil);
+         ZipInputStream stream = new ZipInputStream(new BufferedInputStream(new FileInputStream(jarfil)));
+         ZipEntry entry = null;
         
-        
-        while ((entry = stream.getNextEntry()) != null ) {
-          if(entry.getName().contains(file)){  
-              InputStream inputStream = zipFile.getInputStream(entry);
-              System.out.println(entry);
-              imgs.add( ImageIO.read( inputStream ));
-          }
-        
+         while ((entry = stream.getNextEntry()) != null ) {
+            if(entry.getName().contains(search)){  
+                InputStream inputStream = zipFile.getInputStream(entry);
+                System.out.println(entry);
+                imgs.add( ImageIO.read( inputStream ));
+            }
           
         }
        return imgs;
@@ -640,10 +624,7 @@ public class Xgame extends Application{
 
     public void controls(){
         stage.getScene().setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.F8) {
-                playerJump = true;
-                player.addScore(10);
-            }
+            
             if (e.getCode() == KeyCode.LEFT) {
                 player.setMovingLeft(true);
                 s1 = true;
@@ -679,8 +660,6 @@ public class Xgame extends Application{
                     } catch (LineUnavailableException ex) {
                         Logger.getLogger(Xgame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
                     }
-                    
-                
                 }
             } 
             if (e.getCode() == KeyCode.SPACE && player.facingLeft() && !player.collisionYo) {
@@ -720,13 +699,8 @@ public class Xgame extends Application{
             
         });
         stage.getScene().setOnKeyReleased(e -> {
-       player.setMovingRight(false);
-        player.setMovingLeft(false);
-        
-           if (e.getCode() == KeyCode.F8) {
-                disableJumping = true;
-           }
-        
+           player.setMovingLeft(false);
+           player.setMovingRight(false);
            if (e.getCode() == KeyCode.LEFT) {
                     player.setMovingLeft(false);
            }
@@ -761,6 +735,7 @@ public class Xgame extends Application{
     }
     
     public void changeLevel(int lvl){
+        
         if(lvl < 2){
             
             level = level1; leveltiles = leveltiles1;
@@ -795,6 +770,7 @@ public class Xgame extends Application{
             pane2.getChildren().addAll(player.getGameObject(),health,points);
         } 
         if(lvl == 3){
+            
             animator.stop();
 //            checkHighScore();
             VBox results = new VBox();
@@ -925,12 +901,10 @@ public class Xgame extends Application{
         if (e.getSource()==start){
            
             if(player.getLevel() < 2){
-                
                 changeLevel(1);
             }else{
                 changeLevel(2);
             }
-            
         }
         if (e.getSource()==load){
             loadGame();
